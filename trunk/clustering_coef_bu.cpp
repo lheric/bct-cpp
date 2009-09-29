@@ -1,0 +1,30 @@
+#include "bct.h"
+#include <cassert>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_vector.h>
+
+/*
+ * Computes the clustering coefficient for a binary undirected graph.  Results
+ * are returned in a vector where each element is the clustering coefficient of
+ * the corresponding node.
+ */
+gsl_vector* bct::clustering_coef_bu(const gsl_matrix* m) {
+	assert(m->size1 == m->size2);
+	gsl_vector* clustering_coef = gsl_vector_calloc(m->size1);
+	gsl_matrix* zdm = zero_diagonal(m);
+	for (int i = 0; i < zdm->size1; i++) {
+		gsl_vector_const_view row = gsl_matrix_const_row(zdm, i);
+		int k = bct::nnz(&row.vector);
+		if (k >= 2) {
+			gsl_vector* neighbors = bct::find(&row.vector);
+			gsl_matrix* s = bct::submatrix(zdm, neighbors, neighbors);
+			int actual_connections = bct::nnz(s);
+			int possible_connections = k * (k - 1);
+			gsl_vector_set(clustering_coef, i, (double)actual_connections / (double)possible_connections);
+			gsl_matrix_free(s);
+			gsl_vector_free(neighbors);
+		}
+	}
+	gsl_matrix_free(zdm);
+	return clustering_coef;
+}

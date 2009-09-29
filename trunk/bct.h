@@ -14,6 +14,7 @@ namespace bct {
 	gsl_vector* degrees_dir(const gsl_matrix*);
 
 	// Clustering
+	gsl_vector* clustering_coef_bu(const gsl_matrix*);
 
 	// Paths, distances, and cycles
 
@@ -26,6 +27,7 @@ namespace bct {
 	// Utility
 	gsl_vector* binary(const gsl_vector*);
 	gsl_matrix* binary(const gsl_matrix*);
+	gsl_matrix* zero_diagonal(const gsl_matrix*);
 	int nnz(const gsl_vector*);
 	int nnz(const gsl_matrix*);
 	gsl_vector* find(const gsl_vector*);
