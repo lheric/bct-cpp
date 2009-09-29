@@ -24,12 +24,12 @@ namespace bct {
 	// Modularity and community structure
 
 	// Utility
-	gsl_vector* binary_vector(const gsl_vector*);
-	gsl_matrix* binary_matrix(const gsl_matrix*);
+	gsl_vector* binary(const gsl_vector*);
+	gsl_matrix* binary(const gsl_matrix*);
 
 	// Debugging
-	void vector_printf(const gsl_vector*, const char*);
-	void matrix_printf(const gsl_matrix*, const char*);
+	void printf(const gsl_vector*, const char*);
+	void printf(const gsl_matrix*, const char*);
 };
 
 #endif
