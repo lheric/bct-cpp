@@ -1,4 +1,5 @@
 #include "bct.h"
+#include <cassert>
 #include <cmath>
 #include <cstdio>
 #include <gsl/gsl_matrix.h>
@@ -64,7 +65,9 @@ int bct::nnz(const gsl_matrix* m) {
  * Returns a vector of indices of nonzero elements in the given vector.
  */
 gsl_vector* bct::find(const gsl_vector* v) {
-	gsl_vector* nz = gsl_vector_alloc(nnz(v));
+	int size = nnz(v);
+	assert(size > 0);
+	gsl_vector* nz = gsl_vector_alloc(size);
 	int pos = 0;
 	for (int i = 0; i < v->size; i++) {
 		if (std::abs(gsl_vector_get(v, i)) > EPSILON) {
