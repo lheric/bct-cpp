@@ -1,6 +1,5 @@
 #include "bct.h"
 #include <cassert>
-#include <gsl/gsl_blas.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 
@@ -21,13 +20,11 @@ gsl_vector* bct::degrees_dir_in(const gsl_matrix* m) {
  * out-degree of the corresponding node.
  */
 gsl_vector* bct::degrees_dir_out(const gsl_matrix* m) {
-	gsl_matrix* bm = binary(m);
-	gsl_vector* out_degrees = gsl_vector_calloc(bm->size1);
-	for (int i = 0; i < bm->size1; i++) {
-		gsl_vector_const_view row = gsl_matrix_const_row(bm, i);
-		gsl_vector_set(out_degrees, i, gsl_blas_dasum(&row.vector));
+	gsl_vector* out_degrees = gsl_vector_calloc(m->size1);
+	for (int i = 0; i < m->size1; i++) {
+		gsl_vector_const_view row = gsl_matrix_const_row(m, i);
+		gsl_vector_set(out_degrees, i, bct::nnz(&row.vector));
 	}
-	gsl_matrix_free(bm);
 	return out_degrees;
 }
 

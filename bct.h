@@ -26,6 +26,10 @@ namespace bct {
 	// Utility
 	gsl_vector* binary(const gsl_vector*);
 	gsl_matrix* binary(const gsl_matrix*);
+	int nnz(const gsl_vector*);
+	int nnz(const gsl_matrix*);
+	gsl_vector* find(const gsl_vector*);
+	gsl_matrix* submatrix(const gsl_matrix*, const gsl_vector*, const gsl_vector*);
 
 	// Debugging
 	void printf(const gsl_vector*, const char*);
