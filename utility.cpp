@@ -34,6 +34,18 @@ gsl_matrix* bct::binary(const gsl_matrix* m) {
 }
 
 /*
+ * Returns a copy of the given matrix with all elements along the diagonal set
+ * to zero.
+ */
+gsl_matrix* bct::zero_diagonal(const gsl_matrix* m) {
+	gsl_matrix* zdm = gsl_matrix_alloc(m->size1, m->size2);
+	gsl_matrix_memcpy(zdm, m);
+	gsl_vector_view diagonal = gsl_matrix_diagonal(zdm);
+	gsl_vector_set_zero(&diagonal.vector);
+	return zdm;
+}
+
+/*
  * Returns the number of nonzero elements in the given vector.
  */
 int bct::nnz(const gsl_vector* v) {
