@@ -21,7 +21,7 @@ gsl_vector* bct::degrees_dir_in(const gsl_matrix* m) {
  * out-degree of the corresponding node.
  */
 gsl_vector* bct::degrees_dir_out(const gsl_matrix* m) {
-	gsl_matrix* bm = binary_matrix(m);
+	gsl_matrix* bm = binary(m);
 	gsl_vector* out_degrees = gsl_vector_calloc(bm->size1);
 	for (int i = 0; i < bm->size1; i++) {
 		gsl_vector_const_view row = gsl_matrix_const_row(bm, i);
