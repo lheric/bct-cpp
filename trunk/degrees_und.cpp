@@ -1,4 +1,5 @@
 #include "bct.h"
+#include <gsl/gsl_blas.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 
@@ -10,9 +11,9 @@
 gsl_vector* bct::degrees_und(const gsl_matrix* m) {
 	gsl_matrix* bm = binary_matrix(m);
 	gsl_vector* degrees = gsl_vector_calloc(bm->size2);
-	for (int i = 0; i < bm->size1; i++) {
-		gsl_vector_const_view row = gsl_matrix_const_row(bm, i);
-		gsl_vector_add(degrees, &row.vector);
+	for (int i = 0; i < bm->size2; i++) {
+		gsl_vector_const_view column = gsl_matrix_const_column(bm, i);
+		gsl_vector_set(degrees, i, gsl_blas_dasum(&column.vector));
 	}
 	gsl_matrix_free(bm);
 	return degrees;
