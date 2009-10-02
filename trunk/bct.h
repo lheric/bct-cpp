@@ -24,6 +24,14 @@ namespace bct {
 
 	// Modularity and community structure
 
+	// Data sets
+	extern double cat_all[];
+	extern double cat_ctx[];
+	extern double fve30[];
+	extern double fve32[];
+	extern double macaque47[];
+	extern double macaque71[];
+
 	// Utility
 	gsl_vector* binary(const gsl_vector*);
 	gsl_matrix* binary(const gsl_matrix*);
