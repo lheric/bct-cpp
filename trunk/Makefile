@@ -16,13 +16,13 @@ libbct.a: $(objects)
 
 $(objects): bct.h
 
-install:
+install: libbct.a
 	cp bct.h /usr/local/include
 	cp libbct.a /usr/local/lib
 
 uninstall:
-	rm /usr/local/include/bct.h
-	rm /usr/local/lib/libbct.a
+	-rm /usr/local/include/bct.h
+	-rm /usr/local/lib/libbct.a
 
 clean:
 	-rm libbct.a $(objects)
