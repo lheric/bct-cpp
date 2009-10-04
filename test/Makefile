@@ -2,18 +2,17 @@ filenames = \
 	clustering_coef_bu_cpp \
 	degrees_dir_cpp \
 	degrees_und_cpp
-sources := $(foreach f, $(filenames), $(f).cpp)
 objects := $(foreach f, $(filenames), $(f).o)
 oct_files := $(foreach f, $(filenames), $(f).oct)
 
 .PHONY: all clean install uninstall
 
-all:
-	for source in $(sources); do \
-		mkoctfile -lbct -lgsl $$source; \
-	done
+all: $(oct_files)
 
-install:
+$(oct_files):
+	mkoctfile -lbct -lgsl $(basename $@).cpp
+
+install: $(oct_files)
 	if [ ! -d /usr/local/share/bct-cpp ]; then \
 		mkdir /usr/local/share/bct-cpp; \
 	fi
