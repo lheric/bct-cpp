@@ -4,6 +4,9 @@ filenames = \
 	degrees_und_cpp
 objects := $(foreach f, $(filenames), $(f).o)
 oct_files := $(foreach f, $(filenames), $(f).oct)
+m_files = \
+	bct_test.m \
+	bct_test_all.m
 
 .PHONY: all clean install uninstall
 
@@ -16,7 +19,7 @@ install: $(oct_files)
 	if [ ! -d /usr/local/share/bct-cpp ]; then \
 		mkdir /usr/local/share/bct-cpp; \
 	fi
-	cp $(oct_files) /usr/local/share/bct-cpp
+	cp $(oct_files) $(m_files) /usr/local/share/bct-cpp
 
 uninstall:
 	-rm -rf /usr/local/share/bct-cpp
