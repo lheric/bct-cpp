@@ -18,10 +18,10 @@ $(oct_files): bct_test.h bct_test.cpp $$(basename $$@).cpp
 	mkoctfile -lbct -lgsl $(basename $@).cpp
 
 install: $(oct_files)
-	if [ ! -d /usr/local/share/bct-cpp ]; then \
-		mkdir /usr/local/share/bct-cpp; \
+	if [ ! -d /usr/local/share/bct ]; then \
+		mkdir /usr/local/share/bct; \
 	fi
-	cp $(oct_files) $(m_files) /usr/local/share/bct-cpp
+	cp $(oct_files) $(m_files) /usr/local/share/bct
 
 uninstall:
 	-rm -rf /usr/local/share/bct-cpp
