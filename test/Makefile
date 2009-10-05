@@ -12,7 +12,9 @@ m_files = \
 
 all: $(oct_files)
 
-$(oct_files):
+.SECONDEXPANSION:
+
+$(oct_files): bct_test.h bct_test.cpp $$(basename $$@).cpp
 	mkoctfile -lbct -lgsl $(basename $@).cpp
 
 install: $(oct_files)
