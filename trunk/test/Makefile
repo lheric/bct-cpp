@@ -1,7 +1,10 @@
 filenames = \
 	clustering_coef_bu_cpp \
 	degrees_dir_cpp \
-	degrees_und_cpp
+	degrees_und_cpp \
+	density_dir_cpp \
+	density_und_cpp \
+	strengths_und_cpp
 objects := $(foreach f, $(filenames), $(f).o)
 oct_files := $(foreach f, $(filenames), $(f).oct)
 m_files = \
