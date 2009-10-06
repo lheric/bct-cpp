@@ -8,7 +8,7 @@ objects = \
 	utility.o \
 	density_dir.o \
 	density_und.o \
-	strength_und.o
+	strengths_und.o
 
 .PHONY: all clean install uninstall
 
