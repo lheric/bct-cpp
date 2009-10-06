@@ -6,7 +6,7 @@
  * adjaceny matrix is m. The total number of possible connections 
  * is given by the form N(N-1). N is the number of nodes.
  */
-double bct::density_und(const gsl_matrix* m) {
+double bct::density_dir(const gsl_matrix* m) {
 	int N,K;
 	double kden;
 	int nnz = 0;
