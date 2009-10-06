@@ -12,7 +12,21 @@ namespace bct_test {
 	Matrix from_gsl(const gsl_vector*);
 };
 
-#define OCTAVE_FUNCTION(function_name) \
+#define MATRIX_TO_SCALAR_FUNCTION(function_name) \
+	DEFUN_DLD(function_name##_cpp, args, , "Wrapper for C++ function.") { \
+		if (args.length() == 0) { \
+			return octave_value_list(); \
+		} \
+		Matrix m = args(0).matrix_value(); \
+		if (!error_state) { \
+			gsl_matrix* gslm = bct_test::to_gsl(m); \
+			return octave_value(bct::function_name(gslm)); \
+		} else { \
+			return octave_value_list(); \
+		} \
+	}
+
+#define MATRIX_TO_MATRIX_FUNCTION(function_name) \
 	DEFUN_DLD(function_name##_cpp, args, , "Wrapper for C++ function.") { \
 		if (args.length() == 0) { \
 			return octave_value_list(); \
