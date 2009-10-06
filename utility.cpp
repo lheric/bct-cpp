@@ -129,3 +129,31 @@ void bct::printf(const gsl_matrix* m, const char* format) {
 		std::printf("\n");
 	}
 }
+
+/* M
+ * Returns the sum of the elements of a matrix, row-wise or column-wise
+ * it is the equivalent of the 'sum' function in matlab. If the second
+ * parameter 'dim' is 1, the sum is a cumulative sum of row slices. If
+ * dim is 2, the result is a cumulative sum of column slices. In any case,
+ *  it is assumed that m is a square matrix and therefore, the size of
+ * sum is just set to m->size1 because m->size1 = m->size2 in a square matrix
+ */
+gsl_vector* bct::sum(const gsl_matrix* m, int dimension) {
+	gsl_vector* sum = gsl_vector_calloc(m->size1);
+	if (dim == 1)
+	{
+		for (int i = 0; i < m->size1; i++) {
+			gsl_vector_const_view row = gsl_matrix_const_row(m, i);
+			gsl_vector_add(sum,row);
+		}
+	}
+	else if (dim == 2)
+	{
+		for (int i = 0; i < m->size1; i++) {
+			gsl_vector_const_view column = gsl_matrix_const_column(m, i);
+			gsl_vector_add(sum,column);
+		}
+	}
+	return sum;
+}
+
