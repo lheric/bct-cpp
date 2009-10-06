@@ -5,7 +5,10 @@ objects = \
 	degrees_und.o \
 	fve.o \
 	macaque.o \
-	utility.o
+	utility.o \
+	density_dir.o \
+	density_und.o \
+	strength_und.o
 
 .PHONY: all clean install uninstall
 
