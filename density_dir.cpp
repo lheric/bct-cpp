@@ -12,6 +12,7 @@ double bct::density_dir(const gsl_matrix* m) {
 	int nnz = 0;
 	N = m->size1;
 	K = bct::nnz(m);
-	kden = K/(N*N-N);
+	kden = (double)K/(double)(N*N-N);
+	return kden;
 }
 
