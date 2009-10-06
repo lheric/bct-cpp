@@ -138,20 +138,20 @@ void bct::printf(const gsl_matrix* m, const char* format) {
  *  it is assumed that m is a square matrix and therefore, the size of
  * sum is just set to m->size1 because m->size1 = m->size2 in a square matrix
  */
-gsl_vector* bct::sum(const gsl_matrix* m, int dimension) {
+gsl_vector* bct::sum(const gsl_matrix* m, int dim) {
 	gsl_vector* sum = gsl_vector_calloc(m->size1);
 	if (dim == 1)
 	{
 		for (int i = 0; i < m->size1; i++) {
 			gsl_vector_const_view row = gsl_matrix_const_row(m, i);
-			gsl_vector_add(sum,row);
+			gsl_vector_add(sum,&row.vector);
 		}
 	}
 	else if (dim == 2)
 	{
 		for (int i = 0; i < m->size1; i++) {
 			gsl_vector_const_view column = gsl_matrix_const_column(m, i);
-			gsl_vector_add(sum,column);
+			gsl_vector_add(sum,&column.vector);
 		}
 	}
 	return sum;
