@@ -27,7 +27,7 @@ install: $(oct_files)
 	cp $(oct_files) $(m_files) /usr/local/share/bct
 
 uninstall:
-	-rm -rf /usr/local/share/bct-cpp
+	-rm -rf /usr/local/share/bct
 
 clean:
 	-rm $(objects) $(oct_files)
