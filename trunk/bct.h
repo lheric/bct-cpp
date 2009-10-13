@@ -44,6 +44,13 @@ namespace bct {
 	gsl_vector* find(const gsl_vector*);
 	gsl_matrix* submatrix(const gsl_matrix*, const gsl_vector*, const gsl_vector*);
 	gsl_vector* sum(const gsl_matrix* m, int dimension);
+	double sum(const gsl_vector*);
+	gsl_matrix* triu(const gsl_matrix*, int);
+	gsl_matrix* tril(const gsl_matrix*, int);
+	gsl_vector* vectorNot(const gsl_vector*);
+	gsl_vector* vectorAnd(const gsl_vector*, const gsl_vector*);
+	gsl_vector* pickCells(const gsl_vector*, const gsl_vector*);
+	gsl_vector* splice(const gsl_vector*, const gsl_vector*);
 
 	// Debugging
 	void printf(const gsl_vector*, const char*);
