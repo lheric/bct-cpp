@@ -182,7 +182,7 @@ gsl_matrix* bct::tril(const gsl_matrix* m, int K) {
 /* M
  * Perform a logical NOT on the elements of a vector
  */
-gsl_vector* vectorNot(const gsl_vector* v) {
+gsl_vector* bct::vectorNot(const gsl_vector* v) {
 	gsl_vector* notV = gsl_vector_calloc(v->size);
 	for(int i = 0;i < v->size;i++)
 		gsl_vector_set(notV, i, !(int)gsl_vector_get(v, i));
@@ -192,7 +192,7 @@ gsl_vector* vectorNot(const gsl_vector* v) {
 /* M
  * Perform a logical AND between the elements of 2 vectors
  */
-gsl_vector* vectorAnd(const gsl_vector* v1, const gsl_vector* v2) {
+gsl_vector* bct::vectorAnd(const gsl_vector* v1, const gsl_vector* v2) {
 	gsl_vector* andV = gsl_vector_calloc(v1->size);
 	for(int i = 0;i < v1->size;i++) {
 		int val1 = (int)gsl_vector_get(v1, i);
@@ -206,7 +206,7 @@ gsl_vector* vectorAnd(const gsl_vector* v1, const gsl_vector* v2) {
  * Strip a vector by picking only those cells where there is a corresponding
  * number 1 in the 'pick vector'.
  */
-gsl_vector* pickCells(const gsl_vector* srcV, const gsl_vector* pickV) {
+gsl_vector* bct::pickCells(const gsl_vector* srcV, const gsl_vector* pickV) {
 		int stripVindex = 0;
 		int nnzV = bct::nnz(pickV);
 		gsl_vector* stripV = gsl_vector_calloc(nnzV);
@@ -222,7 +222,7 @@ gsl_vector* pickCells(const gsl_vector* srcV, const gsl_vector* pickV) {
 /* M
  * Splice two vectors into one
  */
-gsl_vector* splice(const gsl_vector* v1, const gsl_vector* v2) {
+gsl_vector* bct::splice(const gsl_vector* v1, const gsl_vector* v2) {
 	int spliceVindex = 0;
 	gsl_vector* spliceV = gsl_vector_calloc(v1->size + v2->size);
 	for(int i = 0;i < v1->size;i++)
