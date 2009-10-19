@@ -1,14 +1,20 @@
 objects = \
 	cat.o \
 	clustering_coef_bu.o \
+	convert.o \
+	debug.o \
 	degrees_dir.o \
 	degrees_und.o \
-	fve.o \
-	macaque.o \
-	utility.o \
 	density_dir.o \
 	density_und.o \
-	strengths_und.o
+	fve.o \
+	jdegree.o \
+	macaque.o \
+	matching_ind.o \
+	matlab.o \
+	strengths_dir.o \
+	strengths_und.o \
+	utility.o
 
 .PHONY: all clean install uninstall
 
