@@ -9,7 +9,7 @@
  * 0 -> 'greater than operator, >'
  */
 gsl_matrix* bct::find(const gsl_matrix* m, int cmprFlag, double cmprVal) {
-	gsl_matrix* indices = gsl_matrix_calloc(2, m->size1 * m->size1);
+	gsl_matrix* indices = gsl_matrix_alloc(2, m->size1 * m->size1);
 	int size = 0;
 	if(cmprFlag==0) { //means, perform a '>'
 		for(int i = 0;i < m->size1;i++) {
@@ -21,7 +21,7 @@ gsl_matrix* bct::find(const gsl_matrix* m, int cmprFlag, double cmprVal) {
 				}
 			}
 		}
-		gsl_matrix* trimIndices = gsl_matrix_calloc(2, size * size);
+		gsl_matrix* trimIndices = gsl_matrix_alloc(2, size * size);
 		gsl_matrix_view trim = gsl_matrix_submatrix((gsl_matrix*)m, 0, 0, size-1, size-1);
 		gsl_matrix_memcpy(trimIndices, &trim.matrix);
 		gsl_matrix_free(indices);
@@ -36,7 +36,7 @@ gsl_matrix* bct::find(const gsl_matrix* m, int cmprFlag, double cmprVal) {
 gsl_vector* bct::pick_cells(const gsl_vector* srcV, const gsl_vector* pickV) {
 		int stripVindex = 0;
 		int nnzV = nnz(pickV);
-		gsl_vector* stripV = gsl_vector_calloc(nnzV);
+		gsl_vector* stripV = gsl_vector_alloc(nnzV);
 		for(int i = 0;i < srcV->size;i++) {
 			//1 or 1.0, does it make a difference? 
 			//Nevertheless, pickV is created by logical_not method and it sets integer values
@@ -51,7 +51,7 @@ gsl_vector* bct::pick_cells(const gsl_vector* srcV, const gsl_vector* pickV) {
  */
 gsl_vector* bct::splice(const gsl_vector* v1, const gsl_vector* v2) {
 	int spliceVindex = 0;
-	gsl_vector* spliceV = gsl_vector_calloc(v1->size + v2->size);
+	gsl_vector* spliceV = gsl_vector_alloc(v1->size + v2->size);
 	for(int i = 0;i < v1->size;i++)
 		gsl_vector_set(spliceV, spliceVindex++, gsl_vector_get(v1, i));
 	for(int i = 0;i < v2->size;i++)

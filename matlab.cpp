@@ -25,7 +25,7 @@ gsl_vector* bct::find(const gsl_vector* v) {
  * Perform a logical AND between the elements of 2 vectors
  */
 gsl_vector* bct::logical_and(const gsl_vector* v1, const gsl_vector* v2) {
-	gsl_vector* andV = gsl_vector_calloc(v1->size);
+	gsl_vector* andV = gsl_vector_alloc(v1->size);
 	for(int i = 0;i < v1->size;i++) {
 		int val1 = (int)gsl_vector_get(v1, i);
 		int val2 = (int)gsl_vector_get(v2, i);
@@ -38,7 +38,7 @@ gsl_vector* bct::logical_and(const gsl_vector* v1, const gsl_vector* v2) {
  * Perform a logical NOT on the elements of a vector
  */
 gsl_vector* bct::logical_not(const gsl_vector* v) {
-	gsl_vector* notV = gsl_vector_calloc(v->size);
+	gsl_vector* notV = gsl_vector_alloc(v->size);
 	for(int i = 0;i < v->size;i++)
 		gsl_vector_set(notV, i, !(int)gsl_vector_get(v, i));
 	return notV;
@@ -135,7 +135,7 @@ gsl_vector* bct::sum(const gsl_matrix* m, int dim) {
  * NOTE: K can't be > m->size1. This exception needs to be handled.
  */
 gsl_matrix* bct::tril(const gsl_matrix* m, int K) {
-	gsl_matrix* tril_m = gsl_matrix_calloc(m->size1, m->size2);
+	gsl_matrix* tril_m = gsl_matrix_alloc(m->size1, m->size2);
 	gsl_matrix_memcpy(tril_m, m);
 	for(int i = 0;i < m->size1; i++)
 		for(int j=i+1+K;j < m->size2; j++)
@@ -153,7 +153,7 @@ gsl_matrix* bct::tril(const gsl_matrix* m, int K) {
  * NOTE: K can't be > m->size1. This exception needs to be handled.
  */
 gsl_matrix* bct::triu(const gsl_matrix* m, int K) {
-	gsl_matrix* triu_m = gsl_matrix_calloc(m->size1, m->size2);
+	gsl_matrix* triu_m = gsl_matrix_alloc(m->size1, m->size2);
 	gsl_matrix_memcpy(triu_m, m);
 	for(int i = 0;i < m->size1; i++)
 		for(int j=0;j < (i+K); j++)
