@@ -21,6 +21,29 @@ gsl_vector* bct::find(const gsl_vector* v) {
 	return nz;
 }
 
+/* M
+ * Perform a logical AND between the elements of 2 vectors
+ */
+gsl_vector* bct::logical_and(const gsl_vector* v1, const gsl_vector* v2) {
+	gsl_vector* andV = gsl_vector_calloc(v1->size);
+	for(int i = 0;i < v1->size;i++) {
+		int val1 = (int)gsl_vector_get(v1, i);
+		int val2 = (int)gsl_vector_get(v2, i);
+		gsl_vector_set(andV, i, val1 && val2);
+	}
+	return andV;
+}
+
+/* M
+ * Perform a logical NOT on the elements of a vector
+ */
+gsl_vector* bct::logical_not(const gsl_vector* v) {
+	gsl_vector* notV = gsl_vector_calloc(v->size);
+	for(int i = 0;i < v->size;i++)
+		gsl_vector_set(notV, i, !(int)gsl_vector_get(v, i));
+	return notV;
+}
+
 /*
  * Returns the number of nonzero elements in the given vector.
  */
@@ -136,27 +159,4 @@ gsl_matrix* bct::triu(const gsl_matrix* m, int K) {
 		for(int j=0;j < (i+K); j++)
 			gsl_matrix_set(triu_m, i, j, 0.0);
 	return triu_m;
-}
-
-/* M
- * Perform a logical AND between the elements of 2 vectors
- */
-gsl_vector* bct::vectorAnd(const gsl_vector* v1, const gsl_vector* v2) {
-	gsl_vector* andV = gsl_vector_calloc(v1->size);
-	for(int i = 0;i < v1->size;i++) {
-		int val1 = (int)gsl_vector_get(v1, i);
-		int val2 = (int)gsl_vector_get(v2, i);
-		gsl_vector_set(andV, i, val1 && val2);
-	}
-	return andV;
-}
-
-/* M
- * Perform a logical NOT on the elements of a vector
- */
-gsl_vector* bct::vectorNot(const gsl_vector* v) {
-	gsl_vector* notV = gsl_vector_calloc(v->size);
-	for(int i = 0;i < v->size;i++)
-		gsl_vector_set(notV, i, !(int)gsl_vector_get(v, i));
-	return notV;
 }

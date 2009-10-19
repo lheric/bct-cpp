@@ -50,6 +50,8 @@ namespace bct {
 	
 	// MATLAB emulation
 	gsl_vector* find(const gsl_vector*);
+	gsl_vector* logical_and(const gsl_vector*, const gsl_vector*);
+	gsl_vector* logical_not(const gsl_vector*);
 	int nnz(const gsl_vector*);
 	int nnz(const gsl_matrix*);
 	gsl_matrix* submatrix(const gsl_matrix*, const gsl_vector*, const gsl_vector*);
@@ -57,8 +59,6 @@ namespace bct {
 	gsl_vector* sum(const gsl_matrix*, int);
 	gsl_matrix* tril(const gsl_matrix*, int);
 	gsl_matrix* triu(const gsl_matrix*, int);
-	gsl_vector* vectorAnd(const gsl_vector*, const gsl_vector*);
-	gsl_vector* vectorNot(const gsl_vector*);
 	
 	// Conversion
 	gsl_vector* binary(const gsl_vector*);
@@ -67,7 +67,7 @@ namespace bct {
 	
 	// Utility
 	gsl_matrix* find(const gsl_matrix*, int, double);	
-	gsl_vector* pickCells(const gsl_vector*, const gsl_vector*);
+	gsl_vector* pick_cells(const gsl_vector*, const gsl_vector*);
 	gsl_vector* splice(const gsl_vector*, const gsl_vector*);
 
 	// Debugging
