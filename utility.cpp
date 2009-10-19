@@ -33,13 +33,13 @@ gsl_matrix* bct::find(const gsl_matrix* m, int cmprFlag, double cmprVal) {
  * Strip a vector by picking only those cells where there is a corresponding
  * number 1 in the 'pick vector'.
  */
-gsl_vector* bct::pickCells(const gsl_vector* srcV, const gsl_vector* pickV) {
+gsl_vector* bct::pick_cells(const gsl_vector* srcV, const gsl_vector* pickV) {
 		int stripVindex = 0;
 		int nnzV = bct::nnz(pickV);
 		gsl_vector* stripV = gsl_vector_calloc(nnzV);
 		for(int i = 0;i < srcV->size;i++) {
 			//1 or 1.0, does it make a difference? 
-			//Nevertheless, pickV is created by vectorNot method and it sets integer values
+			//Nevertheless, pickV is created by logical_not method and it sets integer values
 			if(gsl_vector_get(pickV, i) == 1) 
 				gsl_vector_set(stripV, stripVindex++, gsl_vector_get(srcV, i));
 		}
