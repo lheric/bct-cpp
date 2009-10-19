@@ -20,9 +20,7 @@ namespace bct {
 
 	// Density, degree, and assortativity
 	double assortativity(const gsl_matrix*, int);
-	gsl_vector* degrees_dir(const gsl_matrix*);
-	gsl_vector* degrees_dir_in(const gsl_matrix*);
-	gsl_vector* degrees_dir_out(const gsl_matrix*);
+	gsl_vector* degrees_dir(const gsl_matrix*, gsl_vector* = NULL, gsl_vector* = NULL);
 	gsl_vector* degrees_und(const gsl_matrix*);
 	double density_dir(const gsl_matrix*);
 	double density_und(const gsl_matrix*);
