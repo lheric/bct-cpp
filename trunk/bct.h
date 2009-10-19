@@ -56,9 +56,9 @@ namespace bct {
 	int nnz(const gsl_matrix*);
 	gsl_matrix* submatrix(const gsl_matrix*, const gsl_vector*, const gsl_vector*);
 	double sum(const gsl_vector*);
-	gsl_vector* sum(const gsl_matrix*, int);
-	gsl_matrix* tril(const gsl_matrix*, int);
-	gsl_matrix* triu(const gsl_matrix*, int);
+	gsl_vector* sum(const gsl_matrix*, int = 1);
+	gsl_matrix* tril(const gsl_matrix*, int = 0);
+	gsl_matrix* triu(const gsl_matrix*, int = 0);
 	
 	// Conversion
 	gsl_vector* binary(const gsl_vector*);

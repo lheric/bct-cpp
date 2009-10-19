@@ -3,5 +3,5 @@
 #include <gsl/gsl_vector.h>
 
 gsl_vector* bct::strengths_und(const gsl_matrix* m) {
-	return sum(m,1);
+	return sum(m);
 }
