@@ -10,7 +10,7 @@ double bct::density_und(const gsl_matrix* m) {
 	int N,K;
 	double kden;
 	N = m->size1;
-	gsl_matrix* triu_m = triu(m,0);
+	gsl_matrix* triu_m = triu(m);
 	K = nnz(triu_m);
 	kden = (double)K/((double)(N*N-N)/2.0);
 	return kden;
