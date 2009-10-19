@@ -38,7 +38,7 @@ double bct::assortativity(const gsl_matrix* m, int flag) {
 	}
 	
 	//r = (sum(degi.*degj)/K - (sum(0.5*(degi+degj))/K)^2)/(sum(0.5*(degi.^2+degj.^2))/K - (sum(0.5*(degi+degj))/K)^2);
-	gsl_vector* degtemp = gsl_vector_calloc(degi->size);
+	gsl_vector* degtemp = gsl_vector_alloc(degi->size);
 	gsl_vector_memcpy(degtemp, degi);
 	gsl_vector_mul(degtemp, degj);
 	double term1 = sum(degtemp)/(double)K;
@@ -52,7 +52,7 @@ double bct::assortativity(const gsl_matrix* m, int flag) {
 	double termA = term1 - term2;
 	
 	gsl_vector_memcpy(degtemp, degi);
-	gsl_vector* degtemp2 = gsl_vector_calloc(degj->size);
+	gsl_vector* degtemp2 = gsl_vector_alloc(degj->size);
 	gsl_vector_memcpy(degtemp2, degj);
 	gsl_vector_add(degtemp, degtemp2);
 	gsl_vector_scale(degtemp, (double)0.5);
