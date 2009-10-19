@@ -14,11 +14,11 @@ gsl_vector* bct::clustering_coef_bu(const gsl_matrix* m) {
 	gsl_matrix* zdm = zero_diagonal(m);
 	for (int i = 0; i < zdm->size1; i++) {
 		gsl_vector_const_view row = gsl_matrix_const_row(zdm, i);
-		int k = bct::nnz(&row.vector);
+		int k = nnz(&row.vector);
 		if (k >= 2) {
-			gsl_vector* neighbors = bct::find(&row.vector);
-			gsl_matrix* s = bct::submatrix(zdm, neighbors, neighbors);
-			int actual_connections = bct::nnz(s);
+			gsl_vector* neighbors = find(&row.vector);
+			gsl_matrix* s = submatrix(zdm, neighbors, neighbors);
+			int actual_connections = nnz(s);
 			int possible_connections = k * (k - 1);
 			gsl_vector_set(clustering_coef, i, (double)actual_connections / (double)possible_connections);
 			gsl_matrix_free(s);

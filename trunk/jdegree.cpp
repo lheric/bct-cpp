@@ -20,10 +20,10 @@ bct::jdegree_outputs bct::jdegree(const gsl_matrix* m) {
 	int J_od, J_id, J_bl;
 	double max_id, max_od;
 
-	bin_m = bct::binary(m);
+	bin_m = binary(m);
 	N = m->size1;
-	id = bct::sum(bin_m,1);
-	od = bct::sum(bin_m,2);
+	id = sum(bin_m,1);
+	od = sum(bin_m,2);
 	max_id = gsl_vector_max(id);
 	max_od = gsl_vector_max(od);
 	if(max_id > max_od)
@@ -39,11 +39,11 @@ bct::jdegree_outputs bct::jdegree(const gsl_matrix* m) {
 		//indices start from 1 and not 0		
 		gsl_matrix_set(J, x, y, (int)gsl_matrix_get(J, x, y)+1); 
 	}
-	J_od = (int)bct::sum(bct::sum(bct::triu(J,1),1));
-	J_id = (int)bct::sum(bct::sum(bct::tril(J,-1),1));
+	J_od = (int)sum(sum(triu(J,1),1));
+	J_id = (int)sum(sum(tril(J,-1),1));
 	gsl_vector_view diagonal = gsl_matrix_diagonal(J);
-	J_bl = (int)bct::sum(&diagonal.vector);
-	bct::jdegree_outputs jdegrees;
+	J_bl = (int)sum(&diagonal.vector);
+	jdegree_outputs jdegrees;
 	jdegrees.J = J;
 	jdegrees.J_id = J_id;
 	jdegrees.J_od = J_od;
