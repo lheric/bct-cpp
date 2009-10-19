@@ -14,8 +14,8 @@ double bct::assortativity(const gsl_matrix* m, int flag) {
 	int K;
 	
 	if(flag == 0) {
-		gsl_vector* deg = bct::degrees_und(m);
-		gsl_matrix* ij = bct::find(bct::triu(m, 1), 0, 0); //the second parameter translates to '>'
+		gsl_vector* deg = degrees_und(m);
+		gsl_matrix* ij = find(triu(m, 1), 0, 0); //the second parameter translates to '>'
 		gsl_vector_view i = gsl_matrix_row(ij, 0);
 		gsl_vector_view j = gsl_matrix_row(ij, 1);
 		K = ij->size2;
@@ -26,8 +26,8 @@ double bct::assortativity(const gsl_matrix* m, int flag) {
 	}
 	
 	if(flag == 1) {
-		gsl_vector* deg = bct::degrees_dir(m);
-		gsl_matrix* ij = bct::find(m, 0, 0); //the second parameter translates to '>'
+		gsl_vector* deg = degrees_dir(m);
+		gsl_matrix* ij = find(m, 0, 0); //the second parameter translates to '>'
 		gsl_vector_view i = gsl_matrix_row(ij, 0);
 		gsl_vector_view j = gsl_matrix_row(ij, 1);
 		K = ij->size2;
@@ -41,12 +41,12 @@ double bct::assortativity(const gsl_matrix* m, int flag) {
 	gsl_vector* degtemp = gsl_vector_calloc(degi->size);
 	gsl_vector_memcpy(degtemp, degi);
 	gsl_vector_mul(degtemp, degj);
-	double term1 = bct::sum(degtemp)/(double)K;
+	double term1 = sum(degtemp)/(double)K;
 	
 	gsl_vector_memcpy(degtemp, degi);
 	gsl_vector_add(degtemp, degj);
 	gsl_vector_scale(degtemp, (double)0.5);
-	double term2 = bct::sum(degtemp)/(double)K;
+	double term2 = sum(degtemp)/(double)K;
 	term2 *= term2;
 	
 	double termA = term1 - term2;
@@ -56,12 +56,12 @@ double bct::assortativity(const gsl_matrix* m, int flag) {
 	gsl_vector_memcpy(degtemp2, degj);
 	gsl_vector_add(degtemp, degtemp2);
 	gsl_vector_scale(degtemp, (double)0.5);
-	double term3 = bct::sum(degtemp)/(double)K;
+	double term3 = sum(degtemp)/(double)K;
 	
 	gsl_vector_memcpy(degtemp, degi);
 	gsl_vector_add(degtemp, degj);
 	gsl_vector_scale(degtemp, (double)0.5);
-	double term4 = bct::sum(degtemp)/(double)K;
+	double term4 = sum(degtemp)/(double)K;
 	term4 *= term4;
 	
 	double termB = term3 - term4;

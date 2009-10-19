@@ -35,7 +35,7 @@ gsl_matrix* bct::find(const gsl_matrix* m, int cmprFlag, double cmprVal) {
  */
 gsl_vector* bct::pick_cells(const gsl_vector* srcV, const gsl_vector* pickV) {
 		int stripVindex = 0;
-		int nnzV = bct::nnz(pickV);
+		int nnzV = nnz(pickV);
 		gsl_vector* stripV = gsl_vector_calloc(nnzV);
 		for(int i = 0;i < srcV->size;i++) {
 			//1 or 1.0, does it make a difference? 
