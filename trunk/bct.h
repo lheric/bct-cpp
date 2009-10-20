@@ -60,10 +60,11 @@ namespace bct {
 	gsl_matrix* tril(const gsl_matrix*, int = 0);
 	gsl_matrix* triu(const gsl_matrix*, int = 0);
 	
-	// Conversion
-	gsl_vector* binary(const gsl_vector*);
+	// Matrix conversion
 	gsl_matrix* binary(const gsl_matrix*);
-	gsl_matrix* zero_diagonal(const gsl_matrix*);
+	gsl_matrix* positive(const gsl_matrix*);
+	gsl_matrix* remove_loops(const gsl_matrix*);
+	gsl_matrix* undirected(const gsl_matrix*, bool = true);
 	
 	// Utility
 	gsl_matrix* find(const gsl_matrix*, int, double);	
