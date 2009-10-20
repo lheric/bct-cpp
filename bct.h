@@ -17,6 +17,7 @@ namespace bct {
 	};
 	
 	const double EPSILON = 1e-6;  // Used for floating-point equality comparisons
+	extern bool safe_mode;  // Determines whether to check matrix status at the beginning of functions
 
 	// Density, degree, and assortativity
 	double assortativity(const gsl_matrix*, int);
@@ -86,6 +87,7 @@ namespace bct {
 	// Utility
 	gsl_matrix* find(const gsl_matrix*, int, double);	
 	gsl_vector* pick_cells(const gsl_vector*, const gsl_vector*);
+	void set_safe_mode(bool);
 	gsl_vector* splice(const gsl_vector*, const gsl_vector*);
 
 	// Debugging
