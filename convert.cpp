@@ -1,4 +1,5 @@
 #include "bct.h"
+#include <cassert>
 #include <cmath>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
@@ -48,6 +49,7 @@ gsl_matrix* bct::remove_loops(const gsl_matrix* m) {
  * or lower triangle across the diagonal.
  */
 gsl_matrix* bct::undirected(const gsl_matrix* m, bool upper) {
+	assert(m->size1 == m->size2);
 	gsl_matrix* um = gsl_matrix_alloc(m->size1, m->size2);
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {
