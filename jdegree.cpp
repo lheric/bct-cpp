@@ -11,7 +11,7 @@
  * J_bl = number of vertices with id=od.
  */
  
-bct::jdegree_outputs bct::jdegree(const gsl_matrix* m) {
+gsl_matrix* bct::jdegree(const gsl_matrix* m) {
 	gsl_matrix* bin_m;
 	gsl_matrix* J;
 	gsl_vector* id;
@@ -39,17 +39,28 @@ bct::jdegree_outputs bct::jdegree(const gsl_matrix* m) {
 		//indices start from 1 and not 0		
 		gsl_matrix_set(J, x, y, (int)gsl_matrix_get(J, x, y)+1); 
 	}
-	J_od = (int)sum(sum(triu(J,1)));
+	return J;
+}
+
+int bct::jdegree_id(gsl_matrix* J) {
+	int J_id;
 	J_id = (int)sum(sum(tril(J,-1)));
+	return J_id;
+}
+
+int bct::jdegree_od(gsl_matrix* J) {
+	int J_od;
+	J_od = (int)sum(sum(triu(J,1)));
+	return J_od;
+}
+
+int bct::jdegree_bl(gsl_matrix* J) {
+	int J_bl;
 	gsl_vector_view diagonal = gsl_matrix_diagonal(J);
 	J_bl = (int)sum(&diagonal.vector);
-	jdegree_outputs jdegrees;
-	jdegrees.J = J;
-	jdegrees.J_id = J_id;
-	jdegrees.J_od = J_od;
-	jdegrees.J_bl = J_bl;
-	return jdegrees;
+	return J_bl;
 }
+
 
 	
 	
