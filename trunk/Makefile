@@ -12,6 +12,7 @@ objects = \
 	macaque.o \
 	matching_ind.o \
 	matlab.o \
+	status.o \
 	strengths_dir.o \
 	strengths_und.o \
 	utility.o

@@ -60,6 +60,23 @@ namespace bct {
 	gsl_matrix* tril(const gsl_matrix*, int = 0);
 	gsl_matrix* triu(const gsl_matrix*, int = 0);
 	
+	// Matrix status
+	enum status {
+		UNDIRECTED = 1, DIRECTED = 2,
+		BINARY = 4, WEIGHTED = 8,
+		POSITIVE = 16, SIGNED = 32,
+		NO_LOOPS = 64, LOOPS = 128
+	};
+	bool check_status(const gsl_matrix*, int);
+	bool has_loops(const gsl_matrix*);
+	bool has_no_loops(const gsl_matrix*);
+	bool is_binary(const gsl_matrix*);
+	bool is_directed(const gsl_matrix*);
+	bool is_positive(const gsl_matrix*);
+	bool is_signed(const gsl_matrix*);
+	bool is_undirected(const gsl_matrix*);
+	bool is_weighted(const gsl_matrix*);
+	
 	// Matrix conversion
 	gsl_matrix* binary(const gsl_matrix*);
 	gsl_matrix* positive(const gsl_matrix*);
