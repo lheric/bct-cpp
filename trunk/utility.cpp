@@ -2,6 +2,8 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 
+bool bct::safe_mode = false;
+
 /* M
  * Returns a vector of indices of the elements in m that satisfy a condition
  * given by a comparison with cmprVal. Presently, the comparsion operators are
@@ -44,6 +46,13 @@ gsl_vector* bct::pick_cells(const gsl_vector* srcV, const gsl_vector* pickV) {
 				gsl_vector_set(stripV, stripVindex++, gsl_vector_get(srcV, i));
 		}
 		return stripV;
+}
+
+/*
+ * Turns safe mode on or off.
+ */
+void bct::set_safe_mode(bool safe_mode) {
+	bct::safe_mode = safe_mode;
 }
 
 /* M
