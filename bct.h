@@ -10,16 +10,18 @@ namespace bct {
 	extern bool safe_mode;  // Determines whether to check matrix status at the beginning of functions
 
 	// Density, degree, and assortativity
-	double assortativity(const gsl_matrix*, int);
+	double assortativity_dir(const gsl_matrix*);
+	double assortativity_und(const gsl_matrix*);
+	double assortativity(const gsl_vector*, const gsl_vector*, int);
 	gsl_vector* degrees_dir(const gsl_matrix*, gsl_vector* = NULL, gsl_vector* = NULL);
 	gsl_vector* degrees_und(const gsl_matrix*);
 	double density_dir(const gsl_matrix*);
 	double density_und(const gsl_matrix*);
-	gsl_matrix* jdegree(const gsl_matrix* m); //returns the Joint distribution matrix
-	gsl_vector* jdegree_id_od_bl(const gsl_matrix* J); //returns other metrices from the Joint dstrbn matrix
-	gsl_matrix* matching_ind(const gsl_matrix* m); //returns all indices
-	gsl_matrix* matching_ind_in(const gsl_matrix* m);
-	gsl_matrix* matching_ind_out(const gsl_matrix* m);
+	gsl_matrix* jdegree(const gsl_matrix*); //returns the Joint distribution matrix
+	gsl_vector* jdegree_id_od_bl(gsl_matrix* J); //returns other metrices from the Joint dstrbn matrix
+	gsl_matrix* matching_ind(const gsl_matrix*); //returns all indices
+	gsl_matrix* matching_ind_in(const gsl_matrix*);
+	gsl_matrix* matching_ind_out(const gsl_matrix*);
 	gsl_vector* strengths_dir(const gsl_matrix*, gsl_vector* = NULL, gsl_vector* = NULL);
 	gsl_vector* strengths_und(const gsl_matrix*);
 
