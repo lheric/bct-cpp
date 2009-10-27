@@ -42,21 +42,21 @@ gsl_matrix* bct::jdegree(const gsl_matrix* m) {
 	return J;
 }
 
-int bct::jdegree_id(gsl_matrix* J) {
+int bct::jdegree_id(const gsl_matrix* J) {
 	int J_id;
 	J_id = (int)sum(sum(tril(J,-1)));
 	return J_id;
 }
 
-int bct::jdegree_od(gsl_matrix* J) {
+int bct::jdegree_od(const gsl_matrix* J) {
 	int J_od;
 	J_od = (int)sum(sum(triu(J,1)));
 	return J_od;
 }
 
-int bct::jdegree_bl(gsl_matrix* J) {
+int bct::jdegree_bl(const gsl_matrix* J) {
 	int J_bl;
-	gsl_vector_view diagonal = gsl_matrix_diagonal(J);
+	gsl_vector_const_view diagonal = gsl_matrix_const_diagonal(J);
 	J_bl = (int)sum(&diagonal.vector);
 	return J_bl;
 }
