@@ -12,20 +12,20 @@ bool bct::safe_mode = false;
  * 0 -> 'greater than operator, >'
  */
 gsl_matrix* bct::find(const gsl_matrix* m, int cmprFlag, double cmprVal) {
-	gsl_matrix* indices = gsl_matrix_alloc(2, m->size1 * m->size1);
+	gsl_matrix* indices = gsl_matrix_alloc(2, m->size1 * m->size2);
 	int size = 0;
 	if(cmprFlag==0) { //means, perform a '>'
 		for(int i = 0;i < m->size1;i++) {
 			for(int j = 0;j < m->size2;j++) {
 				double matrixVal = gsl_matrix_get(m, i, j);
 				if(matrixVal > cmprVal) {
-					gsl_matrix_set(indices, 0, size++, i);
+					gsl_matrix_set(indices, 0, size, i);
 					gsl_matrix_set(indices, 1, size++, j);
 				}
 			}
 		}
-		gsl_matrix* trimIndices = gsl_matrix_alloc(2, size * size);
-		gsl_matrix_view trim = gsl_matrix_submatrix((gsl_matrix*)m, 0, 0, size-1, size-1);
+		gsl_matrix* trimIndices = gsl_matrix_alloc(2, size);
+		gsl_matrix_view trim = gsl_matrix_submatrix(indices, 0, 0, 2, size); //the 3rd and 4th params DO NOT represent indices
 		gsl_matrix_memcpy(trimIndices, &trim.matrix);
 		gsl_matrix_free(indices);
 		return trimIndices;
