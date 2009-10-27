@@ -1,9 +1,14 @@
 filenames = \
+	assortativity_dir_cpp \
+	assortativity_und_cpp \
 	clustering_coef_bu_cpp \
 	degrees_dir_cpp \
 	degrees_und_cpp \
 	density_dir_cpp \
 	density_und_cpp \
+	jdegree_cpp \
+	matching_ind_cpp \
+	strengths_dir_cpp \
 	strengths_und_cpp
 objects := $(foreach f, $(filenames), $(f).o)
 oct_files := $(foreach f, $(filenames), $(f).oct)
