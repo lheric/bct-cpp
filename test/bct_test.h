@@ -39,3 +39,5 @@ namespace bct_test {
 			return octave_value_list(); \
 		} \
 	}
+
+#endif
