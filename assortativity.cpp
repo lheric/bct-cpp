@@ -8,34 +8,43 @@
  * The function accepts weighted networks, but the connection weights are ignored.
  */
  
-double bct::assortativity(const gsl_matrix* m, int flag) {
+double bct::assortativity_dir(const gsl_matrix* m) {
 	gsl_vector* degi;
 	gsl_vector* degj;
 	int K;
 	
-	if(flag == 0) {
-		gsl_vector* deg = degrees_und(m);
-		gsl_matrix* ij = find(triu(m, 1), 0, 0); //the second parameter translates to '>'
-		gsl_vector_view i = gsl_matrix_row(ij, 0);
-		gsl_vector_view j = gsl_matrix_row(ij, 1);
-		K = ij->size2;
-		for(int k = 0;k < K;k++) {
-			gsl_vector_set(degi, gsl_vector_get(deg, ((int)gsl_vector_get(&i.vector, k))), k);
-			gsl_vector_set(degj, gsl_vector_get(deg, ((int)gsl_vector_get(&j.vector, k))), k);
-		}
+	gsl_vector* deg = degrees_dir(m);
+	gsl_matrix* ij = find(m, 0, 0); //the second parameter translates to '>'
+	gsl_vector_view i = gsl_matrix_row(ij, 0);
+	gsl_vector_view j = gsl_matrix_row(ij, 1);
+	K = ij->size2;
+	for(int k = 0;k < K;k++) {
+		gsl_vector_set(degi, gsl_vector_get(deg, ((int)gsl_vector_get(&i.vector, k))), k);
+		gsl_vector_set(degj, gsl_vector_get(deg, ((int)gsl_vector_get(&j.vector, k))), k);
 	}
 	
-	if(flag == 1) {
-		gsl_vector* deg = degrees_dir(m);
-		gsl_matrix* ij = find(m, 0, 0); //the second parameter translates to '>'
-		gsl_vector_view i = gsl_matrix_row(ij, 0);
-		gsl_vector_view j = gsl_matrix_row(ij, 1);
-		K = ij->size2;
-		for(int k = 0;k < K;k++) {
-			gsl_vector_set(degi, gsl_vector_get(deg, ((int)gsl_vector_get(&i.vector, k))), k);
-			gsl_vector_set(degj, gsl_vector_get(deg, ((int)gsl_vector_get(&j.vector, k))), k);
-		}
+	return assortativity(degi, degj, K);
+}
+
+double bct::assortativity_und(const gsl_matrix* m) {
+	gsl_vector* degi;
+	gsl_vector* degj;
+	int K;
+	
+	gsl_vector* deg = degrees_und(m);
+	gsl_matrix* ij = find(triu(m, 1), 0, 0); //the second parameter translates to '>'
+	gsl_vector_view i = gsl_matrix_row(ij, 0);
+	gsl_vector_view j = gsl_matrix_row(ij, 1);
+	K = ij->size2;
+	for(int k = 0;k < K;k++) {
+		gsl_vector_set(degi, gsl_vector_get(deg, ((int)gsl_vector_get(&i.vector, k))), k);
+		gsl_vector_set(degj, gsl_vector_get(deg, ((int)gsl_vector_get(&j.vector, k))), k);
 	}
+
+	return assortativity(degi, degj, K);
+}
+
+double bct::assortativity(const gsl_vector* degi, const gsl_vector* degj, int K) {
 	
 	//r = (sum(degi.*degj)/K - (sum(0.5*(degi+degj))/K)^2)/(sum(0.5*(degi.^2+degj.^2))/K - (sum(0.5*(degi+degj))/K)^2);
 	gsl_vector* degtemp = gsl_vector_alloc(degi->size);
@@ -70,22 +79,3 @@ double bct::assortativity(const gsl_matrix* m, int flag) {
 	
 	return r;
 }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	

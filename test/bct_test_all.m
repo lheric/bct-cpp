@@ -78,10 +78,14 @@ endfor
 %	bct_test(sprintf("matching_ind_out %s", mname{i}), all(Mout == matching_ind_out_cpp(m{i})))
 %endfor	
 
-% assortativity
+% assortativity_dir
 for i = 1:size(m)(2)
-	bct_test(sprintf("assortativity %s", mname{i}), assortativity(m{i}, 0) == assortativity_cpp(m{i}, 0))
-	bct_test(sprintf("assortativity %s", mname{i}), assortativity(m{i}, 1) == assortativity_cpp(m{i}, 1))
+	bct_test(sprintf("assortativity_dir %s", mname{i}), assortativity(m{i}, 1) == assortativity_dir_cpp(m{i}))
+endfor
+
+% assortativity_und
+for i = 1:size(m)(2)
+	bct_test(sprintf("assortativity_und %s", mname{i}), assortativity(m{i}, 0) == assortativity_und_cpp(m{i}))
 endfor
 
 printf("Failures: %d\n", failures)
