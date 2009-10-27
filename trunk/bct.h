@@ -5,17 +5,6 @@
 #include <gsl/gsl_vector.h>
 
 namespace bct {
-	struct jdegree_outputs {
-		gsl_matrix* J;
-		int J_id, J_od, J_bl;
-	};
-
-	struct matching_ind_outputs {
-		gsl_matrix* Min;
-		gsl_matrix* Mout;
-		gsl_matrix* Mall;
-	};
-	
 	const double EPSILON = 1e-6;  // Used for floating-point equality comparisons
 	extern bool safe_mode;  // Determines whether to check matrix status at the beginning of functions
 
@@ -27,9 +16,14 @@ namespace bct {
 	gsl_vector* degrees_und(const gsl_matrix*);
 	double density_dir(const gsl_matrix*);
 	double density_und(const gsl_matrix*);
-	struct jdegree_outputs jdegree(const gsl_matrix*);
-	struct matching_ind_outputs matching_ind(const gsl_matrix*);
-	gsl_vector* strengths_dir(const gsl_matrix*);
+	gsl_matrix* jdegree(const gsl_matrix*);
+	int jdegree_id(const gsl_matrix*);
+	int jdegree_od(const gsl_matrix*);
+	int jdegree_bl(const gsl_matrix*);
+	gsl_matrix* matching_ind(const gsl_matrix*);
+	gsl_matrix* matching_ind_in(const gsl_matrix*);
+	gsl_matrix* matching_ind_out(const gsl_matrix*);
+	gsl_vector* strengths_dir(const gsl_matrix*, gsl_vector* = NULL, gsl_vector* = NULL);
 	gsl_vector* strengths_und(const gsl_matrix*);
 
 	// Clustering
