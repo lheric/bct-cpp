@@ -25,8 +25,10 @@ gsl_vector* bct::find(const gsl_vector* v) {
  * Perform a logical AND between the elements of 2 vectors
  */
 gsl_vector* bct::logical_and(const gsl_vector* v1, const gsl_vector* v2) {
-	gsl_vector* andV = gsl_vector_alloc(v1->size);
-	for(int i = 0;i < v1->size;i++) {
+	int size1 = v1->size;
+	assert(size1 > 0);
+	gsl_vector* andV = gsl_vector_alloc(size1);
+	for(int i = 0;i < size1;i++) {
 		int val1 = (int)gsl_vector_get(v1, i);
 		int val2 = (int)gsl_vector_get(v2, i);
 		gsl_vector_set(andV, i, val1 && val2);
@@ -38,8 +40,10 @@ gsl_vector* bct::logical_and(const gsl_vector* v1, const gsl_vector* v2) {
  * Perform a logical NOT on the elements of a vector
  */
 gsl_vector* bct::logical_not(const gsl_vector* v) {
-	gsl_vector* notV = gsl_vector_alloc(v->size);
-	for(int i = 0;i < v->size;i++)
+	int size = v->size;
+	assert(size > 0);
+	gsl_vector* notV = gsl_vector_alloc(size);
+	for(int i = 0;i < size;i++)
 		gsl_vector_set(notV, i, !(int)gsl_vector_get(v, i));
 	return notV;
 }
@@ -91,6 +95,7 @@ gsl_matrix* bct::submatrix(const gsl_matrix* m, const gsl_vector* rows, const gs
  * at the receiving end of this function
  */
 double bct::sum(const gsl_vector* v) {
+	assert(v->size > 0);
 	double sum = 0.0;
 	for (int i = 0; i < v->size; i++) {
 		sum += gsl_vector_get(v, i);
