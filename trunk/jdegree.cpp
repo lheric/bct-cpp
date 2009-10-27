@@ -42,7 +42,7 @@ gsl_matrix* bct::jdegree(const gsl_matrix* m) {
 	return J;
 }
 
-gsl_vector* bct::jdegree_id_od_bl(const gsl_matrix* J) {
+gsl_vector* bct::jdegree_id_od_bl(gsl_matrix* J) {
 	gsl_vector* jdegree_others = gsl_vector_alloc(3);
 	int J_id;
 	J_id = (int)sum(sum(tril(J,-1)));
