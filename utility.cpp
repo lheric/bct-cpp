@@ -25,7 +25,7 @@ gsl_matrix* bct::find(const gsl_matrix* m, int cmprFlag, double cmprVal) {
 			}
 		}
 		gsl_matrix* trimIndices = gsl_matrix_alloc(2, size);
-		gsl_matrix_view trim = gsl_matrix_submatrix(indices, 0, 0, 2, size); //the 3rd and 4th params DO NOT represent indices
+		gsl_matrix_view trim = gsl_matrix_submatrix(indices, 0, 0, 2, size); //the 4th and 5th params DO NOT represent indices
 		gsl_matrix_memcpy(trimIndices, &trim.matrix);
 		gsl_matrix_free(indices);
 		return trimIndices;
