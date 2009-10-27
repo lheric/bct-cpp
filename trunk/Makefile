@@ -1,4 +1,5 @@
 objects = \
+	assortativity.o \
 	cat.o \
 	clustering_coef_bu.o \
 	convert.o \

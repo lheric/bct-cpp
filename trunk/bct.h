@@ -20,7 +20,9 @@ namespace bct {
 	extern bool safe_mode;  // Determines whether to check matrix status at the beginning of functions
 
 	// Density, degree, and assortativity
-	double assortativity(const gsl_matrix*, int);
+	double assortativity(const gsl_vector*, const gsl_vector*, int);
+	double assortativity_dir(const gsl_matrix*);
+	double assortativity_und(const gsl_matrix*);
 	gsl_vector* degrees_dir(const gsl_matrix*, gsl_vector* = NULL, gsl_vector* = NULL);
 	gsl_vector* degrees_und(const gsl_matrix*);
 	double density_dir(const gsl_matrix*);

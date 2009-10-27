@@ -39,21 +39,3 @@ namespace bct_test {
 			return octave_value_list(); \
 		} \
 	}
-
-#define MATRIX_TO_SCALAR_MULT_PARAMS_FUNCTION(function_name) \
-	DEFUN_DLD(function_name##_cpp, args, , "Wrapper for C++ function.") { \
-		if (args.length() == 0) { \
-			return octave_value_list(); \
-		} \
-		int int_param; \
-		Matrix m = args(0).matrix_value(); \
-		int_param = args(1).int_value(); \
-		if (!error_state) { \
-			gsl_matrix* gslm = bct_test::to_gsl(m); \
-			return octave_value(bct::function_name(gslm, int_param)); \
-		} else { \
-			return octave_value_list(); \
-		} \
-	}	
-
-#endif
