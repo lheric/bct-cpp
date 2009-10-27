@@ -7,9 +7,13 @@ filenames = \
 	density_dir_cpp \
 	density_und_cpp \
 	jdegree_cpp \
+	jdegree_id_od_bl_cpp \
 	matching_ind_cpp \
+	matching_ind_in_cpp \
+	matching_ind_out_cpp \
+	strengths_und_cpp \
 	strengths_dir_cpp \
-	strengths_und_cpp
+
 objects := $(foreach f, $(filenames), $(f).o)
 oct_files := $(foreach f, $(filenames), $(f).oct)
 m_files = \
@@ -22,7 +26,7 @@ all: $(oct_files)
 
 .SECONDEXPANSION:
 
-$(oct_files): bct_test.h bct_test.cpp $$(basename $$@).cpp
+$(oct_files): /usr/lib/libbct.a bct_test.h bct_test.cpp $$(basename $$@).cpp
 	mkoctfile -lbct -lgsl $(basename $@).cpp
 
 install: $(oct_files)
