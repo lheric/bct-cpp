@@ -7,7 +7,9 @@ filenames = \
 	density_dir_cpp \
 	density_und_cpp \
 	jdegree_cpp \
-	jdegree_id_od_bl_cpp \
+	jdegree_id_cpp \
+	jdegree_od_cpp \
+	jdegree_bl_cpp \
 	matching_ind_cpp \
 	matching_ind_in_cpp \
 	matching_ind_out_cpp \

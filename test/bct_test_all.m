@@ -65,7 +65,9 @@ endfor
 for i = 1:size(m)(2)
 	[J,J_od,J_id,J_bl] = jdegree(m{i});
 	bct_test(sprintf("jdegree %s", mname{i}), all(J == jdegree_cpp(m{i})))
-	bct_test(sprintf("jdegree %s", mname{i}), all([J_id,J_od,J_bl] == jdegree_id_od_bl_cpp(J)))
+	bct_test(sprintf("jdegree %s", mname{i}), (J_id == jdegree_id_cpp(J)))
+	bct_test(sprintf("jdegree %s", mname{i}), (J_od == jdegree_od_cpp(J)))
+	bct_test(sprintf("jdegree %s", mname{i}), (J_bl == jdegree_bl_cpp(J)))
 endfor
 
 % matching_ind
