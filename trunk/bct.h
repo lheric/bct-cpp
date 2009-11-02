@@ -5,9 +5,9 @@
 #include <gsl/gsl_vector.h>
 
 namespace bct {
-	class bct_exception;
-	class matrix_size_exception : public bct_exception;
-	class out_of_memory_exception : public bct_exception;
+	class bct_exception{};
+	class matrix_size_exception : public bct_exception{};
+	class out_of_memory_exception : public bct_exception{};
 
 	const double EPSILON = 1e-6;  // Used for floating-point equality comparisons
 	extern bool safe_mode;  // Determines whether to check matrix status at the beginning of functions
@@ -21,7 +21,9 @@ namespace bct {
 	double density_dir(const gsl_matrix*);
 	double density_und(const gsl_matrix*);
 	gsl_matrix* jdegree(const gsl_matrix*); //returns the Joint distribution matrix
-	gsl_vector* jdegree_id_od_bl(gsl_matrix* J); //returns other metrices from the Joint dstrbn matrix
+	double jdegree_id(gsl_matrix* J); //returns other metrices from the Joint dstrbn matrix
+	double jdegree_od(gsl_matrix* J);
+	double jdegree_bl(gsl_matrix* J);
 	gsl_matrix* matching_ind(const gsl_matrix*); //returns all indices
 	gsl_matrix* matching_ind_in(const gsl_matrix*);
 	gsl_matrix* matching_ind_out(const gsl_matrix*);
