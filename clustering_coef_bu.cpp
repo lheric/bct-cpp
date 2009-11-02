@@ -1,5 +1,4 @@
 #include "bct.h"
-#include <cassert>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 
@@ -9,7 +8,9 @@
  * the corresponding node.
  */
 gsl_vector* bct::clustering_coef_bu(const gsl_matrix* m) {
-	assert(m->size1 == m->size2);
+	if (m->size1 != m->size2) {
+		throw matrix_size_exception();
+	}
 	gsl_vector* clustering_coef = gsl_vector_calloc(m->size1);
 	gsl_matrix* m_loopless = remove_loops(m);
 	for (int i = 0; i < m_loopless->size1; i++) {

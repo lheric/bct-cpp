@@ -1,5 +1,4 @@
 #include "bct.h"
-#include <cassert>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 
@@ -10,7 +9,9 @@
  * pointers to appropriately sized vectors for the last two arguments.
  */
 gsl_vector* bct::degrees_dir(const gsl_matrix* m, gsl_vector* in_degrees, gsl_vector* out_degrees) {
-	assert(m->size1 == m->size2);
+	if (m->size1 != m->size2) {
+		throw matrix_size_exception();
+	}
 	
 	// Allocate storage for in- and out-degree vectors if necessary
 	bool free_in_degrees = false;

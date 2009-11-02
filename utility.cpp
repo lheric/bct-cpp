@@ -1,7 +1,6 @@
 #include "bct.h"
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
-#include <cassert>
 
 bool bct::safe_mode = false;
 

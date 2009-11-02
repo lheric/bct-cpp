@@ -1,5 +1,4 @@
 #include "bct.h"
-#include <cassert>
 #include <cmath>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
@@ -25,7 +24,9 @@ bool bct::check_status(const gsl_matrix* m, int flags) {
  * diagonal).
  */
 bool bct::has_loops(const gsl_matrix* m) {
-	assert(m->size1 == m->size2);
+	if (m->size1 != m->size2) {
+		throw matrix_size_exception();
+	}
 	for (int i = 0; i < m->size1; i++) {
 		if (std::abs(gsl_matrix_get(m, i, i)) > EPSILON) {
 			return true;
@@ -53,7 +54,9 @@ bool bct::is_binary(const gsl_matrix* m) {
  * Returns whether the given matrix is directed.
  */
 bool bct::is_directed(const gsl_matrix* m) {
-	assert(m->size1 == m->size2);
+	if (m->size1 != m->size2) {
+		throw matrix_size_exception();
+	}
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {
 			if (std::abs(gsl_matrix_get(m, i, j) - gsl_matrix_get(m, j, i)) > EPSILON) {
