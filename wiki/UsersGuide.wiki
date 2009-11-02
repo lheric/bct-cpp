@@ -1,4 +1,4 @@
-#summary User's guide to developing using bct-cpp.
+#summary User's guide to developing with bct-cpp.
 
 
 = Memory Management =
