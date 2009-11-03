@@ -11,8 +11,6 @@ filenames = \
 	jdegree_od_cpp \
 	jdegree_bl_cpp \
 	matching_ind_cpp \
-	matching_ind_in_cpp \
-	matching_ind_out_cpp \
 	strengths_und_cpp \
 	strengths_dir_cpp \
 
@@ -28,7 +26,7 @@ all: $(oct_files)
 
 .SECONDEXPANSION:
 
-$(oct_files): /usr/lib/libbct.a bct_test.h bct_test.cpp $$(basename $$@).cpp
+$(oct_files): ../libbct.a bct_test.h bct_test.cpp $$(basename $$@).cpp
 	mkoctfile -lbct -lgsl $(basename $@).cpp
 
 install: $(oct_files)
