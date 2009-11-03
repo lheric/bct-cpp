@@ -25,7 +25,7 @@ bool bct::check_status(const gsl_matrix* m, int flags) {
  */
 bool bct::has_loops(const gsl_matrix* m) {
 	if (m->size1 != m->size2) {
-		throw matrix_size_exception();
+		throw size_exception();
 	}
 	for (int i = 0; i < m->size1; i++) {
 		if (std::abs(gsl_matrix_get(m, i, i)) > EPSILON) {
@@ -55,7 +55,7 @@ bool bct::is_binary(const gsl_matrix* m) {
  */
 bool bct::is_directed(const gsl_matrix* m) {
 	if (m->size1 != m->size2) {
-		throw matrix_size_exception();
+		throw size_exception();
 	}
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {

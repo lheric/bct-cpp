@@ -10,7 +10,7 @@
  */
 gsl_vector* bct::degrees_dir(const gsl_matrix* m, gsl_vector* in_degrees, gsl_vector* out_degrees) {
 	if (m->size1 != m->size2) {
-		throw matrix_size_exception();
+		throw size_exception();
 	}
 	
 	// Allocate storage for in- and out-degree vectors if necessary

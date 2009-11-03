@@ -29,7 +29,7 @@ gsl_vector* bct::find(const gsl_vector* v) {
 gsl_vector* bct::logical_and(const gsl_vector* v1, const gsl_vector* v2) {
 	int size1 = v1->size;
 	if (v1->size != v2->size) {
-		throw matrix_size_exception();
+		throw size_exception();
 	}
 	gsl_vector* andV = gsl_vector_alloc(size1);
 	for(int i = 0;i < size1;i++) {

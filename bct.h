@@ -5,9 +5,9 @@
 #include <gsl/gsl_vector.h>
 
 namespace bct {
-	class bct_exception{};
-	class matrix_size_exception : public bct_exception{};
-	class out_of_memory_exception : public bct_exception{};
+	class bct_exception {};
+	class size_exception : public bct_exception {};
+	class out_of_memory_exception : public bct_exception {};
 
 	const double EPSILON = 1e-6;  // Used for floating-point equality comparisons
 	extern bool safe_mode;  // Determines whether to check matrix status at the beginning of functions
