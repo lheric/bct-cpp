@@ -9,7 +9,7 @@
  */
 gsl_vector* bct::clustering_coef_bu(const gsl_matrix* m) {
 	if (m->size1 != m->size2) {
-		throw matrix_size_exception();
+		throw size_exception();
 	}
 	gsl_vector* clustering_coef = gsl_vector_calloc(m->size1);
 	gsl_matrix* m_loopless = remove_loops(m);

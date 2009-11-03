@@ -49,7 +49,7 @@ gsl_matrix* bct::remove_loops(const gsl_matrix* m) {
  */
 gsl_matrix* bct::undirected(const gsl_matrix* m, bool upper) {
 	if (m->size1 != m->size2) {
-		throw matrix_size_exception();
+		throw size_exception();
 	}
 	gsl_matrix* um = gsl_matrix_alloc(m->size1, m->size2);
 	for (int i = 0; i < m->size1; i++) {
