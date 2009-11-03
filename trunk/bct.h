@@ -34,6 +34,7 @@ namespace bct {
 
 	// Clustering
 	gsl_vector* clustering_coef_bu(const gsl_matrix*);
+	gsl_vector* clustering_coef_wu(const gsl_matrix*);
 
 	// Paths, distances, and cycles
 
