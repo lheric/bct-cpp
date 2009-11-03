@@ -25,6 +25,11 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("clustering_coef_bu %s", mname{i}), all(clustering_coef_bu(m{i}) == clustering_coef_bu_cpp(m{i})'))
 endfor
 
+% clustering_coef_wu
+for i = 1:size(m)(2)
+	bct_test(sprintf("clustering_coef_wu %s", mname{i}), all(clustering_coef_wu(m{i}) == clustering_coef_wu_cpp(m{i})'))
+endfor
+
 % degrees_dir
 for i = 1:size(m)(2)
 	[id od deg] = degrees_dir(m{i});
