@@ -70,7 +70,7 @@ namespace bct {
 		POSITIVE = 16, SIGNED = 32,
 		NO_LOOPS = 64, LOOPS = 128
 	};
-	bool check_status(const gsl_matrix*, int);
+	bool check_status(const gsl_matrix*, int, const char* = NULL);
 	bool has_loops(const gsl_matrix*);
 	bool has_no_loops(const gsl_matrix*);
 	bool is_binary(const gsl_matrix*);

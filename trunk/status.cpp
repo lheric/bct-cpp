@@ -2,11 +2,13 @@
 #include <cmath>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
+#include <iostream>
 
 /*
- * Returns whether a matrix matches the given status flags.
+ * Returns whether a matrix matches the given status flags.  If the check fails,
+ * a message is printed to stderr starting with the given text.
  */
-bool bct::check_status(const gsl_matrix* m, int flags) {
+bool bct::check_status(const gsl_matrix* m, int flags, const char* text) {
 	bool matches = true;
 	if (flags & UNDIRECTED) matches = matches && is_undirected(m);
 	if (flags & DIRECTED) matches = matches && is_directed(m);
@@ -16,6 +18,10 @@ bool bct::check_status(const gsl_matrix* m, int flags) {
 	if (flags & SIGNED) matches = matches && is_signed(m);
 	if (flags & NO_LOOPS) matches = matches && has_no_loops(m);
 	if (flags & LOOPS) matches = matches && has_loops(m);
+	if (!matches) {
+		if (text != NULL) std::cerr << text << ": ";
+		std::cerr << "Matrix status check failed." << std::endl;
+	}
 	return matches;
 }
 

@@ -9,6 +9,7 @@
  * pointers to appropriately sized vectors for the last two arguments.
  */
 gsl_vector* bct::degrees_dir(const gsl_matrix* m, gsl_vector* in_degrees, gsl_vector* out_degrees) {
+	if (safe_mode) check_status(m, DIRECTED, "degrees_dir");
 	if (m->size1 != m->size2) {
 		throw size_exception();
 	}

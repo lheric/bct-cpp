@@ -8,6 +8,7 @@
  * degree of the corresponding node.
  */
 gsl_vector* bct::degrees_und(const gsl_matrix* m) {
+	if (safe_mode) check_status(m, UNDIRECTED, "degrees_und");
 	gsl_vector* degrees = gsl_vector_alloc(m->size2);
 	for (int i = 0; i < m->size2; i++) {
 		gsl_vector_const_view column = gsl_matrix_const_column(m, i);

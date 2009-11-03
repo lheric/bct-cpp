@@ -8,6 +8,7 @@
  * the corresponding node.
  */
 gsl_vector* bct::clustering_coef_bu(const gsl_matrix* m) {
+	if (safe_mode) check_status(m, BINARY | UNDIRECTED, "clustering_coef_bu");
 	if (m->size1 != m->size2) {
 		throw size_exception();
 	}
