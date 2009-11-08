@@ -2,33 +2,6 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 
-/* M
- * Returns a vector of indices of the elements in m that satisfy a condition
- * given by a comparison with cmprVal. Presently, the comparsion operators are
- * coded in the cmprFlag parameter, as follows:
- * 0 -> 'greater than operator, >'
- */
-gsl_matrix* bct::find_cmp(const gsl_matrix* m, int cmprFlag, double cmprVal) {
-	gsl_matrix* indices = gsl_matrix_alloc(2, m->size1 * m->size2);
-	int size = 0;
-	if(cmprFlag==0) { //means, perform a '>'
-		for(int i = 0;i < m->size1;i++) {
-			for(int j = 0;j < m->size2;j++) {
-				double matrixVal = gsl_matrix_get(m, i, j);
-				if(matrixVal > cmprVal) {
-					gsl_matrix_set(indices, 0, size, i);
-					gsl_matrix_set(indices, 1, size++, j);
-				}
-			}
-		}
-		gsl_matrix* trimIndices = gsl_matrix_alloc(2, size);
-		gsl_matrix_view trim = gsl_matrix_submatrix(indices, 0, 0, 2, size); //the 4th and 5th params DO NOT represent indices
-		gsl_matrix_memcpy(trimIndices, &trim.matrix);
-		gsl_matrix_free(indices);
-		return trimIndices;
-	}
-}
-
 /*
  * Catches GSL errors and throws BCT exceptions.
  */
