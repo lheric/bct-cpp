@@ -14,8 +14,6 @@ namespace bct {
 	class out_of_memory_exception : public bct_exception { };
 	class size_exception : public bct_exception { };
 
-	extern bool safe_mode;  // Determines whether to check matrix status at the beginning of functions
-
 	// Density, degree, and assortativity
 	double assortativity_dir(const gsl_matrix*);
 	double assortativity_und(const gsl_matrix*);
@@ -61,6 +59,7 @@ namespace bct {
 		POSITIVE = 16, SIGNED = 32,
 		NO_LOOPS = 64, LOOPS = 128
 	};
+	extern bool safe_mode;
 	bool check_status(const gsl_matrix*, int, const char* = NULL);
 	bool has_loops(const gsl_matrix*);
 	bool has_no_loops(const gsl_matrix*);
@@ -80,7 +79,6 @@ namespace bct {
 	// Utility
 	gsl_matrix* find(const gsl_matrix*, int, double);	
 	gsl_vector* pick_cells(const gsl_vector*, const gsl_vector*);
-	void set_safe_mode(bool);
 	gsl_vector* splice(const gsl_vector*, const gsl_vector*);
 	
 	// Error handling

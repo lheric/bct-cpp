@@ -4,6 +4,8 @@
 #include <gsl/gsl_vector.h>
 #include <iostream>
 
+bool bct::safe_mode = false;
+
 /*
  * Returns whether a matrix matches the given status flags.  If the check fails,
  * a message is printed to stderr starting with the given text.
