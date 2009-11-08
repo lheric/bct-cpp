@@ -4,14 +4,16 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
+#include "matlab.h"
 
 namespace bct {
+	using namespace matlab;
+	
 	class bct_exception { };
 	class gsl_exception : public bct_exception { };
 	class out_of_memory_exception : public bct_exception { };
 	class size_exception : public bct_exception { };
 
-	const double EPSILON = 1e-6;  // Used for floating-point equality comparisons
 	extern bool safe_mode;  // Determines whether to check matrix status at the beginning of functions
 
 	// Density, degree, and assortativity
@@ -51,18 +53,6 @@ namespace bct {
 	extern double fve32[];
 	extern double macaque47[];
 	extern double macaque71[];
-	
-	// MATLAB emulation
-	gsl_vector* find(const gsl_vector*);
-	gsl_vector* logical_and(const gsl_vector*, const gsl_vector*);
-	gsl_vector* logical_not(const gsl_vector*);
-	int nnz(const gsl_vector*);
-	int nnz(const gsl_matrix*);
-	gsl_matrix* submatrix(const gsl_matrix*, const gsl_vector*, const gsl_vector*);
-	double sum(const gsl_vector*);
-	gsl_vector* sum(const gsl_matrix*, int = 1);
-	gsl_matrix* tril(const gsl_matrix*, int = 0);
-	gsl_matrix* triu(const gsl_matrix*, int = 0);
 	
 	// Matrix status
 	enum status {
