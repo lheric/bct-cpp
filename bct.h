@@ -78,14 +78,13 @@ namespace bct {
 	
 	// Utility
 	gsl_matrix* find(const gsl_matrix*, int, double);	
+	void gsl_error_handler(const char*, const char*, int, int);
 	void gsl_free(gsl_vector*);
 	void gsl_free(gsl_matrix*);
+	void init();
 	gsl_vector* pick_cells(const gsl_vector*, const gsl_vector*);
 	gsl_vector* splice(const gsl_vector*, const gsl_vector*);
 	
-	// Error handling
-	void gsl_error_handler(const char*, const char*, int, int);
-
 	// Debugging
 	void printf(const gsl_vector*, const char*);
 	void printf(const gsl_matrix*, const char*);
