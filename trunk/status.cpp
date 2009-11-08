@@ -44,7 +44,7 @@ bool bct::is_directed(const gsl_matrix* m) {
 		for (int j = 0; j < m->size2; j++) {
 			double value_ij = gsl_matrix_get(m, i, j);
 			double value_ji = gsl_matrix_get(m, j, i);
-			if (is_not_equal(value_ij, value_ji)) {
+			if (fp_not_equal(value_ij, value_ji)) {
 				return true;
 			}
 		}
@@ -66,7 +66,7 @@ bool bct::is_weighted(const gsl_matrix* m) {
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {
 			double value = gsl_matrix_get(m, i, j);
-			if (is_nonzero(value) && is_not_equal(value, 1.0)) {
+			if (fp_nonzero(value) && fp_not_equal(value, 1.0)) {
 				return true;
 			}
 		}
@@ -88,7 +88,7 @@ bool bct::is_signed(const gsl_matrix* m) {
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {
 			double value = gsl_matrix_get(m, i, j);
-			if (is_negative(value)) {
+			if (fp_negative(value)) {
 				return true;
 			}
 		}
