@@ -38,13 +38,13 @@ gsl_matrix* bct::matching_ind(const gsl_matrix* m) {
 			gsl_vector_set(use, j, 0);
 			gsl_vector_set(use, i+N, 0);
 			gsl_vector_set(use, j+N, 0);			
-			ncon = sum(pick_cells(t1, use)) + sum(pick_cells(t2, use));
+			ncon = sum(logical_index(t1, use)) + sum(logical_index(t2, use));
 			if(ncon == 0)
 				gsl_matrix_set(Mall, i, j, 0.0);
 			else
 			{
-				//Improve this by storing the pick_cells results, also calculated above?
-				matchindex = ((double)sum(logical_and(pick_cells(t1, use), pick_cells(t2, use))))/ncon;
+				//Improve this by storing the logical_index results, also calculated above?
+				matchindex = ((double)sum(logical_and(logical_index(t1, use), logical_index(t2, use))))/ncon;
 				matchindex *= 2.0;
 				gsl_matrix_set(Mall, i, j, matchindex);
 			}
@@ -69,13 +69,13 @@ gsl_matrix* bct::matching_ind_in(const gsl_matrix* m) {
 			use = logical_not(logical_and(logical_not(&c1.vector), logical_not(&c2.vector)));
 			gsl_vector_set(use, i, 0);
 			gsl_vector_set(use, j, 0);
-			ncon = sum(pick_cells(&c1.vector, use)) + sum(pick_cells(&c2.vector, use));
+			ncon = sum(logical_index(&c1.vector, use)) + sum(logical_index(&c2.vector, use));
 			if(ncon == 0)
 				gsl_matrix_set(Min, i, j, 0.0);
 			else
 			{
-				//Improve this by storing the pick_cells results, also calculated above?
-				matchindex = ((double)sum(logical_and(pick_cells(&c1.vector, use), pick_cells(&c2.vector, use))))/ncon;
+				//Improve this by storing the logical_index results, also calculated above?
+				matchindex = ((double)sum(logical_and(logical_index(&c1.vector, use), logical_index(&c2.vector, use))))/ncon;
 				matchindex *= 2.0;
 				gsl_matrix_set(Min, i, j, matchindex);
 			}
@@ -100,13 +100,13 @@ gsl_matrix* bct::matching_ind_out(const gsl_matrix* m) {
 			use = logical_not(logical_and(logical_not(&r1.vector), logical_not(&r2.vector)));
 			gsl_vector_set(use, i, 0);
 			gsl_vector_set(use, j, 0);
-			ncon = sum(pick_cells(&r1.vector, use)) + sum(pick_cells(&r2.vector, use));
+			ncon = sum(logical_index(&r1.vector, use)) + sum(logical_index(&r2.vector, use));
 			if(ncon == 0)
 				gsl_matrix_set(Mout, i, j, 0.0);
 			else
 			{
-				//Improve this by storing the pick_cells results, also calculated above?
-				matchindex = ((double)sum(logical_and(pick_cells(&r1.vector, use), pick_cells(&r2.vector, use))))/ncon;
+				//Improve this by storing the logical_index results, also calculated above?
+				matchindex = ((double)sum(logical_and(logical_index(&r1.vector, use), logical_index(&r2.vector, use))))/ncon;
 				matchindex *= 2.0;
 				gsl_matrix_set(Mout, i, j, matchindex);
 			}

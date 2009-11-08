@@ -168,7 +168,8 @@ gsl_vector* matlab::index(const gsl_vector* v, const gsl_vector* indices) {
 	gsl_vector* indexed = gsl_vector_alloc(indices->size);
 	for (int i = 0; i < indices->size; i++) {
 		int position = (int)gsl_vector_get(indices, i);
-		gsl_vector_set(indexed, i, gsl_vector_get(v, position));
+		double value = gsl_vector_get(v, position);
+		gsl_vector_set(indexed, i, value);
 	}
 	return indexed;
 }
@@ -177,8 +178,8 @@ gsl_vector* matlab::index(const gsl_vector* v, const gsl_vector* indices) {
  * Emulates matrix indexing by a scalar.
  */
 double matlab::index(const gsl_matrix* m, int index) {
-	int row = index / (int)m->size1;
-	int column = index % (int)m->size1;
+	int row = index % (int)m->size1;
+	int column = index / (int)m->size1;
 	return gsl_matrix_get(m, row, column);
 }
 
@@ -191,7 +192,8 @@ gsl_matrix* matlab::index(const gsl_matrix* m, const gsl_vector* rows, const gsl
 		for (int j = 0; j < columns->size; j++) {
 			int row = (int)gsl_vector_get(rows, i);
 			int column = (int)gsl_vector_get(columns, j);
-			gsl_matrix_set(indexed, i, j, gsl_matrix_get(m, row, column));
+			double value = gsl_matrix_get(m, row, column);
+			gsl_matrix_set(indexed, i, j, value);
 		}
 	}
 	return indexed;
@@ -212,6 +214,71 @@ gsl_matrix* matlab::index(const gsl_matrix* m, const gsl_matrix* indices) {
 }
 
 /*
+ * Emulates vector logical indexing by another vector.
+ */
+gsl_vector* matlab::logical_index(const gsl_vector* v, const gsl_vector* lv) {
+	int size = nnz(lv);
+	if (size == 0 || v->size < lv->size) {
+		return NULL;
+	}
+	gsl_vector* indexed = gsl_vector_alloc(size);
+	int position = 0;
+	for (int i = 0; i < lv->size; i++) {
+		if (is_nonzero(gsl_vector_get(lv, i))) {
+			double value = gsl_vector_get(v, i);
+			gsl_vector_set(indexed, position, value);
+			position++;
+		}
+	}
+	return indexed;
+}
+
+/*
+ * Emulates matrix logical indexing by a vector.
+ */
+gsl_vector* matlab::logical_index(const gsl_matrix* m, const gsl_vector* lv) {
+	int size = nnz(lv);
+	int m_size = (int)m->size1 * (int)m->size2;
+	if (size == 0 || m_size < lv->size) {
+		return NULL;
+	}
+	gsl_vector* indexed = gsl_vector_alloc(size);
+	int position = 0;
+	for (int i = 0; i < lv->size; i++) {
+		if (is_nonzero(gsl_vector_get(lv, i))) {
+			double value = index(m, i);
+			gsl_vector_set(indexed, position, value);
+			position++;
+		}
+	}
+	return indexed;
+}
+
+/*
+ * Emulates matrix logical indexing by another matrix.
+ */
+gsl_vector* matlab::logical_index(const gsl_matrix* m, const gsl_matrix* lm) {
+	int size = nnz(lm);
+	int m_size = (int)m->size1 * (int)m->size2;
+	int lm_size = (int)lm->size1 * (int)lm->size2;
+	if (size == 0 || m_size < lm_size) {
+		return NULL;
+	}
+	gsl_vector* indexed = gsl_vector_alloc(size);
+	int position = 0;
+	for (int j = 0; j < lm->size2; j++) {
+		for (int i = 0; i < lm->size1; i++) {
+			if (is_nonzero(gsl_matrix_get(lm, i, j))) {
+				double value = index(m, j * lm->size1 + i);
+				gsl_vector_set(indexed, position, value);
+				position++;
+			}
+		}
+	}
+	return indexed;
+}
+
+/*
  * Emulates matrix-to-vector conversion.  The vector is constructed by
  * consecutively appending columns.
  */
@@ -219,7 +286,8 @@ gsl_vector* matlab::to_vector(const gsl_matrix* m) {
 	gsl_vector* v = gsl_vector_alloc(m->size1 * m->size2);
 	for (int j = 0; j < m->size2; j++) {
 		for (int i = 0; i < m->size1; i++) {
-			gsl_vector_set(v, j * m->size2 + i, gsl_matrix_get(m, i, j));
+			double value = gsl_matrix_get(m, i, j);
+			gsl_vector_set(v, j * m->size2 + i, value);
 		}
 	}
 	return v;
