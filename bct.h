@@ -78,6 +78,8 @@ namespace bct {
 	
 	// Utility
 	gsl_matrix* find(const gsl_matrix*, int, double);	
+	void gsl_free(gsl_vector*);
+	void gsl_free(gsl_matrix*);
 	gsl_vector* pick_cells(const gsl_vector*, const gsl_vector*);
 	gsl_vector* splice(const gsl_vector*, const gsl_vector*);
 	
