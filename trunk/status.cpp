@@ -36,7 +36,7 @@ bool bct::has_loops(const gsl_matrix* m) {
 		throw size_exception();
 	}
 	for (int i = 0; i < m->size1; i++) {
-		if (std::abs(gsl_matrix_get(m, i, i)) > EPSILON) {
+		if (is_nonzero(gsl_matrix_get(m, i, i))) {
 			return true;
 		}
 	}
@@ -67,7 +67,7 @@ bool bct::is_directed(const gsl_matrix* m) {
 	}
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {
-			if (std::abs(gsl_matrix_get(m, i, j) - gsl_matrix_get(m, j, i)) > EPSILON) {
+			if (is_equal(gsl_matrix_get(m, i, j), gsl_matrix_get(m, j, i)) != 0) {
 				return true;
 			}
 		}
@@ -88,7 +88,7 @@ bool bct::is_positive(const gsl_matrix* m) {
 bool bct::is_signed(const gsl_matrix* m) {
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {
-			if (gsl_matrix_get(m, i, j) < -EPSILON) {
+			if (is_negative(gsl_matrix_get(m, i, j))) {
 				return true;
 			}
 		}
@@ -109,8 +109,8 @@ bool bct::is_undirected(const gsl_matrix* m) {
 bool bct::is_weighted(const gsl_matrix* m) {
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {
-			if (std::abs(gsl_matrix_get(m, i, j)) > EPSILON &&
-				std::abs(gsl_matrix_get(m, i, j) - 1) > EPSILON) {
+			if (is_nonzero(gsl_matrix_get(m, i, j)) &&
+				is_equal(gsl_matrix_get(m, i, j), 1.0) != 0) {
 				return true;
 			}
 		}

@@ -44,7 +44,7 @@ gsl_vector* bct::clustering_coef_wu(const gsl_matrix* m) {
 	
 	// Set clustering coefficient to 0 for nodes with no 3-cycles
 	for (int i = 0; i < m->size1; i++) {
-		if (gsl_vector_get(&cyc3v.vector, i) < EPSILON) {
+		if (is_zero(gsl_vector_get(&cyc3v.vector, i))) {
 			gsl_vector_set(cyc3, i, 0.0);
 		}
 	}

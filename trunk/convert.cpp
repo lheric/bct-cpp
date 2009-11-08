@@ -10,7 +10,7 @@ gsl_matrix* bct::binary(const gsl_matrix* m) {
 	gsl_matrix* bm = gsl_matrix_calloc(m->size1, m->size2);
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {
-			if (std::abs(gsl_matrix_get(m, i, j)) > EPSILON) {
+			if (is_nonzero(gsl_matrix_get(m, i, j))) {
 				gsl_matrix_set(bm, i, j, 1.0);
 			}
 		}
