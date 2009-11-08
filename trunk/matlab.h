@@ -22,6 +22,11 @@ namespace matlab {
 	gsl_vector* logical_and(const gsl_vector*, const gsl_vector*);
 	gsl_vector* logical_not(const gsl_vector*);
 	gsl_vector* logical_or(const gsl_vector*, const gsl_vector*);
+	gsl_vector* pow_elements(const gsl_vector*, double);
+	gsl_vector* pow_elements(const gsl_vector*, const gsl_vector*);
+	gsl_matrix* pow_elements(const gsl_matrix*, double);
+	gsl_matrix* pow_elements(const gsl_matrix*, const gsl_matrix*);
+	gsl_matrix* pow(const gsl_matrix*, int);
 	
 	// Comparisons
 	int compare(double, double);
