@@ -62,30 +62,6 @@ void bct::init() {
 }
 
 /* M
- * Strip a vector by picking only those cells where there is a corresponding
- * number 1 in the 'pick vector'.
- */
-gsl_vector* bct::pick_cells(const gsl_vector* srcV, const gsl_vector* pickV) {
-		int stripVindex = 0;
-		int nnzV = nnz(pickV);
-		if(!(nnzV > 0)) { //Matlab returns an empty matrix in this case, here it needs to be handled differently
-			gsl_vector* stripV = gsl_vector_alloc(1);
-			gsl_vector_set(stripV, 0, 0);
-			return stripV;
-		}
-		else {
-			gsl_vector* stripV = gsl_vector_alloc(nnzV);
-			for(int i = 0;i < srcV->size;i++) {
-				//1 or 1.0, does it make a difference? 
-				//Nevertheless, pickV is created by logical_not method and it sets integer values
-				if(gsl_vector_get(pickV, i) == 1) 
-					gsl_vector_set(stripV, stripVindex++, gsl_vector_get(srcV, i));
-			}
-			return stripV;
-		}
-}
-
-/* M
  * Splice two vectors into one
  */
 gsl_vector* bct::splice(const gsl_vector* v1, const gsl_vector* v2) {

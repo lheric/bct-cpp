@@ -82,7 +82,6 @@ namespace bct {
 	void gsl_free(gsl_vector*);
 	void gsl_free(gsl_matrix*);
 	void init();
-	gsl_vector* pick_cells(const gsl_vector*, const gsl_vector*);
 	gsl_vector* splice(const gsl_vector*, const gsl_vector*);
 	
 	// Debugging
