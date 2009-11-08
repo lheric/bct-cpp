@@ -171,11 +171,23 @@ gsl_vector* matlab::logical_or(const gsl_vector* v1, const gsl_vector* v2) {
 	return or_v;
 }
 
-int matlab::compare(double x, double y) { return gsl_fcmp(x, y, EPSILON); }
-bool matlab::is_equal(double x, double y) { return gsl_fcmp(x, y, EPSILON) == 0; }
+int matlab::compare(double x, double y) {
+	if (is_zero(x) || is_zero(y)) {
+		
+		// gsl_fcmp is not suitable for testing whether a value is approximately zero
+		if (is_zero(x) && is_zero(y)) {
+			return 0;
+		} else {
+			return (x < y) ? -1 : 1;
+	} else {
+		return gsl_fcmp(x, y, EPSILON);
+	}
+}
+
+bool matlab::is_equal(double x, double y) { return compare(x, y) == 0; }
 bool matlab::is_negative(double x) { return x < -EPSILON; }
 bool matlab::is_nonzero(double x) { return std::abs(x) > EPSILON; }
-bool matlab::is_not_equal(double x, double y) { return gsl_fcmp(x, y, EPSILON) != 0; }
+bool matlab::is_not_equal(double x, double y) { return compare(x, y) != 0); }
 bool matlab::is_positive(double x) { return x > EPSILON; }
 bool matlab::is_zero(double x) { return std::abs(x) < EPSILON; }
 
