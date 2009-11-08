@@ -1,5 +1,6 @@
 #include <cmath>
 #include <cstring>
+#include <gsl/gsl_blas.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
@@ -16,10 +17,7 @@ gsl_vector* matlab::find(const gsl_vector* v, int n, const char* direction) {
 		return NULL;
 	}
 	gsl_vector* found = gsl_vector_alloc((n < size) ? n : size);
-	if (direction == NULL) {
-		direction = "first";
-	}
-	if (std::strcmp(direction, "first") == 0) {
+	if (direction == NULL || std::strcmp(direction, "first") == 0) {
 		int position = 0;
 		for (int i = 0; i < v->size && position < found->size; i++) {
 			if (is_nonzero(gsl_vector_get(v, i))) {
@@ -169,6 +167,82 @@ gsl_vector* matlab::logical_or(const gsl_vector* v1, const gsl_vector* v2) {
 		gsl_vector_set(or_v, i, (double)(nz1 || nz2));
 	}
 	return or_v;
+}
+
+/*
+ * Emulates (v .^ power).
+ */
+gsl_vector* matlab::pow_elements(const gsl_vector* v, double power) {
+	gsl_vector* pow_v = gsl_vector_alloc(v->size);
+	for (int i = 0; i < v->size; i++) {
+		double value = std::pow(gsl_vector_get(v, i), power);
+		gsl_vector_set(pow_v, i, value);
+	}
+	return pow_v;
+}
+
+/*
+ * Emulates (v .^ powers).
+ */
+gsl_vector* matlab::pow_elements(const gsl_vector* v, const gsl_vector* powers) {
+	if (v->size != powers->size) {
+		return NULL;
+	}
+	gsl_vector* pow_v = gsl_vector_alloc(v->size);
+	for (int i = 0; i < v->size; i++) {
+		double value = std::pow(gsl_vector_get(v, i), gsl_vector_get(powers, i));
+		gsl_vector_set(pow_v, i, value);
+	}
+	return pow_v;
+}
+
+/*
+ * Emulates (m .^ power).
+ */
+gsl_matrix* matlab::pow_elements(const gsl_matrix* m, double power) {
+	gsl_matrix* pow_m = gsl_matrix_alloc(m->size1, m->size2);
+	for (int i = 0; i < m->size1; i++) {
+		for (int j = 0; j < m->size2; j++) {
+			double value = std::pow(gsl_matrix_get(m, i, j), power);
+			gsl_matrix_set(pow_m, i, j, value);
+		}
+	}
+	return pow_m;
+}
+
+/*
+ * Emulates (m .^ powers).
+ */
+gsl_matrix* matlab::pow_elements(const gsl_matrix* m, const gsl_matrix* powers) {
+	if (m->size1 != powers->size1 || m->size2 != powers->size2) {
+		return NULL;
+	}
+	gsl_matrix* pow_m = gsl_matrix_alloc(m->size1, m->size2);
+	for (int i = 0; i < m->size1; i++) {
+		for (int j = 0; j < m->size2; j++) {
+			double value = std::pow(gsl_matrix_get(m, i, j), gsl_matrix_get(powers, i, j));
+			gsl_matrix_set(pow_m, i, j, value);
+		}
+	}
+	return pow_m;
+}
+
+/*
+ * Emulates (m ^ power).
+ */
+gsl_matrix* matlab::pow(const gsl_matrix* m, int power) {
+	if (m->size1 != m->size2 || power < 1) {
+		return NULL;
+	}
+	gsl_matrix* pow_m = gsl_matrix_alloc(m->size1, m->size2);
+	gsl_matrix_memcpy(pow_m, m);
+	for (int i = 2; i <= power; i++) {
+		gsl_matrix* temp = gsl_matrix_alloc(m->size1, m->size2);
+		gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, pow_m, m, 0.0, temp);
+		gsl_matrix_free(pow_m);
+		pow_m = temp;
+	}
+	return pow_m;
 }
 
 int matlab::compare(double x, double y) {
