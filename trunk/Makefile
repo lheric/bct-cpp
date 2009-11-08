@@ -30,10 +30,12 @@ libbct.a: $(objects)
 $(objects): bct.h
 
 install: libbct.a
+	cp matlab.h /usr/local/include
 	cp bct.h /usr/local/include
 	cp libbct.a /usr/local/lib
 
 uninstall:
+	-rm /usr/local/include/matlab.h
 	-rm /usr/local/include/bct.h
 	-rm /usr/local/lib/libbct.a
 

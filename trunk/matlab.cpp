@@ -1,13 +1,13 @@
-#include "bct.h"
 #include <cmath>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
+#include "matlab.h"
 
 /*
  * Returns a vector of indices of nonzero elements in the given vector.  Returns
  * NULL if all elements are zero.
  */
-gsl_vector* bct::find(const gsl_vector* v) {
+gsl_vector* matlab::find(const gsl_vector* v) {
 	int size = nnz(v);
 	if (size == 0) {
 		return NULL;
@@ -26,10 +26,10 @@ gsl_vector* bct::find(const gsl_vector* v) {
 /* M
  * Perform a logical AND between the elements of 2 vectors
  */
-gsl_vector* bct::logical_and(const gsl_vector* v1, const gsl_vector* v2) {
+gsl_vector* matlab::logical_and(const gsl_vector* v1, const gsl_vector* v2) {
 	int size1 = v1->size;
 	if (v1->size != v2->size) {
-		throw size_exception();
+		return NULL;
 	}
 	gsl_vector* andV = gsl_vector_alloc(size1);
 	for(int i = 0;i < size1;i++) {
@@ -43,7 +43,7 @@ gsl_vector* bct::logical_and(const gsl_vector* v1, const gsl_vector* v2) {
 /* M
  * Perform a logical NOT on the elements of a vector
  */
-gsl_vector* bct::logical_not(const gsl_vector* v) {
+gsl_vector* matlab::logical_not(const gsl_vector* v) {
 	int size = v->size;
 	gsl_vector* notV = gsl_vector_alloc(size);
 	for(int i = 0;i < size;i++)
@@ -54,7 +54,7 @@ gsl_vector* bct::logical_not(const gsl_vector* v) {
 /*
  * Returns the number of nonzero elements in the given vector.
  */
-int bct::nnz(const gsl_vector* v) {
+int matlab::nnz(const gsl_vector* v) {
 	int count = 0;
 	for (int i = 0; i < v->size; i++) {
 		if (std::abs(gsl_vector_get(v, i)) > EPSILON) {
@@ -67,7 +67,7 @@ int bct::nnz(const gsl_vector* v) {
 /*
  * Returns the number of nonzero elements in the given matrix.
  */
-int bct::nnz(const gsl_matrix* m) {
+int matlab::nnz(const gsl_matrix* m) {
 	int count = 0;
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {
@@ -83,7 +83,7 @@ int bct::nnz(const gsl_matrix* m) {
  * Returns a matrix of size (rows->size, columns->size).  Elements are copied
  * from the specified rows and columns of m.
  */
-gsl_matrix* bct::submatrix(const gsl_matrix* m, const gsl_vector* rows, const gsl_vector* columns) {
+gsl_matrix* matlab::submatrix(const gsl_matrix* m, const gsl_vector* rows, const gsl_vector* columns) {
 	gsl_matrix* s = gsl_matrix_alloc(rows->size, columns->size);
 	for (int i = 0; i < rows->size; i++) {
 		for (int j = 0; j < columns->size; j++) {
@@ -97,7 +97,7 @@ gsl_matrix* bct::submatrix(const gsl_matrix* m, const gsl_vector* rows, const gs
  * Returns the sum of the elements of a vector. Type cast the result
  * at the receiving end of this function
  */
-double bct::sum(const gsl_vector* v) {
+double matlab::sum(const gsl_vector* v) {
 	double sum = 0.0;
 	for (int i = 0; i < v->size; i++) {
 		sum += gsl_vector_get(v, i);
@@ -111,7 +111,7 @@ double bct::sum(const gsl_vector* v) {
  * parameter 'dim' is 1, the sum is a cumulative sum of row slices. If
  * dim is 2, the result is a cumulative sum of column slices. 
  */
-gsl_vector* bct::sum(const gsl_matrix* m, int dim) {
+gsl_vector* matlab::sum(const gsl_matrix* m, int dim) {
 	if (dim == 1)
 	{
 		gsl_vector* sum = gsl_vector_calloc(m->size2);
@@ -141,7 +141,7 @@ gsl_vector* bct::sum(const gsl_matrix* m, int dim) {
  * cell by cell, all the lower triangle elements.
  * NOTE: K can't be > m->size1. This exception needs to be handled.
  */
-gsl_matrix* bct::tril(const gsl_matrix* m, int K) {
+gsl_matrix* matlab::tril(const gsl_matrix* m, int K) {
 	gsl_matrix* tril_m = gsl_matrix_alloc(m->size1, m->size2);
 	gsl_matrix_memcpy(tril_m, m);
 	for(int i = 0;i < m->size1; i++)
@@ -159,7 +159,7 @@ gsl_matrix* bct::tril(const gsl_matrix* m, int K) {
  * cell by cell, all the upper triangle elements
  * NOTE: K can't be > m->size1. This exception needs to be handled.
  */
-gsl_matrix* bct::triu(const gsl_matrix* m, int K) {
+gsl_matrix* matlab::triu(const gsl_matrix* m, int K) {
 	gsl_matrix* triu_m = gsl_matrix_alloc(m->size1, m->size2);
 	gsl_matrix_memcpy(triu_m, m);
 	for(int i = 0;i < m->size1; i++)

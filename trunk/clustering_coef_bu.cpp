@@ -18,7 +18,7 @@ gsl_vector* bct::clustering_coef_bu(const gsl_matrix* m) {
 		gsl_vector_const_view row = gsl_matrix_const_row(m_loopless, i);
 		int k = nnz(&row.vector);
 		if (k >= 2) {
-			gsl_vector* neighbors = find(&row.vector);
+			gsl_vector* neighbors = matlab::find(&row.vector);
 			gsl_matrix* s = submatrix(m_loopless, neighbors, neighbors);
 			int actual_connections = nnz(s);
 			int possible_connections = k * (k - 1);
