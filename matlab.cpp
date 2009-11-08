@@ -167,3 +167,9 @@ gsl_matrix* matlab::triu(const gsl_matrix* m, int K) {
 			gsl_matrix_set(triu_m, i, j, 0.0);
 	return triu_m;
 }
+
+int is_equal(double x, double y) { return gsl_fcmp(x, y, EPSILON); }
+bool is_negative(double x) { return x < -EPSILON; }
+bool is_nonzero(double x) { return std::abs(x) > EPSILON; }
+bool is_positive(double x) { return x > EPSILON; }
+bool is_zero(double x) { return std::abs(x) < EPSILON; }

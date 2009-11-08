@@ -4,6 +4,7 @@
 namespace matlab {	
 	const double EPSILON = 1e-6;
 
+	// MATLAB emulation
 	gsl_vector* find(const gsl_vector*);
 	gsl_vector* logical_and(const gsl_vector*, const gsl_vector*);
 	gsl_vector* logical_not(const gsl_vector*);
@@ -14,6 +15,13 @@ namespace matlab {
 	gsl_vector* sum(const gsl_matrix*, int = 1);
 	gsl_matrix* tril(const gsl_matrix*, int = 0);
 	gsl_matrix* triu(const gsl_matrix*, int = 0);
+	
+	// Floating-point numerical comparisons
+	int is_equal(double, double);
+	bool is_negative(double);
+	bool is_nonzero(double);
+	bool is_positive(double);
+	bool is_zero(double);
 };
 
 #endif
