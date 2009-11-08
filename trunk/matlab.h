@@ -1,12 +1,16 @@
 #ifndef MATLAB_H
 #define MATLAB_H
 
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_vector.h>
+#include <limits>
+
 namespace matlab {	
 	const double EPSILON = 1e-6;
 
 	// Functions
-	gsl_vector* find(const gsl_vector*, int = -1, const char* = NULL);
-	gsl_vector* find(const gsl_matrix*, int = -1, const char* = NULL);
+	gsl_vector* find(const gsl_vector*, int = std::numeric_limits<int>::max(), const char* = NULL);
+	gsl_vector* find(const gsl_matrix*, int = std::numeric_limits<int>::max(), const char* = NULL);
 	int nnz(const gsl_vector*);
 	int nnz(const gsl_matrix*);
 	double sum(const gsl_vector*);
