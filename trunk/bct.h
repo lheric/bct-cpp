@@ -61,20 +61,20 @@ namespace bct {
 	};
 	extern bool safe_mode;
 	bool check_status(const gsl_matrix*, int, const char* = NULL);
-	bool has_loops(const gsl_matrix*);
-	bool has_no_loops(const gsl_matrix*);
-	bool is_binary(const gsl_matrix*);
+	bool is_undirected(const gsl_matrix*);
 	bool is_directed(const gsl_matrix*);
+	bool is_binary(const gsl_matrix*);
+	bool is_weighted(const gsl_matrix*);
 	bool is_positive(const gsl_matrix*);
 	bool is_signed(const gsl_matrix*);
-	bool is_undirected(const gsl_matrix*);
-	bool is_weighted(const gsl_matrix*);
+	bool has_loops(const gsl_matrix*);
+	bool has_no_loops(const gsl_matrix*);
 	
 	// Matrix conversion
 	gsl_matrix* binary(const gsl_matrix*);
+	gsl_matrix* no_loops(const gsl_matrix*);
 	gsl_matrix* positive(const gsl_matrix*);
-	gsl_matrix* remove_loops(const gsl_matrix*);
-	gsl_matrix* undirected(const gsl_matrix*, bool = true);
+	gsl_matrix* undirected(const gsl_matrix*);
 	
 	// Utility
 	gsl_matrix* find(const gsl_matrix*, int, double);	

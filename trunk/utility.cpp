@@ -41,18 +41,10 @@ void bct::gsl_error_handler(const char* reason, const char* file, int line, int 
 }
 
 /*
- * Convenience function to free a gsl_vector.
+ * Overloaded convenience function for freeing GSL vectors and matrices.
  */
-void bct::gsl_free(gsl_vector* v) {
-	gsl_vector_free(v);
-}
-
-/*
- * Convenience function to free a gsl_matrix.
- */
-void bct::gsl_free(gsl_matrix* m) {
-	gsl_matrix_free(m);
-}
+void bct::gsl_free(gsl_vector* v) { gsl_vector_free(v); }
+void bct::gsl_free(gsl_matrix* m) { gsl_matrix_free(m); }
 
 /*
  * Initializes the BCT library for external use.
