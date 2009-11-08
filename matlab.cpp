@@ -1,4 +1,5 @@
 #include <cmath>
+#include <cstring>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
@@ -14,15 +15,32 @@ gsl_vector* matlab::find(const gsl_vector* v, int n, const char* direction) {
 	if (size == 0) {
 		return NULL;
 	}
-	gsl_vector* found = gsl_vector_alloc(size);
-	int position = 0;
-	for (int i = 0; i < v->size; i++) {
-		if (is_nonzero(gsl_vector_get(v, i))) {
-			gsl_vector_set(found, position, i);
-			position++;
-		}
+	gsl_vector* found = gsl_vector_alloc((n < size) ? n : size);
+	if (direction == NULL) {
+		direction = "first";
 	}
-	return found;
+	if (std::strcmp(direction, "first") == 0) {
+		int position = 0;
+		for (int i = 0; i < v->size && position < found->size; i++) {
+			if (is_nonzero(gsl_vector_get(v, i))) {
+				gsl_vector_set(found, position, i);
+				position++;
+			}
+		}
+		return found;
+	} else if (std::strcmp(direction, "last") == 0) {
+		int position = found->size - 1;
+		for (int i = v->size - 1; i >= 0 && position >= 0; i--) {
+			if (is_nonzero(gsl_vector_get(v, i))) {
+				gsl_vector_set(found, position, i);
+				position--;
+			}
+		}
+		return found;
+	} else {
+		gsl_vector_free(found);
+		return NULL;
+	}
 }
 
 gsl_vector* matlab::find(const gsl_matrix* m, int n, const char* direction) {
