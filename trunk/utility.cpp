@@ -29,6 +29,20 @@ gsl_matrix* bct::find(const gsl_matrix* m, int cmprFlag, double cmprVal) {
 	}
 }
 
+/*
+ * Convenience method to free a gsl_vector.
+ */
+void bct::gsl_free(gsl_vector* v) {
+	gsl_vector_free(v);
+}
+
+/*
+ * Convenience method to free a gsl_matrix.
+ */
+void bct::gsl_free(gsl_matrix* m) {
+	gsl_matrix_free(m);
+}
+
 /* M
  * Strip a vector by picking only those cells where there is a corresponding
  * number 1 in the 'pick vector'.
