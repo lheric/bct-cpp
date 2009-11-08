@@ -1,102 +1,54 @@
 #include <cmath>
+#include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include "matlab.h"
 
 /*
- * Returns a vector of indices of nonzero elements in the given vector.  Returns
- * NULL if all elements are zero.
+ * See MATLAB documentation for descriptions of these functions.  We will
+ * document instances where our version differs from the MATLAB version.
  */
-gsl_vector* matlab::find(const gsl_vector* v) {
+
+gsl_vector* matlab::find(const gsl_vector* v, int n, const char* direction) {
 	int size = nnz(v);
 	if (size == 0) {
 		return NULL;
 	}
-	gsl_vector* nz = gsl_vector_alloc(size);
+	gsl_vector* found = gsl_vector_alloc(size);
 	int pos = 0;
 	for (int i = 0; i < v->size; i++) {
-		if (std::abs(gsl_vector_get(v, i)) > EPSILON) {
-			gsl_vector_set(nz, pos, i);
+		if (is_nonzero(gsl_vector_get(v, i))) {
+			gsl_vector_set(found, pos, i);
 			pos++;
 		}
 	}
-	return nz;
+	return found;
 }
 
-/* M
- * Perform a logical AND between the elements of 2 vectors
- */
-gsl_vector* matlab::logical_and(const gsl_vector* v1, const gsl_vector* v2) {
-	int size1 = v1->size;
-	if (v1->size != v2->size) {
-		return NULL;
-	}
-	gsl_vector* andV = gsl_vector_alloc(size1);
-	for(int i = 0;i < size1;i++) {
-		int val1 = (int)gsl_vector_get(v1, i);
-		int val2 = (int)gsl_vector_get(v2, i);
-		gsl_vector_set(andV, i, val1 && val2);
-	}
-	return andV;
+gsl_vector* matlab::find(const gsl_matrix* m, int n, const char* direction) {
+	gsl_vector* v = to_vector(m);
+	gsl_vector* ret = find(v, n, direction);
+	gsl_vector_free(v);
+	return ret;
 }
 
-/* M
- * Perform a logical NOT on the elements of a vector
- */
-gsl_vector* matlab::logical_not(const gsl_vector* v) {
-	int size = v->size;
-	gsl_vector* notV = gsl_vector_alloc(size);
-	for(int i = 0;i < size;i++)
-		gsl_vector_set(notV, i, !(int)gsl_vector_get(v, i));
-	return notV;
-}
-
-/*
- * Returns the number of nonzero elements in the given vector.
- */
 int matlab::nnz(const gsl_vector* v) {
-	int count = 0;
+	int nnz = 0;
 	for (int i = 0; i < v->size; i++) {
-		if (std::abs(gsl_vector_get(v, i)) > EPSILON) {
-			count++;
+		if (is_nonzero(gsl_vector_get(v, i))) {
+			nnz++;
 		}
 	}
-	return count;
+	return nnz;
 }
 
-/*
- * Returns the number of nonzero elements in the given matrix.
- */
 int matlab::nnz(const gsl_matrix* m) {
-	int count = 0;
-	for (int i = 0; i < m->size1; i++) {
-		for (int j = 0; j < m->size2; j++) {
-			if (std::abs(gsl_matrix_get(m, i, j)) > EPSILON) {
-				count++;
-			}
-		}
-	}
-	return count;
+	gsl_vector* v = to_vector(m);
+	int ret = nnz(v);
+	gsl_vector_free(v);
+	return ret;
 }
 
-/*
- * Returns a matrix of size (rows->size, columns->size).  Elements are copied
- * from the specified rows and columns of m.
- */
-gsl_matrix* matlab::submatrix(const gsl_matrix* m, const gsl_vector* rows, const gsl_vector* columns) {
-	gsl_matrix* s = gsl_matrix_alloc(rows->size, columns->size);
-	for (int i = 0; i < rows->size; i++) {
-		for (int j = 0; j < columns->size; j++) {
-			gsl_matrix_set(s, i, j, gsl_matrix_get(m, gsl_vector_get(rows, i), gsl_vector_get(columns, j)));
-		}
-	}
-	return s;
-}
-
-/* M 
- * Returns the sum of the elements of a vector. Type cast the result
- * at the receiving end of this function
- */
 double matlab::sum(const gsl_vector* v) {
 	double sum = 0.0;
 	for (int i = 0; i < v->size; i++) {
@@ -105,71 +57,135 @@ double matlab::sum(const gsl_vector* v) {
 	return sum;
 }
 
-/* M
- * Returns the sum of the elements of a matrix, row-wise or column-wise
- * it is the equivalent of the 'sum' function in matlab. If the second
- * parameter 'dim' is 1, the sum is a cumulative sum of row slices. If
- * dim is 2, the result is a cumulative sum of column slices. 
- */
 gsl_vector* matlab::sum(const gsl_matrix* m, int dim) {
-	if (dim == 1)
-	{
+	if (dim == 1) {
 		gsl_vector* sum = gsl_vector_calloc(m->size2);
 		for (int i = 0; i < m->size1; i++) {
 			gsl_vector_const_view row = gsl_matrix_const_row(m, i);
-			gsl_vector_add(sum,&row.vector);
+			gsl_vector_add(sum, &row.vector);
 		}
 		return sum;
-	}
-	else if (dim == 2)
-	{
+	} else if (dim == 2) {
 		gsl_vector* sum = gsl_vector_calloc(m->size1);
-		for (int i = 0; i < m->size1; i++) {
+		for (int i = 0; i < m->size2; i++) {
 			gsl_vector_const_view column = gsl_matrix_const_column(m, i);
-			gsl_vector_add(sum,&column.vector);
+			gsl_vector_add(sum, &column.vector);
 		}
 		return sum;
+	} else {
+		return NULL;
 	}
 }
 
-/* M
- * Equivalent of 'tril' in octave. Returns a copy of the matrix m
- * retaining only the values of the lower triangle of m (including
- * the diagonal) while setting all the other values to zero. A 
- * memcpy followed by setting upper triangle to zeros is possibly a
- * more efficient approach than setting all to zeros and then copying
- * cell by cell, all the lower triangle elements.
- * NOTE: K can't be > m->size1. This exception needs to be handled.
- */
-gsl_matrix* matlab::tril(const gsl_matrix* m, int K) {
-	gsl_matrix* tril_m = gsl_matrix_alloc(m->size1, m->size2);
-	gsl_matrix_memcpy(tril_m, m);
-	for(int i = 0;i < m->size1; i++)
-		for(int j=i+1+K;j < m->size2; j++)
-			gsl_matrix_set(tril_m, i, j, 0.0);
-	return tril_m;
+gsl_matrix* matlab::tril(const gsl_matrix* m, int k) {
+	if (k <= -(int)m->size1 || k >= (int)m->size2) {
+		return NULL;
+	}
+	gsl_matrix* tril = gsl_matrix_alloc(m->size1, m->size2);
+	gsl_matrix_memcpy(tril, m);
+	for (int i = 0; i < m->size1; i++) {
+		for (int j = i + k + 1; j < m->size2; j++) {
+			if (j >= 0) {
+				gsl_matrix_set(tril, i, j, 0.0);
+			}
+		}
+	}
+	return tril;
 }
 
-/* M
- * equivalent of 'triu' in octave. Returns a copy of the matrix m
- * retaining only the values of the upper triangle of m (including
- * the diagonal) while setting all the other values to zero. A 
- * memcpy followed by setting lower triangle to zeros is possibly a
- * more efficient approach than setting all to zeros and then copying
- * cell by cell, all the upper triangle elements
- * NOTE: K can't be > m->size1. This exception needs to be handled.
- */
-gsl_matrix* matlab::triu(const gsl_matrix* m, int K) {
-	gsl_matrix* triu_m = gsl_matrix_alloc(m->size1, m->size2);
-	gsl_matrix_memcpy(triu_m, m);
-	for(int i = 0;i < m->size1; i++)
-		for(int j=0;j < (i+K) && j < m->size2; j++)
-			gsl_matrix_set(triu_m, i, j, 0.0);
-	return triu_m;
+gsl_matrix* matlab::triu(const gsl_matrix* m, int k) {
+	if (k <= -(int)m->size1 || k >= (int)m->size2) {
+		return NULL;
+	}
+	gsl_matrix* triu = gsl_matrix_alloc(m->size1, m->size2);
+	gsl_matrix_memcpy(triu, m);
+	for (int i = 0; i < m->size1; i++) {
+		for (int j = i + k - 1; j >= 0; j--) {
+			if (j < m->size2) {
+				gsl_matrix_set(triu, i, j, 0.0);
+			}
+		}
+	}
+	return triu;
 }
 
-int is_equal(double x, double y) { return gsl_fcmp(x, y, EPSILON); }
-bool is_negative(double x) { return x < -EPSILON; }
-bool is_nonzero(double x) { return std::abs(x) > EPSILON; }
-bool is_positive(double x) { return x > EPSILON; }
-bool is_zero(double x) { return std::abs(x) < EPSILON; }
+/*
+ * Emulates (v1 & v2).
+ */
+gsl_vector* matlab::logical_and(const gsl_vector* v1, const gsl_vector* v2) {
+	if (v1->size != v2->size) {
+		return NULL;
+	}
+	gsl_vector* and_v = gsl_vector_alloc(v1->size);
+	for (int i = 0; i < v1->size; i++) {
+		bool nz1 = is_nonzero(gsl_vector_get(v1, i));
+		bool nz2 = is_nonzero(gsl_vector_get(v2, i));
+		gsl_vector_set(and_v, i, (double)(nz1 && nz2));
+	}
+	return and_v;
+}
+
+/*
+ * Emulates (~v).
+ */
+gsl_vector* matlab::logical_not(const gsl_vector* v) {
+	gsl_vector* not_v = gsl_vector_alloc(v->size);
+	for (int i = 0; i < v->size; i++) {
+		bool z = is_zero(gsl_vector_get(v, i));
+		gsl_vector_set(not_v, i, (double)z);
+	}
+	return not_v;
+}
+
+/*
+ * Emulates (v1 | v2).
+ */
+gsl_vector* matlab::logical_or(const gsl_vector* v1, const gsl_vector* v2) {
+	if (v1->size != v2->size) {
+		return NULL;
+	}
+	gsl_vector* or_v = gsl_vector_alloc(v1->size);
+	for (int i = 0; i < v1->size; i++) {
+		bool nz1 = is_nonzero(gsl_vector_get(v1, i));
+		bool nz2 = is_nonzero(gsl_vector_get(v2, i));
+		gsl_vector_set(or_v, i, (double)(nz1 || nz2));
+	}
+	return or_v;
+}
+
+int matlab::compare(double x, double y) { return gsl_fcmp(x, y, EPSILON); }
+bool matlab::is_equal(double x, double y) { return gsl_fcmp(x, y, EPSILON) == 0; }
+bool matlab::is_negative(double x) { return x < -EPSILON; }
+bool matlab::is_nonzero(double x) { return std::abs(x) > EPSILON; }
+bool matlab::is_not_equal(double x, double y) { return gsl_fcmp(x, y, EPSILON) != 0; }
+bool matlab::is_positive(double x) { return x > EPSILON; }
+bool matlab::is_zero(double x) { return std::abs(x) < EPSILON; }
+
+/*
+ * Emulates matrix indexing by two vectors.
+ */
+gsl_matrix* matlab::index(const gsl_matrix* m, const gsl_vector* rows, const gsl_vector* columns) {
+	gsl_matrix* indexed = gsl_matrix_alloc(rows->size, columns->size);
+	for (int i = 0; i < rows->size; i++) {
+		for (int j = 0; j < columns->size; j++) {
+			int row = (int)gsl_vector_get(rows, i);
+			int column = (int)gsl_vector_get(columns, j);
+			gsl_matrix_set(indexed, i, j, gsl_matrix_get(m, row, column));
+		}
+	}
+	return indexed;
+}
+
+/*
+ * Emulates matrix-to-vector conversion.  The vector is constructed by
+ * consecutively appending columns.
+ */
+gsl_vector* matlab::to_vector(const gsl_matrix* m) {
+	gsl_vector* v = gsl_vector_alloc(m->size1 * m->size2);
+	for (int j = 0; j < m->size2; j++) {
+		for (int i = 0; i < m->size1; i++) {
+			gsl_vector_set(v, j * m->size2 + i, gsl_matrix_get(m, i, j));
+		}
+	}
+	return v;
+}
