@@ -21,3 +21,9 @@ double s = sum(v);
 gsl_free(mu);
 gsl_free(v);
 }}}
+
+= Error Handling =
+
+By default, GSL aborts program execution when an error is encountered.  BCT can override this behavior by setting a custom GSL error handler.  This handler converts a GSL error to one of two possible exceptions: `out_of_memory_exception` for failed allocations and `gsl_exception` for other errors.
+
+BCT's `init` function must be called to enable this functionality.
