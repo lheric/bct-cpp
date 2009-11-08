@@ -67,7 +67,7 @@ bool bct::is_directed(const gsl_matrix* m) {
 	}
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {
-			if (is_equal(gsl_matrix_get(m, i, j), gsl_matrix_get(m, j, i)) != 0) {
+			if (is_equal(gsl_matrix_get(m, i, j), gsl_matrix_get(m, j, i))) {
 				return true;
 			}
 		}
@@ -110,7 +110,7 @@ bool bct::is_weighted(const gsl_matrix* m) {
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {
 			if (is_nonzero(gsl_matrix_get(m, i, j)) &&
-				is_equal(gsl_matrix_get(m, i, j), 1.0) != 0) {
+				is_not_equal(gsl_matrix_get(m, i, j), 1.0)) {
 				return true;
 			}
 		}
