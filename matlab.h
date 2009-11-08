@@ -29,7 +29,10 @@ namespace matlab {
 	bool is_zero(double);
 
 	// Indexing
+	gsl_vector* index(const gsl_vector*, const gsl_vector*);
+	double index(const gsl_matrix*, int);
 	gsl_matrix* index(const gsl_matrix*, const gsl_vector*, const gsl_vector*);
+	gsl_matrix* index(const gsl_matrix*, const gsl_matrix*);
 	
 	// Conversions
 	gsl_vector* to_vector(const gsl_matrix*);
