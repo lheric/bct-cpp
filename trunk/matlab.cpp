@@ -15,11 +15,11 @@ gsl_vector* matlab::find(const gsl_vector* v, int n, const char* direction) {
 		return NULL;
 	}
 	gsl_vector* found = gsl_vector_alloc(size);
-	int pos = 0;
+	int position = 0;
 	for (int i = 0; i < v->size; i++) {
 		if (is_nonzero(gsl_vector_get(v, i))) {
-			gsl_vector_set(found, pos, i);
-			pos++;
+			gsl_vector_set(found, position, i);
+			position++;
 		}
 	}
 	return found;
@@ -162,6 +162,27 @@ bool matlab::is_positive(double x) { return x > EPSILON; }
 bool matlab::is_zero(double x) { return std::abs(x) < EPSILON; }
 
 /*
+ * Emulates vector indexing by another vector.
+ */
+gsl_vector* matlab::index(const gsl_vector* v, const gsl_vector* indices) {
+	gsl_vector* indexed = gsl_vector_alloc(indices->size);
+	for (int i = 0; i < indices->size; i++) {
+		int position = (int)gsl_vector_get(indices, i);
+		gsl_vector_set(indexed, i, gsl_vector_get(v, position));
+	}
+	return indexed;
+}
+
+/*
+ * Emulates matrix indexing by a scalar.
+ */
+double matlab::index(const gsl_matrix* m, int index) {
+	int row = index / (int)m->size1;
+	int column = index % (int)m->size1;
+	return gsl_matrix_get(m, row, column);
+}
+
+/*
  * Emulates matrix indexing by two vectors.
  */
 gsl_matrix* matlab::index(const gsl_matrix* m, const gsl_vector* rows, const gsl_vector* columns) {
@@ -171,6 +192,20 @@ gsl_matrix* matlab::index(const gsl_matrix* m, const gsl_vector* rows, const gsl
 			int row = (int)gsl_vector_get(rows, i);
 			int column = (int)gsl_vector_get(columns, j);
 			gsl_matrix_set(indexed, i, j, gsl_matrix_get(m, row, column));
+		}
+	}
+	return indexed;
+}
+
+/*
+ * Emulates matrix indexing by another matrix.
+ */
+gsl_matrix* matlab::index(const gsl_matrix* m, const gsl_matrix* indices) {
+	gsl_matrix* indexed = gsl_matrix_alloc(indices->size1, indices->size2);
+	for (int i = 0; i < indices->size1; i++) {
+		for (int j = 0; j < indices->size2; j++) {
+			double value = index(m, gsl_matrix_get(indices, i, j));
+			gsl_matrix_set(indexed, i, j, value);
 		}
 	}
 	return indexed;
