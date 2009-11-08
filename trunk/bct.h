@@ -77,7 +77,6 @@ namespace bct {
 	gsl_matrix* undirected(const gsl_matrix*);
 	
 	// Utility
-	gsl_matrix* find_cmp(const gsl_matrix*, int, double);	
 	void gsl_error_handler(const char*, const char*, int, int);
 	void gsl_free(gsl_vector*);
 	void gsl_free(gsl_matrix*);

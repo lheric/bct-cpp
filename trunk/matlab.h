@@ -12,6 +12,7 @@ namespace matlab {
 	// Functions
 	gsl_vector* find(const gsl_vector*, int = std::numeric_limits<int>::max(), const char* = NULL);
 	gsl_vector* find(const gsl_matrix*, int = std::numeric_limits<int>::max(), const char* = NULL);
+	gsl_matrix* find_ij(const gsl_matrix*, int = std::numeric_limits<int>::max(), const char* = NULL);
 	int nnz(const gsl_vector*);
 	int nnz(const gsl_matrix*);
 	double sum(const gsl_vector*);

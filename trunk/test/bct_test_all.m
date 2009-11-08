@@ -81,8 +81,8 @@ endfor
 
 % assortativity
 for i = 1:size(m)(2)
-	bct_test(sprintf("assortativity %s", mname{i}), assortativity(m{i}, 0) == assortativity_und_cpp(m{i}))
-	bct_test(sprintf("assortativity %s", mname{i}), assortativity(m{i}, 1) == assortativity_dir_cpp(m{i}))
+	bct_test(sprintf("assortativity_und %s", mname{i}), assortativity(m{i}, 0) == assortativity_und_cpp(m{i}))
+	bct_test(sprintf("assortativity_dir %s", mname{i}), assortativity(m{i}, 1) == assortativity_dir_cpp(m{i}))
 endfor
 
 printf("Failures: %d\n", failures)

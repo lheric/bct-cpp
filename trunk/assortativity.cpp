@@ -12,12 +12,14 @@
 double bct::assortativity_dir(const gsl_matrix* m) {
 	int K;
 	gsl_vector* deg = degrees_dir(m);
-	gsl_matrix* ij = find_cmp(m, 0, 0); //the second parameter translates to '>'
-	gsl_vector* degi = gsl_vector_alloc(ij->size2);
-	gsl_vector* degj = gsl_vector_alloc(ij->size2);		
-	gsl_vector_view i = gsl_matrix_row(ij, 0);
-	gsl_vector_view j = gsl_matrix_row(ij, 1);
-	K = ij->size2;
+	gsl_matrix* gt0_m = compare_elements(m, cmp_greater, 0.0);
+	gsl_matrix* ij = find_ij(gt0_m);
+	gsl_matrix_free(gt0_m);
+	gsl_vector* degi = gsl_vector_alloc(ij->size1);
+	gsl_vector* degj = gsl_vector_alloc(ij->size1);		
+	gsl_vector_view i = gsl_matrix_column(ij, 0);
+	gsl_vector_view j = gsl_matrix_column(ij, 1);
+	K = ij->size1;
 	for(int k = 0;k < K;k++) {
 		gsl_vector_set(degi, k, gsl_vector_get(deg, ((int)gsl_vector_get(&i.vector, k))));
 		gsl_vector_set(degj, k, gsl_vector_get(deg, ((int)gsl_vector_get(&j.vector, k))));
@@ -29,12 +31,16 @@ double bct::assortativity_dir(const gsl_matrix* m) {
 double bct::assortativity_und(const gsl_matrix* m) {
 	int K;
 	gsl_vector* deg = degrees_und(m);
-	gsl_matrix* ij = find_cmp(triu(m, 1), 0, 0); //the second parameter translates to '>'
-	gsl_vector* degi = gsl_vector_alloc(ij->size2);
-	gsl_vector* degj = gsl_vector_alloc(ij->size2);	
-	gsl_vector_view i = gsl_matrix_row(ij, 0);
-	gsl_vector_view j = gsl_matrix_row(ij, 1);
-	K = ij->size2;
+	gsl_matrix* triu_m = triu(m, 1);
+	gsl_matrix* gt0_triu_m = compare_elements(triu_m, cmp_greater, 0.0);
+	gsl_matrix* ij = find_ij(gt0_triu_m);
+	gsl_matrix_free(gt0_triu_m);
+	gsl_matrix_free(triu_m);
+	gsl_vector* degi = gsl_vector_alloc(ij->size1);
+	gsl_vector* degj = gsl_vector_alloc(ij->size1);	
+	gsl_vector_view i = gsl_matrix_column(ij, 0);
+	gsl_vector_view j = gsl_matrix_column(ij, 1);
+	K = ij->size1;
 	for(int k = 0;k < K;k++) {
 		gsl_vector_set(degi, k, gsl_vector_get(deg, ((int)gsl_vector_get(&i.vector, k))));
 		gsl_vector_set(degj, k, gsl_vector_get(deg, ((int)gsl_vector_get(&j.vector, k))));

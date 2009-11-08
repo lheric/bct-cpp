@@ -48,6 +48,23 @@ gsl_vector* matlab::find(const gsl_matrix* m, int n, const char* direction) {
 	return ret;
 }
 
+/*
+ * Emulates the two-return version of find.
+ */
+gsl_matrix* matlab::find_ij(const gsl_matrix* m, int n, const char* direction) {
+	gsl_vector* found_v = find(m, n, direction);
+	gsl_matrix* found_m = gsl_matrix_alloc(found_v->size, 2);
+	for (int i = 0; i < found_v->size; i++) {
+		int index = (int)gsl_vector_get(found_v, i);
+		int row = index % (int)m->size1;
+		int column = index / (int)m->size1;
+		gsl_matrix_set(found_m, i, 0, (double)row);
+		gsl_matrix_set(found_m, i, 1, (double)column);
+	}
+	gsl_vector_free(found_v);
+	return found_m;
+}
+
 int matlab::nnz(const gsl_vector* v) {
 	int nnz = 0;
 	for (int i = 0; i < v->size; i++) {
@@ -447,7 +464,7 @@ gsl_vector* matlab::to_vector(const gsl_matrix* m) {
 	for (int j = 0; j < m->size2; j++) {
 		for (int i = 0; i < m->size1; i++) {
 			double value = gsl_matrix_get(m, i, j);
-			gsl_vector_set(v, j * m->size2 + i, value);
+			gsl_vector_set(v, j * m->size1 + i, value);
 		}
 	}
 	return v;
