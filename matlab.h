@@ -5,7 +5,8 @@
 #include <gsl/gsl_vector.h>
 #include <limits>
 
-namespace matlab {	
+namespace matlab {
+	typedef bool (*compare_fn)(double, double);
 	const double EPSILON = 1e-6;
 
 	// Functions
@@ -28,14 +29,26 @@ namespace matlab {
 	gsl_matrix* pow_elements(const gsl_matrix*, const gsl_matrix*);
 	gsl_matrix* pow(const gsl_matrix*, int);
 	
-	// Comparisons
-	int compare(double, double);
-	bool is_equal(double, double);
-	bool is_negative(double);
-	bool is_nonzero(double);
-	bool is_not_equal(double, double);
-	bool is_positive(double);
-	bool is_zero(double);
+	// Vector/matrix comparisons
+	gsl_vector* compare_elements(const gsl_vector*, compare_fn, double);
+	gsl_vector* compare_elements(const gsl_vector*, compare_fn, const gsl_vector*);
+	gsl_matrix* compare_elements(const gsl_matrix*, compare_fn, double);
+	gsl_matrix* compare_elements(const gsl_matrix*, compare_fn, const gsl_matrix*);
+	bool cmp_equal(double, double);
+	bool cmp_not_equal(double, double);
+	bool cmp_greater(double, double);
+	bool cmp_greater_or_equal(double, double);
+	bool cmp_less(double, double);
+	bool cmp_less_or_equal(double, double);
+	
+	// Floating-point comparisons
+	int fp_compare(double, double);
+	bool fp_equal(double, double);
+	bool fp_not_equal(double, double);
+	bool fp_zero(double);
+	bool fp_nonzero(double);
+	bool fp_positive(double);
+	bool fp_negative(double);
 
 	// Indexing
 	gsl_vector* index(const gsl_vector*, const gsl_vector*);

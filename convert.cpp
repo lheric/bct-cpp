@@ -10,7 +10,7 @@ gsl_matrix* bct::binary(const gsl_matrix* m) {
 	gsl_matrix* binary_m = gsl_matrix_calloc(m->size1, m->size2);
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {
-			if (is_nonzero(gsl_matrix_get(m, i, j))) {
+			if (fp_nonzero(gsl_matrix_get(m, i, j))) {
 				gsl_matrix_set(binary_m, i, j, 1.0);
 			}
 		}
@@ -60,11 +60,11 @@ gsl_matrix* bct::undirected(const gsl_matrix* m) {
 		for (int j = i; j < m->size2; j++) {
 			double value_ij = gsl_matrix_get(m, i, j);
 			double value_ji = gsl_matrix_get(m, j, i);
-			if (is_zero(value_ij) && is_nonzero(value_ji)) {
+			if (fp_zero(value_ij) && fp_nonzero(value_ji)) {
 				gsl_matrix_set(undirected_m, i, j, value_ji);
-			} else if (is_nonzero(value_ij) && is_zero(value_ji)) {
+			} else if (fp_nonzero(value_ij) && fp_zero(value_ji)) {
 				gsl_matrix_set(undirected_m, j, i, value_ij);
-			} else if (is_not_equal(value_ij, value_ji)) {
+			} else if (fp_not_equal(value_ij, value_ji)) {
 				double average = (value_ij + value_ji) / 2.0;
 				gsl_matrix_set(undirected_m, i, j, average);
 				gsl_matrix_set(undirected_m, j, i, average);

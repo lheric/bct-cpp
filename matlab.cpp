@@ -20,7 +20,7 @@ gsl_vector* matlab::find(const gsl_vector* v, int n, const char* direction) {
 	if (direction == NULL || std::strcmp(direction, "first") == 0) {
 		int position = 0;
 		for (int i = 0; i < v->size && position < found->size; i++) {
-			if (is_nonzero(gsl_vector_get(v, i))) {
+			if (fp_nonzero(gsl_vector_get(v, i))) {
 				gsl_vector_set(found, position, i);
 				position++;
 			}
@@ -29,7 +29,7 @@ gsl_vector* matlab::find(const gsl_vector* v, int n, const char* direction) {
 	} else if (std::strcmp(direction, "last") == 0) {
 		int position = found->size - 1;
 		for (int i = v->size - 1; i >= 0 && position >= 0; i--) {
-			if (is_nonzero(gsl_vector_get(v, i))) {
+			if (fp_nonzero(gsl_vector_get(v, i))) {
 				gsl_vector_set(found, position, i);
 				position--;
 			}
@@ -51,7 +51,7 @@ gsl_vector* matlab::find(const gsl_matrix* m, int n, const char* direction) {
 int matlab::nnz(const gsl_vector* v) {
 	int nnz = 0;
 	for (int i = 0; i < v->size; i++) {
-		if (is_nonzero(gsl_vector_get(v, i))) {
+		if (fp_nonzero(gsl_vector_get(v, i))) {
 			nnz++;
 		}
 	}
@@ -134,8 +134,8 @@ gsl_vector* matlab::logical_and(const gsl_vector* v1, const gsl_vector* v2) {
 	}
 	gsl_vector* and_v = gsl_vector_alloc(v1->size);
 	for (int i = 0; i < v1->size; i++) {
-		bool nz1 = is_nonzero(gsl_vector_get(v1, i));
-		bool nz2 = is_nonzero(gsl_vector_get(v2, i));
+		bool nz1 = fp_nonzero(gsl_vector_get(v1, i));
+		bool nz2 = fp_nonzero(gsl_vector_get(v2, i));
 		gsl_vector_set(and_v, i, (double)(nz1 && nz2));
 	}
 	return and_v;
@@ -147,7 +147,7 @@ gsl_vector* matlab::logical_and(const gsl_vector* v1, const gsl_vector* v2) {
 gsl_vector* matlab::logical_not(const gsl_vector* v) {
 	gsl_vector* not_v = gsl_vector_alloc(v->size);
 	for (int i = 0; i < v->size; i++) {
-		bool z = is_zero(gsl_vector_get(v, i));
+		bool z = fp_zero(gsl_vector_get(v, i));
 		gsl_vector_set(not_v, i, (double)z);
 	}
 	return not_v;
@@ -162,8 +162,8 @@ gsl_vector* matlab::logical_or(const gsl_vector* v1, const gsl_vector* v2) {
 	}
 	gsl_vector* or_v = gsl_vector_alloc(v1->size);
 	for (int i = 0; i < v1->size; i++) {
-		bool nz1 = is_nonzero(gsl_vector_get(v1, i));
-		bool nz2 = is_nonzero(gsl_vector_get(v2, i));
+		bool nz1 = fp_nonzero(gsl_vector_get(v1, i));
+		bool nz2 = fp_nonzero(gsl_vector_get(v2, i));
 		gsl_vector_set(or_v, i, (double)(nz1 || nz2));
 	}
 	return or_v;
@@ -245,11 +245,66 @@ gsl_matrix* matlab::pow(const gsl_matrix* m, int power) {
 	return pow_m;
 }
 
-int matlab::compare(double x, double y) {
-	if (is_zero(x) || is_zero(y)) {
+gsl_vector* matlab::compare_elements(const gsl_vector* v, compare_fn cmp_fn, double x) {
+	gsl_vector* cmp_v = gsl_vector_alloc(v->size);
+	for (int i = 0; i < v->size; i++) {
+		double value = gsl_vector_get(v, i);
+		gsl_vector_set(cmp_v, i, (double)cmp_fn(value, x));
+	}
+	return cmp_v;
+}
+
+gsl_vector* matlab::compare_elements(const gsl_vector* v1, compare_fn cmp_fn, const gsl_vector* v2) {
+	if (v1->size != v2->size) {
+		return NULL;
+	}
+	gsl_vector* cmp_v = gsl_vector_alloc(v1->size);
+	for (int i = 0; i < v1->size; i++) {
+		double value1 = gsl_vector_get(v1, i);
+		double value2 = gsl_vector_get(v2, i);
+		gsl_vector_set(cmp_v, i, (double)cmp_fn(value1, value2));
+	}
+	return cmp_v;
+}
+
+gsl_matrix* matlab::compare_elements(const gsl_matrix* m, compare_fn cmp_fn, double x) {
+	gsl_matrix* cmp_m = gsl_matrix_alloc(m->size1, m->size2);
+	for (int i = 0; i < m->size1; i++) {
+		for (int j = 0; j < m->size2; j++) {
+			double value = gsl_matrix_get(m, i, j);
+			gsl_matrix_set(cmp_m, i, j, (double)cmp_fn(value, x));
+		}
+	}
+	return cmp_m;
+}
+
+gsl_matrix* matlab::compare_elements(const gsl_matrix* m1, compare_fn cmp_fn, const gsl_matrix* m2) {
+	if (m1->size1 != m2->size1 || m1->size2 != m2->size2) {
+		return NULL;
+	}
+	gsl_matrix* cmp_m = gsl_matrix_alloc(m1->size1, m1->size2);
+	for (int i = 0; i < m1->size1; i++) {
+		for (int j = 0; j < m1->size2; j++) {
+			double value1 = gsl_matrix_get(m1, i, j);
+			double value2 = gsl_matrix_get(m2, i, j);
+			gsl_matrix_set(cmp_m, i, j, (double)cmp_fn(value1, value2));
+		}
+	}
+	return cmp_m;
+}
+
+bool matlab::cmp_equal(double x, double y) { return fp_equal(x, y); }
+bool matlab::cmp_not_equal(double x, double y) { return fp_not_equal(x, y); }
+bool matlab::cmp_greater(double x, double y) { return fp_compare(x, y) == 1; }
+bool matlab::cmp_greater_or_equal(double x, double y) { return fp_compare(x, y) == 1 || fp_equal(x, y); }
+bool matlab::cmp_less(double x, double y) { return fp_compare(x, y) == -1; }
+bool matlab::cmp_less_or_equal(double x, double y) { return fp_compare(x, y) == -1 || fp_equal(x, y); }
+
+int matlab::fp_compare(double x, double y) {
+	if (fp_zero(x) || fp_zero(y)) {
 		
 		// gsl_fcmp is not suitable for testing whether a value is approximately zero
-		if (is_zero(x) && is_zero(y)) {
+		if (fp_zero(x) && fp_zero(y)) {
 			return 0;
 		} else {
 			return (x < y) ? -1 : 1;
@@ -259,12 +314,12 @@ int matlab::compare(double x, double y) {
 	}
 }
 
-bool matlab::is_equal(double x, double y) { return compare(x, y) == 0; }
-bool matlab::is_negative(double x) { return x < -EPSILON; }
-bool matlab::is_nonzero(double x) { return std::abs(x) > EPSILON; }
-bool matlab::is_not_equal(double x, double y) { return compare(x, y) != 0; }
-bool matlab::is_positive(double x) { return x > EPSILON; }
-bool matlab::is_zero(double x) { return std::abs(x) < EPSILON; }
+bool matlab::fp_equal(double x, double y) { return fp_compare(x, y) == 0; }
+bool matlab::fp_not_equal(double x, double y) { return fp_compare(x, y) != 0; }
+bool matlab::fp_zero(double x) { return std::abs(x) < EPSILON; }
+bool matlab::fp_nonzero(double x) { return std::abs(x) > EPSILON; }
+bool matlab::fp_positive(double x) { return x > EPSILON; }
+bool matlab::fp_negative(double x) { return x < -EPSILON; }
 
 /*
  * Emulates vector indexing by another vector.
@@ -329,7 +384,7 @@ gsl_vector* matlab::logical_index(const gsl_vector* v, const gsl_vector* lv) {
 	gsl_vector* indexed = gsl_vector_alloc(size);
 	int position = 0;
 	for (int i = 0; i < lv->size; i++) {
-		if (is_nonzero(gsl_vector_get(lv, i))) {
+		if (fp_nonzero(gsl_vector_get(lv, i))) {
 			double value = gsl_vector_get(v, i);
 			gsl_vector_set(indexed, position, value);
 			position++;
@@ -350,7 +405,7 @@ gsl_vector* matlab::logical_index(const gsl_matrix* m, const gsl_vector* lv) {
 	gsl_vector* indexed = gsl_vector_alloc(size);
 	int position = 0;
 	for (int i = 0; i < lv->size; i++) {
-		if (is_nonzero(gsl_vector_get(lv, i))) {
+		if (fp_nonzero(gsl_vector_get(lv, i))) {
 			double value = index(m, i);
 			gsl_vector_set(indexed, position, value);
 			position++;
@@ -373,7 +428,7 @@ gsl_vector* matlab::logical_index(const gsl_matrix* m, const gsl_matrix* lm) {
 	int position = 0;
 	for (int j = 0; j < lm->size2; j++) {
 		for (int i = 0; i < lm->size1; i++) {
-			if (is_nonzero(gsl_matrix_get(lm, i, j))) {
+			if (fp_nonzero(gsl_matrix_get(lm, i, j))) {
 				double value = index(m, j * lm->size1 + i);
 				gsl_vector_set(indexed, position, value);
 				position++;
