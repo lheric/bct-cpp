@@ -12,7 +12,7 @@
 double bct::assortativity_dir(const gsl_matrix* m) {
 	int K;
 	gsl_vector* deg = degrees_dir(m);
-	gsl_matrix* ij = find(m, 0, 0); //the second parameter translates to '>'
+	gsl_matrix* ij = find_cmp(m, 0, 0); //the second parameter translates to '>'
 	gsl_vector* degi = gsl_vector_alloc(ij->size2);
 	gsl_vector* degj = gsl_vector_alloc(ij->size2);		
 	gsl_vector_view i = gsl_matrix_row(ij, 0);
@@ -29,7 +29,7 @@ double bct::assortativity_dir(const gsl_matrix* m) {
 double bct::assortativity_und(const gsl_matrix* m) {
 	int K;
 	gsl_vector* deg = degrees_und(m);
-	gsl_matrix* ij = find(triu(m, 1), 0, 0); //the second parameter translates to '>'
+	gsl_matrix* ij = find_cmp(triu(m, 1), 0, 0); //the second parameter translates to '>'
 	gsl_vector* degi = gsl_vector_alloc(ij->size2);
 	gsl_vector* degj = gsl_vector_alloc(ij->size2);	
 	gsl_vector_view i = gsl_matrix_row(ij, 0);

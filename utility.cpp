@@ -8,7 +8,7 @@
  * coded in the cmprFlag parameter, as follows:
  * 0 -> 'greater than operator, >'
  */
-gsl_matrix* bct::find(const gsl_matrix* m, int cmprFlag, double cmprVal) {
+gsl_matrix* bct::find_cmp(const gsl_matrix* m, int cmprFlag, double cmprVal) {
 	gsl_matrix* indices = gsl_matrix_alloc(2, m->size1 * m->size2);
 	int size = 0;
 	if(cmprFlag==0) { //means, perform a '>'
