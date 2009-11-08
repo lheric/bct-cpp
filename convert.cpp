@@ -50,7 +50,7 @@ gsl_matrix* bct::positive(const gsl_matrix* m) {
  * - If m(i, j) and m(j, i) are different nonzero values, they are both set to
  *   the average of these values.
  */
-gsl_matrix* bct::undirected(const gsl_matrix* m, bool upper) {
+gsl_matrix* bct::undirected(const gsl_matrix* m) {
 	if (m->size1 != m->size2) {
 		throw size_exception();
 	}
