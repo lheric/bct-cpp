@@ -17,21 +17,16 @@ gsl_vector* bct::clustering_coef_bu(const gsl_matrix* m) {
 		gsl_vector_const_view row = gsl_matrix_const_row(m, i);
 		int k = nnz(&row.vector);
 		if (k >= 2) {
-			gsl_vector* neighbors = matlab::find(&row.vector);
-			gsl_matrix* s = index(m, neighbors, neighbors);
-			int actual_connections = nnz(s);
+			gsl_vector* neighbors = find(&row.vector);
+			gsl_matrix* neighbors_m = index(m, neighbors, neighbors);
+			gsl_vector* connections_v = sum(neighbors_m);
+			int connections = sum(connections_v);
 			int possible_connections = k * (k - 1);
-			gsl_vector_set(clustering_coef, i, (double)actual_connections / (double)possible_connections);
-			gsl_matrix_free(s);
+			gsl_vector_set(clustering_coef, i, (double)connections / (double)possible_connections);
+			gsl_vector_free(connections_v);
+			gsl_matrix_free(neighbors_m);
 			gsl_vector_free(neighbors);
 		}
 	}
 	return clustering_coef;
 }
-
-// for each row
-// - get indices of nonzero entries
-// - if there's more than two
-// - get the neighbors (submatrix using those indices)
-// - sum the submatrix and entrywise divide by k * (k - 1), where k is the number of indices
-// - that's the value of cc for that row (node)
