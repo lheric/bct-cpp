@@ -33,7 +33,7 @@ gsl_matrix* bct::matching_ind(const gsl_matrix* m) {
 			gsl_vector_const_view r2 = gsl_matrix_const_row(m, j);
 			gsl_vector* t1 = splice(&c1.vector, &r1.vector);
 			gsl_vector* t2 = splice(&c2.vector, &r2.vector);
-			use = logical_not(logical_and(logical_not(t1), logical_not(t2)));
+			use = logical_or(t1, t2);
 			gsl_vector_set(use, i, 0);
 			gsl_vector_set(use, j, 0);
 			gsl_vector_set(use, i+N, 0);
