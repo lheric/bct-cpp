@@ -27,7 +27,7 @@ endfor
 
 % clustering_coef_wu
 for i = 1:size(m)(2)
-	bct_test(sprintf("clustering_coef_wu %s", mname{i}), all(clustering_coef_wu(m{i}) == clustering_coef_wu_cpp(m{i})'))
+	bct_test(sprintf("clustering_coef_wu %s", mname{i}), all(abs(clustering_coef_wu(m{i}) - clustering_coef_wu_cpp(m{i})') < 1e-6))
 endfor
 
 % degrees_dir
