@@ -33,6 +33,7 @@ namespace bct {
 	gsl_vector* strengths_und(const gsl_matrix*);
 
 	// Clustering
+	gsl_vector* clustering_coef_bd(const gsl_matrix*);
 	gsl_vector* clustering_coef_bu(const gsl_matrix*);
 	gsl_vector* clustering_coef_wu(const gsl_matrix*);
 
