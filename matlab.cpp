@@ -304,6 +304,9 @@ gsl_matrix* matlab::pow(const gsl_matrix* m, int power) {
 	return pow_m;
 }
 
+/*
+ * Emulates (v op x), where op is a binary comparison operator.
+ */
 gsl_vector* matlab::compare_elements(const gsl_vector* v, compare_fn cmp_fn, double x) {
 	gsl_vector* cmp_v = gsl_vector_alloc(v->size);
 	for (int i = 0; i < v->size; i++) {
@@ -313,6 +316,9 @@ gsl_vector* matlab::compare_elements(const gsl_vector* v, compare_fn cmp_fn, dou
 	return cmp_v;
 }
 
+/*
+ * Emulates (v1 op v2), where op is a binary comparison operator.
+ */
 gsl_vector* matlab::compare_elements(const gsl_vector* v1, compare_fn cmp_fn, const gsl_vector* v2) {
 	if (v1->size != v2->size) {
 		return NULL;
@@ -326,6 +332,9 @@ gsl_vector* matlab::compare_elements(const gsl_vector* v1, compare_fn cmp_fn, co
 	return cmp_v;
 }
 
+/*
+ * Emulates (m op x), where op is a binary comparison operator.
+ */
 gsl_matrix* matlab::compare_elements(const gsl_matrix* m, compare_fn cmp_fn, double x) {
 	gsl_matrix* cmp_m = gsl_matrix_alloc(m->size1, m->size2);
 	for (int i = 0; i < m->size1; i++) {
@@ -337,6 +346,9 @@ gsl_matrix* matlab::compare_elements(const gsl_matrix* m, compare_fn cmp_fn, dou
 	return cmp_m;
 }
 
+/*
+ * Emulates (m1 op m2), where op is a binary comparison operator.
+ */
 gsl_matrix* matlab::compare_elements(const gsl_matrix* m1, compare_fn cmp_fn, const gsl_matrix* m2) {
 	if (m1->size1 != m2->size1 || m1->size2 != m2->size2) {
 		return NULL;
