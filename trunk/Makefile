@@ -3,6 +3,7 @@ objects = \
 	cat.o \
 	clustering_coef_bd.o \
 	clustering_coef_bu.o \
+	clustering_coef_wd.o \
 	clustering_coef_wu.o \
 	convert.o \
 	debug.o \
