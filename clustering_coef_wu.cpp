@@ -21,14 +21,14 @@ gsl_vector* bct::clustering_coef_wu(const gsl_matrix* m) {
 	gsl_matrix* root3_m = pow_elements(m, 1.0 / 3.0);
 	gsl_matrix* cyc3_m = pow(root3_m, 3);
 	gsl_vector_const_view cyc3 = gsl_matrix_const_diagonal(cyc3_m);
-	gsl_vector* clustering_coef = gsl_vector_alloc(m->size1);
-	gsl_vector_memcpy(clustering_coef, &cyc3.vector);
 	
 	// C=cyc3./(K.*(K-1));
-	gsl_vector* k_less1 = gsl_vector_alloc(m->size1);
+	gsl_vector* k_less1 = gsl_vector_alloc(k->size);
 	gsl_vector_memcpy(k_less1, k);
 	gsl_vector_add_constant(k_less1, -1.0);
 	gsl_vector_mul(k, k_less1);
+	gsl_vector* clustering_coef = gsl_vector_alloc(m->size1);
+	gsl_vector_memcpy(clustering_coef, &cyc3.vector);
 	gsl_vector_div(clustering_coef, k);
 	
 	// If no 3-cycles exist, set clustering coefficient to 0
