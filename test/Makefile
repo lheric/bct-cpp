@@ -3,6 +3,7 @@ filenames = \
 	assortativity_und_cpp \
 	clustering_coef_bd_cpp \
 	clustering_coef_bu_cpp \
+	clustering_coef_wd_cpp \
 	clustering_coef_wu_cpp \
 	degrees_dir_cpp \
 	degrees_und_cpp \
