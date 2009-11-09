@@ -7,15 +7,7 @@
  * Returns a binary copy of the given matrix.
  */
 gsl_matrix* bct::binary(const gsl_matrix* m) {
-	gsl_matrix* binary_m = gsl_matrix_calloc(m->size1, m->size2);
-	for (int i = 0; i < m->size1; i++) {
-		for (int j = 0; j < m->size2; j++) {
-			if (fp_nonzero(gsl_matrix_get(m, i, j))) {
-				gsl_matrix_set(binary_m, i, j, 1.0);
-			}
-		}
-	}
-	return binary_m;
+	return compare_elements(m, cmp_not_equal, 0.0);
 }
 
 /*
