@@ -143,6 +143,48 @@ gsl_matrix* matlab::triu(const gsl_matrix* m, int k) {
 }
 
 /*
+ * Emulates ([v1 v2]) for row vectors or ([v1 ; v2]) for column vectors.
+ */
+gsl_vector* matlab::concatenate(const gsl_vector* v1, const gsl_vector* v2) {
+	gsl_vector* cat_v = gsl_vector_alloc(v1->size + v2->size);
+	gsl_vector_view cat_v1 = gsl_vector_subvector(cat_v, 0, v1->size);
+	gsl_vector_view cat_v2 = gsl_vector_subvector(cat_v, v1->size, v2->size);
+	gsl_vector_memcpy(&cat_v1.vector, v1);
+	gsl_vector_memcpy(&cat_v2.vector, v2);
+	return cat_v;
+}
+
+/*
+ * Emulates ([m1 ; m2]).
+ */
+gsl_matrix* matlab::concatenate_columns(const gsl_matrix* m1, const gsl_matrix* m2) {
+	if (m1->size2 != m2->size2) {
+		return NULL;
+	}
+	gsl_matrix* cat_m = gsl_matrix_alloc(m1->size1 + m2->size1, m1->size2);
+	gsl_matrix_view cat_m1 = gsl_matrix_submatrix(cat_m, 0, 0, m1->size1, m1->size2);
+	gsl_matrix_view cat_m2 = gsl_matrix_submatrix(cat_m, m1->size1, 0, m2->size1, m2->size2);
+	gsl_matrix_memcpy(&cat_m1.matrix, m1);
+	gsl_matrix_memcpy(&cat_m2.matrix, m2);
+	return cat_m;
+}
+
+/*
+ * Emulates ([m1 m2]).
+ */
+gsl_matrix* matlab::concatenate_rows(const gsl_matrix* m1, const gsl_matrix* m2) {
+	if (m1->size1 != m2->size1) {
+		return NULL;
+	}
+	gsl_matrix* cat_m = gsl_matrix_alloc(m1->size1, m1->size2 + m2->size2);
+	gsl_matrix_view cat_m1 = gsl_matrix_submatrix(cat_m, 0, 0, m1->size1, m1->size2);
+	gsl_matrix_view cat_m2 = gsl_matrix_submatrix(cat_m, 0, m1->size2, m2->size1, m2->size2);
+	gsl_matrix_memcpy(&cat_m1.matrix, m1);
+	gsl_matrix_memcpy(&cat_m2.matrix, m2);
+	return cat_m;
+}
+
+/*
  * Emulates (v1 & v2).
  */
 gsl_vector* matlab::logical_and(const gsl_vector* v1, const gsl_vector* v2) {

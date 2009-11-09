@@ -25,16 +25,3 @@ void bct::gsl_free(gsl_matrix* m) { gsl_matrix_free(m); }
 void bct::init() {
 	gsl_set_error_handler(gsl_error_handler);
 }
-
-/* M
- * Splice two vectors into one
- */
-gsl_vector* bct::splice(const gsl_vector* v1, const gsl_vector* v2) {
-	int spliceVindex = 0;
-	gsl_vector* spliceV = gsl_vector_alloc(v1->size + v2->size);
-	for(int i = 0;i < v1->size;i++)
-		gsl_vector_set(spliceV, spliceVindex++, gsl_vector_get(v1, i));
-	for(int i = 0;i < v2->size;i++)
-		gsl_vector_set(spliceV, spliceVindex++, gsl_vector_get(v2, i));
-	return spliceV;
-}
