@@ -176,6 +176,16 @@ gsl_matrix* matlab::concatenate_rows(const gsl_matrix* m1, const gsl_matrix* m2)
 	if (m1->size1 != m2->size1) {
 		return NULL;
 	}
+	if(m1 == NULL) {
+		gsl_matrix* cat_m = gsl_matrix_alloc(m2->size1, m2->size2);
+		gsl_matrix_memcpy(cat_m, m2);
+		return cat_m;
+	}
+	else if(m2 == NULL) {
+		gsl_matrix* cat_m = gsl_matrix_alloc(m1->size1, m1->size2);
+		gsl_matrix_memcpy(cat_m, m1);
+		return cat_m;
+	}
 	gsl_matrix* cat_m = gsl_matrix_alloc(m1->size1, m1->size2 + m2->size2);
 	gsl_matrix_view cat_m1 = gsl_matrix_submatrix(cat_m, 0, 0, m1->size1, m1->size2);
 	gsl_matrix_view cat_m2 = gsl_matrix_submatrix(cat_m, 0, m1->size2, m2->size1, m2->size2);
