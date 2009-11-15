@@ -11,7 +11,6 @@ objects = \
 	degrees_und.o \
 	density_dir.o \
 	density_und.o \
-	error.o \
 	fve.o \
 	jdegree.o \
 	macaque.o \
