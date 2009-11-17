@@ -1,6 +1,7 @@
 filenames = \
 	assortativity_dir_cpp \
 	assortativity_und_cpp \
+	betweenness_bin_cpp \
 	clustering_coef_bd_cpp \
 	clustering_coef_bu_cpp \
 	clustering_coef_wd_cpp \
@@ -32,7 +33,7 @@ all: $(oct_files)
 $(oct_files): ../libbct.a bct_test.h bct_test.cpp $$(basename $$@).cpp
 	mkoctfile -lbct -lgsl -lgslcblas $(basename $@).cpp
 
-install: $(oct_files)
+install:
 	if [ ! -d /usr/local/share/bct ]; then \
 		mkdir /usr/local/share/bct; \
 	fi

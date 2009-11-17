@@ -41,6 +41,7 @@ namespace bct {
 	// Paths, distances, and cycles
 
 	// Centrality
+	gsl_vector* betweenness_bin(const gsl_matrix*);
 
 	// Motifs
 

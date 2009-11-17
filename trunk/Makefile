@@ -1,5 +1,6 @@
 objects = \
 	assortativity.o \
+	betweenness_bin.o \
 	cat.o \
 	clustering_coef_bd.o \
 	clustering_coef_bu.o \
