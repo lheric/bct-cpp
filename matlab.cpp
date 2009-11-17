@@ -577,6 +577,21 @@ gsl_vector* matlab::logical_index(const gsl_matrix* m, const gsl_matrix* lm) {
 	return indexed;
 }
 
+/* 
+ * Emulates 'scalar:scalar'
+ * Ex: >>2:5 in matlab yields [2,3,4,5]
+ */
+gsl_vector* matlab::sequence(int start, int end) {
+	if(end <= start) {
+		return NULL;
+	}
+	gsl_vector* v = gsl_vector_alloc(end-start+1);
+	for(int i=0,val=start;val <= end;i++,val++) {
+		gsl_vector_set(v, i, val);
+	}
+}
+	
+
 /*
  * Emulates matrix-to-vector conversion.  The vector is constructed by
  * consecutively appending columns.
