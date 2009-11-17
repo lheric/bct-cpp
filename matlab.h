@@ -17,7 +17,7 @@ namespace matlab {
 	gsl_matrix* find_ij(const gsl_matrix*, int = std::numeric_limits<int>::max(), const char* = NULL);
 	int nnz(const gsl_vector*);
 	int nnz(const gsl_matrix*);
-	gsl_matrix* ones(int);
+	gsl_matrix* ones(int, double = 1.0);
 	gsl_matrix* ones(int, int, double = 1.0);
 	gsl_vector* sequence(int, int);
 	double sum(const gsl_vector*);
