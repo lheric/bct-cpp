@@ -98,8 +98,8 @@ int matlab::nnz(const gsl_matrix* m) {
 	return ret;
 }
 
-gsl_matrix* matlab::ones(int size) {
-	return ones(size, size);
+gsl_matrix* matlab::ones(int size, double scale) {
+	return ones(size, size, scale);
 }
 
 gsl_matrix* matlab::ones(int size1, int size2, double scale) {
