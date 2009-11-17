@@ -76,8 +76,8 @@ gsl_matrix* matlab::find_ij(const gsl_matrix* m, int n, const char* direction) {
 			gsl_matrix_set(found_m, i, 0, (double)row);
 			gsl_matrix_set(found_m, i, 1, (double)column);
 		}
+		gsl_vector_free(found_v);
 	}
-	gsl_vector_free(found_v);
 	return found_m;
 }
 
