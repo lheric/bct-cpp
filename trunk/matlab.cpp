@@ -488,8 +488,8 @@ double matlab::index(const gsl_matrix* m, int index) {
 gsl_matrix* matlab::index(const gsl_matrix* m, const gsl_vector* rows, const gsl_vector* columns) {
 	gsl_matrix* indexed = gsl_matrix_alloc(rows->size, columns->size);
 	for (int i = 0; i < rows->size; i++) {
+		int row = (int)gsl_vector_get(rows, i);
 		for (int j = 0; j < columns->size; j++) {
-			int row = (int)gsl_vector_get(rows, i);
 			int column = (int)gsl_vector_get(columns, j);
 			double value = gsl_matrix_get(m, row, column);
 			gsl_matrix_set(indexed, i, j, value);
