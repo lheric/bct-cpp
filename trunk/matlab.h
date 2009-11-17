@@ -18,7 +18,7 @@ namespace matlab {
 	int nnz(const gsl_vector*);
 	int nnz(const gsl_matrix*);
 	gsl_matrix* ones(int);
-	gsl_matrix* ones(int, int);
+	gsl_matrix* ones(int, int, double = 1.0);
 	gsl_vector* sequence(int, int);
 	double sum(const gsl_vector*);
 	gsl_vector* sum(const gsl_matrix*, int = 1);
