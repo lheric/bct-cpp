@@ -114,8 +114,7 @@ gsl_matrix* matlab::tril(const gsl_matrix* m, int k) {
 	if (k <= -(int)m->size1 || k >= (int)m->size2) {
 		return NULL;
 	}
-	gsl_matrix* tril = gsl_matrix_alloc(m->size1, m->size2);
-	gsl_matrix_memcpy(tril, m);
+	gsl_matrix* tril = copy(m);
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = i + k + 1; j < m->size2; j++) {
 			if (j >= 0) {
@@ -130,8 +129,7 @@ gsl_matrix* matlab::triu(const gsl_matrix* m, int k) {
 	if (k <= -(int)m->size1 || k >= (int)m->size2) {
 		return NULL;
 	}
-	gsl_matrix* triu = gsl_matrix_alloc(m->size1, m->size2);
-	gsl_matrix_memcpy(triu, m);
+	gsl_matrix* triu = copy(m);
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = i + k - 1; j >= 0; j--) {
 			if (j < m->size2) {
@@ -149,13 +147,9 @@ gsl_vector* matlab::concatenate(const gsl_vector* v1, const gsl_vector* v2) {
 	if (v1 == NULL && v2 == NULL) {
 		return NULL;
 	} else if (v1 == NULL) {
-		gsl_vector* cat_v = gsl_vector_alloc(v2->size);
-		gsl_vector_memcpy(cat_v, v2);
-		return cat_v;
+		return copy(v2);
 	} else if (v2 == NULL) {
-		gsl_vector* cat_v = gsl_vector_alloc(v1->size);
-		gsl_vector_memcpy(cat_v, v1);
-		return cat_v;
+		return copy(v1);
 	}
 	gsl_vector* cat_v = gsl_vector_alloc(v1->size + v2->size);
 	gsl_vector_view cat_v1 = gsl_vector_subvector(cat_v, 0, v1->size);
@@ -172,13 +166,9 @@ gsl_matrix* matlab::concatenate_columns(const gsl_matrix* m1, const gsl_matrix* 
 	if (m1 == NULL && m2 == NULL) {
 		return NULL;
 	} else if (m1 == NULL) {
-		gsl_matrix* cat_m = gsl_matrix_alloc(m2->size1, m2->size2);
-		gsl_matrix_memcpy(cat_m, m2);
-		return cat_m;
+		return copy(m2);
 	} else if (m2 == NULL) {
-		gsl_matrix* cat_m = gsl_matrix_alloc(m1->size1, m1->size2);
-		gsl_matrix_memcpy(cat_m, m1);
-		return cat_m;
+		return copy(m1);
 	} else if (m1->size2 != m2->size2) {
 		return NULL;
 	}
@@ -197,13 +187,9 @@ gsl_matrix* matlab::concatenate_rows(const gsl_matrix* m1, const gsl_matrix* m2)
 	if (m1 == NULL && m2 == NULL) {
 		return NULL;
 	} else if (m1 == NULL) {
-		gsl_matrix* cat_m = gsl_matrix_alloc(m2->size1, m2->size2);
-		gsl_matrix_memcpy(cat_m, m2);
-		return cat_m;
+		return copy(m2);
 	} else if (m2 == NULL) {
-		gsl_matrix* cat_m = gsl_matrix_alloc(m1->size1, m1->size2);
-		gsl_matrix_memcpy(cat_m, m1);
-		return cat_m;
+		return copy(m1);
 	} else if (m1->size1 != m2->size1) {
 		return NULL;
 	}
@@ -213,6 +199,24 @@ gsl_matrix* matlab::concatenate_rows(const gsl_matrix* m1, const gsl_matrix* m2)
 	gsl_matrix_memcpy(&cat_m1.matrix, m1);
 	gsl_matrix_memcpy(&cat_m2.matrix, m2);
 	return cat_m;
+}
+
+/*
+ * Emulates copy assignment.
+ */
+gsl_vector* matlab::copy(const gsl_vector* v) {
+	gsl_vector* copy_v = gsl_vector_alloc(v->size);
+	gsl_vector_memcpy(copy_v, v);
+	return copy_v;
+}
+
+/*
+ * Emulates copy assignment.
+ */
+gsl_matrix* matlab::copy(const gsl_matrix* m) {
+	gsl_matrix* copy_m = gsl_matrix_alloc(m->size1, m->size2);
+	gsl_matrix_memcpy(copy_m, m);
+	return copy_m;
 }
 
 /*
@@ -324,8 +328,7 @@ gsl_matrix* matlab::pow(const gsl_matrix* m, int power) {
 	if (m->size1 != m->size2 || power < 1) {
 		return NULL;
 	}
-	gsl_matrix* pow_m = gsl_matrix_alloc(m->size1, m->size2);
-	gsl_matrix_memcpy(pow_m, m);
+	gsl_matrix* pow_m = copy(m);
 	for (int i = 2; i <= power; i++) {
 		gsl_matrix* temp = gsl_matrix_alloc(m->size1, m->size2);
 		gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, pow_m, m, 0.0, temp);

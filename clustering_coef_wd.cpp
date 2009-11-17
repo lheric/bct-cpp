@@ -18,7 +18,7 @@ gsl_vector* bct::clustering_coef_wd(const gsl_matrix* m) {
 	
 	// S=W.^(1/3)+(W.').^(1/3);
 	gsl_matrix* s = pow_elements(m, 1.0 / 3.0);
-	gsl_matrix* transpose_m = gsl_matrix_alloc(m->size1, m->size2);
+	gsl_matrix* transpose_m = gsl_matrix_alloc(m->size2, m->size1);
 	gsl_matrix_transpose_memcpy(transpose_m, m);
 	gsl_matrix* root3_transpose_m = pow_elements(transpose_m, 1.0 / 3.0);
 	gsl_matrix_add(s, root3_transpose_m);
@@ -35,20 +35,17 @@ gsl_vector* bct::clustering_coef_wd(const gsl_matrix* m) {
 	gsl_vector_const_view cyc3 = gsl_matrix_const_diagonal(cyc3_m);
 	
 	// CYC3=K.*(K-1)-2*diag(A^2);
-	gsl_vector* k_less1 = gsl_vector_alloc(k->size);
-	gsl_vector_memcpy(k_less1, k);
+	gsl_vector* k_less1 = copy(k);
 	gsl_vector_add_constant(k_less1, -1.0);
 	gsl_matrix* pow2_a = pow(a, 2);
 	gsl_matrix_scale(pow2_a, 2.0);
 	gsl_vector_const_view pow2 = gsl_matrix_const_diagonal(pow2_a);
-	gsl_vector* possible_cyc3 = gsl_vector_alloc(m->size1);
-	gsl_vector_memcpy(possible_cyc3, k);
+	gsl_vector* possible_cyc3 = copy(k);
 	gsl_vector_mul(possible_cyc3, k_less1);
 	gsl_vector_sub(possible_cyc3, &pow2.vector);
 	
 	// C=cyc3./CYC3
-	gsl_vector* clustering_coef = gsl_vector_alloc(m->size1);
-	gsl_vector_memcpy(clustering_coef, &cyc3.vector);
+	gsl_vector* clustering_coef = copy(&cyc3.vector);
 	gsl_vector_div(clustering_coef, possible_cyc3);
 	
 	// If no 3-cycles exist, set clustering coefficient to 0

@@ -28,7 +28,7 @@ all: libbct.a
 libbct.a: $(objects)
 	ar crs libbct.a $(objects)
 
-$(objects): bct.h
+$(objects): matlab.h bct.h
 
 install: libbct.a
 	cp matlab.h /usr/local/include
