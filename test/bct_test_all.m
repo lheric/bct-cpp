@@ -26,6 +26,11 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("assortativity_dir %s", mname{i}), assortativity(m{i}, 1) == assortativity_dir_cpp(m{i}))
 endfor
 
+% betweenness_bin
+for i = 1:size(m)(2)
+	bct_test(sprintf("betweenness_bin %s", mname{i}), all(betweenness_bin(m{i}) == betweenness_bin_cpp(m{i})))
+endfor
+
 % clustering_coef_bd
 for i = 1:size(m)(2)
 	bct_test(sprintf("clustering_coef_bd %s", mname{i}), all(clustering_coef_bd(m{i}) == clustering_coef_bd_cpp(m{i})'))
