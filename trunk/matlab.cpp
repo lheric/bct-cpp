@@ -104,12 +104,7 @@ gsl_matrix* matlab::ones(int size, double scale) {
 
 gsl_matrix* matlab::ones(int size1, int size2, double scale) {
 	gsl_matrix* m = gsl_matrix_alloc(size1, size2);
-	if(scale > 1.0) {
-		gsl_matrix_set_all(m, scale);
-	}
-	else {
-		gsl_matrix_set_all(m, 1.0);
-	}
+	gsl_matrix_set_all(m, scale);
 	return m;
 }
 
