@@ -11,6 +11,17 @@
  * document instances where our version differs from the MATLAB version.
  */
 
+gsl_matrix* matlab::eye(int size) {
+	return eye(size, size);
+}
+
+gsl_matrix* matlab::eye(int size1, int size2) {
+	gsl_matrix* m = gsl_matrix_calloc(size1, size2);
+	gsl_vector_view diagonal = gsl_matrix_diagonal(m);
+	gsl_vector_set_all(&diagonal.vector, 1.0);
+	return m;
+}
+
 gsl_vector* matlab::find(const gsl_vector* v, int n, const char* direction) {
 	int size = nnz(v);
 	if (size == 0) {
@@ -82,6 +93,16 @@ int matlab::nnz(const gsl_matrix* m) {
 	return ret;
 }
 
+gsl_matrix* matlab::ones(int size) {
+	return ones(size, size);
+}
+
+gsl_matrix* matlab::ones(int size1, int size2) {
+	gsl_matrix* m = gsl_matrix_alloc(size1, size2);
+	gsl_matrix_set_all(m, 1.0);
+	return m;
+}
+
 double matlab::sum(const gsl_vector* v) {
 	double sum = 0.0;
 	for (int i = 0; i < v->size; i++) {
@@ -138,6 +159,14 @@ gsl_matrix* matlab::triu(const gsl_matrix* m, int k) {
 		}
 	}
 	return triu;
+}
+
+gsl_matrix* matlab::zeros(int size) {
+	return gsl_matrix_calloc(size, size);
+}
+
+gsl_matrix* matlab::zeros(int size1, int size2) {
+	return gsl_matrix_calloc(size1, size2);
 }
 
 /*

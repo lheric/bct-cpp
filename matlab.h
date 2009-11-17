@@ -10,15 +10,21 @@ namespace matlab {
 	const double EPSILON = 1e-6;
 
 	// Functions
+	gsl_matrix* eye(int);
+	gsl_matrix* eye(int, int);
 	gsl_vector* find(const gsl_vector*, int = std::numeric_limits<int>::max(), const char* = NULL);
 	gsl_vector* find(const gsl_matrix*, int = std::numeric_limits<int>::max(), const char* = NULL);
 	gsl_matrix* find_ij(const gsl_matrix*, int = std::numeric_limits<int>::max(), const char* = NULL);
 	int nnz(const gsl_vector*);
 	int nnz(const gsl_matrix*);
+	gsl_matrix* ones(int);
+	gsl_matrix* ones(int, int);
 	double sum(const gsl_vector*);
 	gsl_vector* sum(const gsl_matrix*, int = 1);
 	gsl_matrix* tril(const gsl_matrix*, int = 0);
 	gsl_matrix* triu(const gsl_matrix*, int = 0);
+	gsl_matrix* zeros(int);
+	gsl_matrix* zeros(int, int);
 	
 	// Operators
 	gsl_vector* concatenate(const gsl_vector*, const gsl_vector*);
