@@ -24,7 +24,7 @@ gsl_matrix* matlab::eye(int size1, int size2) {
 
 gsl_vector* matlab::find(const gsl_vector* v, int n, const char* direction) {
 	int size = nnz(v);
-	if (size == 0) {
+	if (size == 0 || n < 1) {
 		return NULL;
 	}
 	gsl_vector* found = gsl_vector_alloc((n < size) ? n : size);
@@ -64,13 +64,18 @@ gsl_vector* matlab::find(const gsl_matrix* m, int n, const char* direction) {
  */
 gsl_matrix* matlab::find_ij(const gsl_matrix* m, int n, const char* direction) {
 	gsl_vector* found_v = find(m, n, direction);
-	gsl_matrix* found_m = gsl_matrix_alloc(found_v->size, 2);
-	for (int i = 0; i < found_v->size; i++) {
-		int index = (int)gsl_vector_get(found_v, i);
-		int row = index % (int)m->size1;
-		int column = index / (int)m->size1;
-		gsl_matrix_set(found_m, i, 0, (double)row);
-		gsl_matrix_set(found_m, i, 1, (double)column);
+	gsl_matrix* found_m;
+	if (found_v == NULL) {
+		found_m = NULL;
+	} else {
+		found_m = gsl_matrix_alloc(found_v->size, 2);
+		for (int i = 0; i < found_v->size; i++) {
+			int index = (int)gsl_vector_get(found_v, i);
+			int row = index % (int)m->size1;
+			int column = index / (int)m->size1;
+			gsl_matrix_set(found_m, i, 0, (double)row);
+			gsl_matrix_set(found_m, i, 1, (double)column);
+		}
 	}
 	gsl_vector_free(found_v);
 	return found_m;
