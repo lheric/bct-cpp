@@ -14,8 +14,7 @@ gsl_matrix* bct::binary(const gsl_matrix* m) {
  * Returns a copy of the given matrix with no loops.
  */
 gsl_matrix* bct::no_loops(const gsl_matrix* m) {
-	gsl_matrix* no_loops_m = gsl_matrix_alloc(m->size1, m->size2);
-	gsl_matrix_memcpy(no_loops_m, m);
+	gsl_matrix* no_loops_m = copy(m);
 	gsl_vector_view diagonal = gsl_matrix_diagonal(no_loops_m);
 	gsl_vector_set_zero(&diagonal.vector);
 	return no_loops_m;
@@ -46,8 +45,7 @@ gsl_matrix* bct::undirected(const gsl_matrix* m) {
 	if (m->size1 != m->size2) {
 		throw size_exception();
 	}
-	gsl_matrix* undirected_m = gsl_matrix_alloc(m->size1, m->size2);
-	gsl_matrix_memcpy(undirected_m, m);
+	gsl_matrix* undirected_m = copy(m);
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = i; j < m->size2; j++) {
 			double value_ij = gsl_matrix_get(m, i, j);
