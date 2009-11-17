@@ -30,12 +30,7 @@ all: $(oct_files)
 .SECONDEXPANSION:
 
 $(oct_files): ../libbct.a bct_test.h bct_test.cpp $$(basename $$@).cpp
-	@if [ $(subst _cpp,,../$(basename $@).cpp) -nt $@ ]; then \
-		echo Making $@...; \
-		mkoctfile -lbct -lgsl -lgslcblas $(basename $@).cpp; else \
-		echo "make: \`$@' is up to date."; \
-		touch $@; \
-	fi
+	mkoctfile -lbct -lgsl -lgslcblas $(basename $@).cpp
 
 install: $(oct_files)
 	if [ ! -d /usr/local/share/bct ]; then \
