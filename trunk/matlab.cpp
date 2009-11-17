@@ -298,6 +298,15 @@ gsl_vector* matlab::logical_or(const gsl_vector* v1, const gsl_vector* v2) {
 }
 
 /*
+ * Emulates (m1 * m2).
+ */
+gsl_matrix* matlab::mul(const gsl_matrix* m1, const gsl_matrix* m2) {
+	gsl_matrix* product_m = gsl_matrix_alloc(m1->size1, m2->size2);
+	gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, m1, m2, 0.0, product_m);
+	return product_m;
+}
+
+/*
  * Emulates (v .^ power).
  */
 gsl_vector* matlab::pow_elements(const gsl_vector* v, double power) {
@@ -364,8 +373,7 @@ gsl_matrix* matlab::pow(const gsl_matrix* m, int power) {
 	}
 	gsl_matrix* pow_m = copy(m);
 	for (int i = 2; i <= power; i++) {
-		gsl_matrix* temp = gsl_matrix_alloc(m->size1, m->size2);
-		gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, pow_m, m, 0.0, temp);
+		gsl_matrix* temp = mul(pow_m, m);
 		gsl_matrix_free(pow_m);
 		pow_m = temp;
 	}
