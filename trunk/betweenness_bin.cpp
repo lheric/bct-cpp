@@ -63,29 +63,13 @@ gsl_vector* bct::betweenness_bin(const gsl_matrix* m) {
 	
 	// L(~L)=inf; L(I)=0;
 	gsl_matrix* not_l = compare_elements(l, cmp_equal, 0.0);
-	gsl_matrix* not_l_ij = find_ij(not_l);
-	if (not_l_ij != NULL) {
-		for (int i = 0; i < not_l_ij->size1; i++) {
-			int row = gsl_matrix_get(not_l_ij, i, 0);
-			int column = gsl_matrix_get(not_l_ij, i, 1);
-			gsl_matrix_set(l, row, column, std::numeric_limits<double>::max());
-		}
-		gsl_matrix_free(not_l_ij);
-	}
+	logical_index_assign(l, not_l, std::numeric_limits<double>::max());
 	gsl_vector_view l_diagonal = gsl_matrix_diagonal(l);
 	gsl_vector_set_zero(&l_diagonal.vector);
 	
 	// NSP(~NSP) = 1;
 	gsl_matrix* not_nsp = compare_elements(nsp, cmp_equal, 0.0);
-	gsl_matrix* not_nsp_ij = find_ij(not_nsp);
-	if (not_nsp_ij != NULL) {
-		for (int i = 0; i < not_nsp_ij->size1; i++) {
-			int row = gsl_matrix_get(not_nsp_ij, i, 0);
-			int column = gsl_matrix_get(not_nsp_ij, i, 1);
-			gsl_matrix_set(nsp, row, column, 1.0);
-		}
-		gsl_matrix_free(not_nsp_ij);
-	}
+	logical_index_assign(nsp, not_nsp, 1.0);
 	
 	// Gt=G.';
 	gsl_matrix* transpose_m = gsl_matrix_alloc(m->size1, m->size2);
