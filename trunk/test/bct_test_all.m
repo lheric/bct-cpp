@@ -31,6 +31,11 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("betweenness_bin %s", mname{i}), all(betweenness_bin(m{i}) == betweenness_bin_cpp(m{i})))
 end
 
+% betweenness_wei
+for i = 1:size(m)(2)
+	bct_test(sprintf("betweenness_wei %s", mname{i}), all(betweenness_wei(m{i}) == betweenness_wei_cpp(m{i})'))
+end
+
 % clustering_coef_bd
 for i = 1:size(m)(2)
 	bct_test(sprintf("clustering_coef_bd %s", mname{i}), all(clustering_coef_bd(m{i}) == clustering_coef_bd_cpp(m{i})'))

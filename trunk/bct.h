@@ -42,6 +42,7 @@ namespace bct {
 
 	// Centrality
 	gsl_vector* betweenness_bin(const gsl_matrix*);
+	gsl_vector* betweenness_wei(const gsl_matrix*);
 
 	// Motifs
 
