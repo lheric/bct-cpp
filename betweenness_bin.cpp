@@ -44,21 +44,21 @@ gsl_vector* bct::betweenness_bin(const gsl_matrix* m) {
 		npd = temp;
 		
 		// NSPd=NPd.*(L==0);
-		gsl_matrix* l_equal0 = compare_elements(l, cmp_equal, 0.0);
+		gsl_matrix* l_equal_0 = compare_elements(l, cmp_equal, 0.0);
 		gsl_matrix_free(nspd);
 		nspd = copy(npd);
-		gsl_matrix_mul_elements(nspd, l_equal0);
+		gsl_matrix_mul_elements(nspd, l_equal_0);
 		
 		// NSP=NSP+NSPd;
 		gsl_matrix_add(nsp, nspd);
 		
 		// L=L+d.*(NSPd~=0);
-		gsl_matrix* nspd_not_equal0 = compare_elements(nspd, cmp_not_equal, 0.0);
-		gsl_matrix_scale(nspd_not_equal0, d);
-		gsl_matrix_add(l, nspd_not_equal0);
+		gsl_matrix* nspd_not_equal_0 = compare_elements(nspd, cmp_not_equal, 0.0);
+		gsl_matrix_scale(nspd_not_equal_0, d);
+		gsl_matrix_add(l, nspd_not_equal_0);
 		
-		gsl_matrix_free(nspd_not_equal0);
-		gsl_matrix_free(l_equal0);
+		gsl_matrix_free(nspd_not_equal_0);
+		gsl_matrix_free(l_equal_0);
 	}
 	
 	// L(~L)=inf; L(I)=0;
@@ -102,19 +102,19 @@ gsl_vector* bct::betweenness_bin(const gsl_matrix* m) {
 		
 		// DPd1=(((L==d).*(1+DP)./NSP)*Gt).*((L==(d-1)).*NSP);
 		gsl_matrix* l_equal_d = compare_elements(l, cmp_equal, d);
-		gsl_matrix* dp_plus1 = copy(dp);
-		gsl_matrix_add_constant(dp_plus1, 1.0);
-		gsl_matrix_mul_elements(l_equal_d, dp_plus1);
+		gsl_matrix* dp_plus_1 = copy(dp);
+		gsl_matrix_add_constant(dp_plus_1, 1.0);
+		gsl_matrix_mul_elements(l_equal_d, dp_plus_1);
 		gsl_matrix_div_elements(l_equal_d, nsp);
 		gsl_matrix* dpd1 = mul(l_equal_d, transpose_m);
-		gsl_matrix* l_equal_dless1 = compare_elements(l, cmp_equal, d - 1.0);
-		gsl_matrix_mul_elements(l_equal_dless1, nsp);
-		gsl_matrix_mul_elements(dpd1, l_equal_dless1);
+		gsl_matrix* l_equal_d_less_1 = compare_elements(l, cmp_equal, d - 1.0);
+		gsl_matrix_mul_elements(l_equal_d_less_1, nsp);
+		gsl_matrix_mul_elements(dpd1, l_equal_d_less_1);
 		gsl_matrix_add(dp, dpd1);
 		
-		gsl_matrix_free(l_equal_dless1);
+		gsl_matrix_free(l_equal_d_less_1);
 		gsl_matrix_free(dpd1);
-		gsl_matrix_free(dp_plus1);
+		gsl_matrix_free(dp_plus_1);
 		gsl_matrix_free(l_equal_d);
 	}
 	

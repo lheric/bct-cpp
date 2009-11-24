@@ -27,13 +27,13 @@ gsl_vector* bct::clustering_coef_bd(const gsl_matrix* m) {
 	gsl_vector_const_view cyc3 = gsl_matrix_const_diagonal(cyc3_m);
 	
 	// CYC3=K.*(K-1)-2*diag(A^2);
-	gsl_vector* k_less1 = copy(k);
-	gsl_vector_add_constant(k_less1, -1.0);
+	gsl_vector* k_less_1 = copy(k);
+	gsl_vector_add_constant(k_less_1, -1.0);
 	gsl_matrix* pow2_m = pow(m, 2);
 	gsl_matrix_scale(pow2_m, 2.0);
 	gsl_vector_const_view pow2 = gsl_matrix_const_diagonal(pow2_m);
 	gsl_vector* possible_cyc3 = copy(k);
-	gsl_vector_mul(possible_cyc3, k_less1);
+	gsl_vector_mul(possible_cyc3, k_less_1);
 	gsl_vector_sub(possible_cyc3, &pow2.vector);
 	
 	// C=cyc3./CYC3
@@ -49,7 +49,7 @@ gsl_vector* bct::clustering_coef_bd(const gsl_matrix* m) {
 	
 	gsl_vector_free(possible_cyc3);
 	gsl_matrix_free(pow2_m);
-	gsl_vector_free(k_less1);
+	gsl_vector_free(k_less_1);
 	gsl_matrix_free(cyc3_m);
 	gsl_vector_free(k);
 	gsl_matrix_free(s);
