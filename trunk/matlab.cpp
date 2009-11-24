@@ -108,6 +108,20 @@ gsl_matrix* matlab::ones(int size1, int size2, double scale) {
 	return m;
 }
 
+/* 
+ * Emulates 'scalar:scalar'
+ * Ex: >>2:5 in matlab yields [2,3,4,5]
+ */
+gsl_vector* matlab::sequence(int start, int end) {
+	if(end <= start) {
+		return NULL;
+	}
+	gsl_vector* v = gsl_vector_alloc(end-start+1);
+	for(int i=0,val=start;val <= end;i++,val++) {
+		gsl_vector_set(v, i, val);
+	}
+}
+
 double matlab::sum(const gsl_vector* v) {
 	double sum = 0.0;
 	for (int i = 0; i < v->size; i++) {
@@ -521,6 +535,27 @@ gsl_matrix* matlab::index(const gsl_matrix* m, const gsl_matrix* indices) {
 }
 
 /*
+ * Emulates matrix indexing and assignment (m(index) = x).
+ */
+void matlab::index_assign(gsl_matrix* m, int index, double x) {
+	int row = index % (int)m->size1;
+	int column = index / (int)m->size1;
+	gsl_matrix_set(m, row, column, x);
+}
+
+/*
+ * Emulates matrix indexing and assignment (m(indices) = x).
+ */
+void matlab::index_assign(gsl_matrix* m, const gsl_matrix* indices, double x) {
+	for (int i = 0; i < indices->size1; i++) {
+		for (int j = 0; j < indices->size2; j++) {
+			int index = gsl_matrix_get(indices, i, j);
+			index_assign(m, index, x);
+		}
+	}
+}
+
+/*
  * Emulates vector logical indexing by another vector.
  */
 gsl_vector* matlab::logical_index(const gsl_vector* v, const gsl_vector* lv) {
@@ -585,20 +620,21 @@ gsl_vector* matlab::logical_index(const gsl_matrix* m, const gsl_matrix* lm) {
 	return indexed;
 }
 
-/* 
- * Emulates 'scalar:scalar'
- * Ex: >>2:5 in matlab yields [2,3,4,5]
+/*
+ * Emulates matrix logical indexing and assignment (m(lm) = x).
  */
-gsl_vector* matlab::sequence(int start, int end) {
-	if(end <= start) {
-		return NULL;
-	}
-	gsl_vector* v = gsl_vector_alloc(end-start+1);
-	for(int i=0,val=start;val <= end;i++,val++) {
-		gsl_vector_set(v, i, val);
+void matlab::logical_index_assign(gsl_matrix* m, const gsl_matrix* lm, double x) {
+	for (int j = 0; j < lm->size2; j++) {
+		for (int i = 0; i < lm->size1; i++) {
+			if (fp_nonzero(gsl_matrix_get(lm, i, j))) {
+				int index = j * lm->size1 + i;
+				if (index < (int)m->size1 * (int)m->size2) {
+					index_assign(m, index, x);
+				}
+			}
+		}
 	}
 }
-	
 
 /*
  * Emulates matrix-to-vector conversion.  The vector is constructed by
