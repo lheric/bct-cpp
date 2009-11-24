@@ -535,12 +535,36 @@ gsl_matrix* matlab::index(const gsl_matrix* m, const gsl_matrix* indices) {
 }
 
 /*
+ * Emulates vector indexing and assignment (v(indices) = x).
+ */
+void matlab::index_assign(gsl_vector* v, const gsl_vector* indices, double x) {
+	for (int i = 0; i < indices->size; i++) {
+		int index = (int)gsl_vector_get(indices, i);
+		if (index < v->size) {
+			gsl_vector_set(v, index, x);
+		}
+	}
+}
+
+/*
  * Emulates matrix indexing and assignment (m(index) = x).
  */
 void matlab::index_assign(gsl_matrix* m, int index, double x) {
 	int row = index % (int)m->size1;
 	int column = index / (int)m->size1;
-	gsl_matrix_set(m, row, column, x);
+	if (row < m->size1 && column < m->size2) {
+		gsl_matrix_set(m, row, column, x);
+	}
+}
+
+/*
+ * Emulates matrix indexing and assignment (m(indices) = x).
+ */
+void matlab::index_assign(gsl_matrix* m, const gsl_vector* indices, double x) {
+	for (int i = 0; i < indices->size; i++) {
+		int index = (int)gsl_vector_get(indices, i);
+		index_assign(m, index, x);
+	}
 }
 
 /*
@@ -549,7 +573,7 @@ void matlab::index_assign(gsl_matrix* m, int index, double x) {
 void matlab::index_assign(gsl_matrix* m, const gsl_matrix* indices, double x) {
 	for (int i = 0; i < indices->size1; i++) {
 		for (int j = 0; j < indices->size2; j++) {
-			int index = gsl_matrix_get(indices, i, j);
+			int index = (int)gsl_matrix_get(indices, i, j);
 			index_assign(m, index, x);
 		}
 	}
@@ -621,6 +645,28 @@ gsl_vector* matlab::logical_index(const gsl_matrix* m, const gsl_matrix* lm) {
 }
 
 /*
+ * Emulates vector logical indexing and assignment (v(lv) = x).
+ */
+void matlab::logical_index_assign(gsl_vector* v, const gsl_vector* lv, double x) {
+	for (int i = 0; i < lv->size; i++) {
+		if (fp_nonzero(gsl_vector_get(lv, i)) && i < v->size) {
+			gsl_vector_set(v, i, x);
+		}
+	}
+}
+
+/*
+ * Emulates matrix logical indexing and assignment (m(lv) = x).
+ */
+void matlab::logical_index_assign(gsl_matrix* m, const gsl_vector* lv, double x) {
+	for (int i = 0; i < lv->size; i++) {
+		if (fp_nonzero(gsl_vector_get(lv, i))) {
+			index_assign(m, i, x);
+		}
+	}
+}
+
+/*
  * Emulates matrix logical indexing and assignment (m(lm) = x).
  */
 void matlab::logical_index_assign(gsl_matrix* m, const gsl_matrix* lm, double x) {
@@ -628,9 +674,7 @@ void matlab::logical_index_assign(gsl_matrix* m, const gsl_matrix* lm, double x)
 		for (int i = 0; i < lm->size1; i++) {
 			if (fp_nonzero(gsl_matrix_get(lm, i, j))) {
 				int index = j * lm->size1 + i;
-				if (index < (int)m->size1 * (int)m->size2) {
-					index_assign(m, index, x);
-				}
+				index_assign(m, index, x);
 			}
 		}
 	}
