@@ -22,6 +22,8 @@ namespace bct {
 	gsl_vector* degrees_und(const gsl_matrix*);
 	double density_dir(const gsl_matrix*);
 	double density_und(const gsl_matrix*);
+	gsl_matrix* findpaths(const gsl_matrix*, const gsl_vector*, int, int, \
+						  gsl_matrix** = NULL, long int* = NULL , gsl_vector* = NULL, int* = NULL, gsl_matrix* = NULL);
 	gsl_matrix* jdegree(const gsl_matrix*); //returns the Joint distribution matrix
 	double jdegree_id(gsl_matrix*); //returns other metrices from the Joint dstrbn matrix
 	double jdegree_od(gsl_matrix*);

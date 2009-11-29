@@ -77,6 +77,17 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("density_und %s", mname{i}), density_und(m{i}) == density_und_cpp(m{i}))
 end
 
+% findpaths
+sources = unique(floor(30*rand(1,5)));
+path_len_max = floor(rand()*2+2); %random number in the range [2,4]
+for i = 1:size(m)(2)
+	[Pq,tpath,plq,qstop,allpths,util] = findpaths(m{i}, sources, path_len_max, 1);
+	allpaths_cpp = findpaths_cpp(m{i}, sources, path_len_max, 1);
+	bct_test(sprintf("findpaths %s", mname{i}), all(allpths == allpaths_cpp));
+	clear allpaths_cpp;
+	clear Pq tpath plq qstop allpths util;
+end
+
 % jdegree
 for i = 1:size(m)(2)
 	[J J_od J_id J_bl] = jdegree(m{i});

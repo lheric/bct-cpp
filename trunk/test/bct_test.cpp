@@ -2,6 +2,7 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include <octave/oct.h>
+#include <cstdio>
 
 /*
  * Converts an Octave matrix to a GSL matrix.
@@ -16,6 +17,19 @@ gsl_matrix* bct_test::to_gsl(const Matrix m) {
 		}
 	}
 	return gslm;
+}
+
+/*
+ * Converts an Octave array to a GSL vector.
+ */
+gsl_vector* bct_test::to_gsl(const Array<int> a) {
+	int len = a.length();
+	gsl_vector* gslv = gsl_vector_alloc(len);
+	for (int i = 0; i < len; i++) {
+		double elem = a.elem(i);
+		gsl_vector_set(gslv, i, elem);
+	}
+	return gslv;
 }
 
 /*
@@ -37,6 +51,17 @@ Matrix bct_test::from_gsl(const gsl_matrix* gslm) {
  * Converts a GSL vector to an Octave matrix.
  */
 Matrix bct_test::from_gsl(const gsl_vector* gslv) {
+	/*
 	gsl_matrix_const_view gslmv = gsl_matrix_const_view_vector(gslv, 1, gslv->size);
 	return from_gsl(&gslmv.matrix);
+	*/
+	int columns = gslv->size;
+	Matrix m = Matrix(1, columns);
+	for (int i = 0;i < columns;i++)
+		m(0, i) = gsl_vector_get(gslv, i);
+	return m;
 }
+
+
+
+

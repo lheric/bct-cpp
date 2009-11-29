@@ -17,8 +17,10 @@ namespace matlab {
 	gsl_matrix* find_ij(const gsl_matrix*, int = std::numeric_limits<int>::max(), const char* = NULL);
 	int nnz(const gsl_vector*);
 	int nnz(const gsl_matrix*);
-	gsl_matrix* ones(int, double = 1.0);
-	gsl_matrix* ones(int, int, double = 1.0);
+	gsl_matrix* ones(int);
+	gsl_matrix* ones(int, int);
+	gsl_matrix* yens(int, double);
+	gsl_matrix* yens(int, int, double);
 	gsl_vector* sequence(int, int);
 	double sum(const gsl_vector*);
 	gsl_vector* sum(const gsl_matrix*, int = 1);
@@ -30,7 +32,11 @@ namespace matlab {
 	// Operators
 	gsl_vector* concatenate(const gsl_vector*, const gsl_vector*);
 	gsl_matrix* concatenate_columns(const gsl_matrix*, const gsl_matrix*);
+	gsl_matrix* concatenate_columns(const gsl_matrix*, const gsl_vector*);
+	gsl_matrix* concatenate_columns(const gsl_vector*, const gsl_matrix*);	
 	gsl_matrix* concatenate_rows(const gsl_matrix*, const gsl_matrix*);
+	gsl_matrix* concatenate_rows(const gsl_matrix*, const gsl_vector*);
+	gsl_matrix* concatenate_rows(const gsl_vector*, const gsl_matrix*);	
 	gsl_vector* copy(const gsl_vector*);
 	gsl_matrix* copy(const gsl_matrix*);
 	gsl_vector* logical_and(const gsl_vector*, const gsl_vector*);
@@ -82,6 +88,8 @@ namespace matlab {
 	
 	// Conversions
 	gsl_vector* to_vector(const gsl_matrix*);
+	gsl_matrix* to_row_matrix(const gsl_vector*);
+	gsl_matrix* to_column_matrix(const gsl_vector*);
 };
 
 #endif
