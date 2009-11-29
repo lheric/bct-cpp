@@ -18,14 +18,13 @@ filenames = \
 	jdegree_bl_cpp \
 	matching_ind_cpp \
 	strengths_und_cpp \
-	strengths_dir_cpp \
+	strengths_dir_cpp
 
 objects := $(foreach f, $(filenames), $(f).o)
 oct_files := $(foreach f, $(filenames), $(f).oct)
 m_files = \
 	bct_test.m \
-	bct_test_all.m \
-	bct_test_findpaths.m
+	bct_test_all.m
 
 .PHONY: all clean install uninstall
 
