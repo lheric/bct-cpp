@@ -2,7 +2,6 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_histogram.h>
-#include <cstdio>
 #include <math.h>
 
 /* Original comments: Paths are sequences of linked nodes, that never visit a single
