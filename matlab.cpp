@@ -98,13 +98,26 @@ int matlab::nnz(const gsl_matrix* m) {
 	return ret;
 }
 
-gsl_matrix* matlab::ones(int size, double scale) {
-	return ones(size, size, scale);
+gsl_matrix* matlab::ones(int size) {
+	return ones(size, size);
 }
 
-gsl_matrix* matlab::ones(int size1, int size2, double scale) {
+gsl_matrix* matlab::ones(int size1, int size2) {
 	gsl_matrix* m = gsl_matrix_alloc(size1, size2);
-	gsl_matrix_set_all(m, scale);
+	gsl_matrix_set_all(m, 1);
+	return m;
+}
+
+/*
+ * Emulates ones with a scale
+ */
+gsl_matrix* matlab::yens(int size, double n) {
+	return yens(size, size, n);
+}
+
+gsl_matrix* matlab::yens(int size1, int size2, double n) {
+	gsl_matrix* m = gsl_matrix_alloc(size1, size2);
+	gsl_matrix_set_all(m, n);
 	return m;
 }
 
@@ -113,13 +126,14 @@ gsl_matrix* matlab::ones(int size1, int size2, double scale) {
  * Ex: >>2:5 in matlab yields [2,3,4,5]
  */
 gsl_vector* matlab::sequence(int start, int end) {
-	if(end <= start) {
+	if(end < start) {
 		return NULL;
 	}
 	gsl_vector* v = gsl_vector_alloc(end-start+1);
 	for(int i=0,val=start;val <= end;i++,val++) {
 		gsl_vector_set(v, i, val);
 	}
+	return v;
 }
 
 double matlab::sum(const gsl_vector* v) {
@@ -229,6 +243,48 @@ gsl_matrix* matlab::concatenate_columns(const gsl_matrix* m1, const gsl_matrix* 
 }
 
 /*
+ * Emulates ([m ; v]).
+ */
+gsl_matrix* matlab::concatenate_columns(const gsl_matrix* m, const gsl_vector* v) {
+	if (m == NULL && v == NULL) {
+		return NULL;
+	} else if (m == NULL) {
+		return to_row_matrix(v);
+	} else if (v == NULL) {
+		return copy(m);
+	} else if (m->size2 != v->size) {
+		return NULL;
+	}
+	gsl_matrix* cat_mv = gsl_matrix_alloc(m->size1 + 1, m->size2);
+	gsl_matrix_view cat_m = gsl_matrix_submatrix(cat_mv, 0, 0, m->size1, m->size2);
+	gsl_vector_view cat_v = gsl_matrix_row(cat_mv, cat_mv->size1-1);
+	gsl_matrix_memcpy(&cat_m.matrix, m);
+	gsl_vector_memcpy(&cat_v.vector, v);
+	return cat_mv;
+}
+
+/*
+ * Emulates ([v ; m]).
+ */
+gsl_matrix* matlab::concatenate_columns(const gsl_vector* v, const gsl_matrix* m) {
+	if (m == NULL && v == NULL) {
+		return NULL;
+	} else if (m == NULL) {
+		return to_row_matrix(v);
+	} else if (v == NULL) {
+		return copy(m);
+	} else if (m->size2 != v->size) {
+		return NULL;
+	}
+	gsl_matrix* cat_mv = gsl_matrix_alloc(m->size1 + 1, m->size2);
+	gsl_vector_view cat_v = gsl_matrix_row(cat_mv, 0);
+	gsl_matrix_view cat_m = gsl_matrix_submatrix(cat_mv, 1, 0, m->size1, m->size2);
+	gsl_vector_memcpy(&cat_v.vector, v);
+	gsl_matrix_memcpy(&cat_m.matrix, m);
+	return cat_mv;
+}
+
+/*
  * Emulates ([m1 m2]).
  */
 gsl_matrix* matlab::concatenate_rows(const gsl_matrix* m1, const gsl_matrix* m2) {
@@ -247,6 +303,48 @@ gsl_matrix* matlab::concatenate_rows(const gsl_matrix* m1, const gsl_matrix* m2)
 	gsl_matrix_memcpy(&cat_m1.matrix, m1);
 	gsl_matrix_memcpy(&cat_m2.matrix, m2);
 	return cat_m;
+}
+
+/*
+ * Emulates ([m v]).
+ */
+gsl_matrix* matlab::concatenate_rows(const gsl_matrix* m, const gsl_vector* v) {
+	if (m == NULL && v == NULL) {
+		return NULL;
+	} else if (m == NULL) {
+		return to_column_matrix(v);
+	} else if (v == NULL) {
+		return copy(m);
+	} else if (m->size1 != v->size) {
+		return NULL;
+	}
+	gsl_matrix* cat_mv = gsl_matrix_alloc(m->size1, m->size2 + 1);
+	gsl_matrix_view cat_m = gsl_matrix_submatrix(cat_mv, 0, 0, m->size1, m->size2);
+	gsl_vector_view cat_v = gsl_matrix_column(cat_mv, cat_mv->size2-1);
+	gsl_matrix_memcpy(&cat_m.matrix, m);
+	gsl_vector_memcpy(&cat_v.vector, v);
+	return cat_mv;
+}
+
+/*
+ * Emulates ([v m]).
+ */
+gsl_matrix* matlab::concatenate_rows(const gsl_vector* v, const gsl_matrix* m) {
+	if (m == NULL && v == NULL) {
+		return NULL;
+	} else if (m == NULL) {
+		return to_column_matrix(v);
+	} else if (v == NULL) {
+		return copy(m);
+	} else if (m->size2 != v->size) {
+		return NULL;
+	}
+	gsl_matrix* cat_mv = gsl_matrix_alloc(m->size1, m->size2 + 1);
+	gsl_vector_view cat_v = gsl_matrix_column(cat_mv, 0);
+	gsl_matrix_view cat_m = gsl_matrix_submatrix(cat_mv, 0, 1, m->size1, m->size2);
+	gsl_vector_memcpy(&cat_v.vector, v);
+	gsl_matrix_memcpy(&cat_m.matrix, m);
+	return cat_mv;
 }
 
 /*
@@ -694,3 +792,29 @@ gsl_vector* matlab::to_vector(const gsl_matrix* m) {
 	}
 	return v;
 }
+
+/*
+ * Converts a vector to a column matrix
+ */
+gsl_matrix* matlab::to_column_matrix(const gsl_vector* v) {
+	gsl_matrix* m = gsl_matrix_alloc(v->size, 1);
+	for(int i=0;i < v->size;i++) {
+		gsl_matrix_set(m, i, 0, gsl_vector_get(v, i));
+	}
+	return m;
+}
+
+/*
+ * Converts a vector to a row matrix
+ */
+gsl_matrix* matlab::to_row_matrix(const gsl_vector* v) {
+	gsl_matrix* m = gsl_matrix_alloc(1, v->size);
+	for(int i=0;i < v->size;i++) {
+		gsl_matrix_set(m, 0, i, gsl_vector_get(v, i));
+	}
+	return m;
+}
+
+
+
+

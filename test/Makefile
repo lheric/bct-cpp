@@ -11,6 +11,7 @@ filenames = \
 	degrees_und_cpp \
 	density_dir_cpp \
 	density_und_cpp \
+	findpaths_cpp \
 	jdegree_cpp \
 	jdegree_id_cpp \
 	jdegree_od_cpp \
@@ -23,7 +24,8 @@ objects := $(foreach f, $(filenames), $(f).o)
 oct_files := $(foreach f, $(filenames), $(f).oct)
 m_files = \
 	bct_test.m \
-	bct_test_all.m
+	bct_test_all.m \
+	bct_test_findpaths.m
 
 .PHONY: all clean install uninstall
 
