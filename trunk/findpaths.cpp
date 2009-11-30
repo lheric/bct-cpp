@@ -42,7 +42,7 @@ gsl_matrix* bct::findpaths(const gsl_matrix* m, const gsl_vector* sources_input,
 	gsl_matrix* paths = NULL;
 	gsl_matrix* util = gsl_matrix_calloc(N, path_len_max);
 	
-	//all_pathlens array shall be indexed by path_len. Each slot in all_pathlens contains a NxN gsl matrix
+	//node_to_node_len array shall be indexed by path_len. Each slot in this array contains a NxN gsl matrix
 	gsl_matrix* node_to_node_len[path_len_max];
 	for(int i=0;i < path_len_max;i++) {
 		node_to_node_len[i] = gsl_matrix_calloc(N, N);
@@ -68,7 +68,7 @@ gsl_matrix* bct::findpaths(const gsl_matrix* m, const gsl_vector* sources_input,
 				gsl_matrix* concat_paths = concatenate_rows(paths, path);
 				gsl_matrix_free(path);
 				if(paths != NULL) {
-					gsl_matrix_free(paths); //Hopefully, this will be freed after originally "owned" by 'concat_paths'. See code below.
+					gsl_matrix_free(paths); 
 				}
 				paths = concat_paths; 
 				//perform the following logic after 'paths' is updated in the big loop below
