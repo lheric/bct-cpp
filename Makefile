@@ -19,6 +19,7 @@ objects = \
 	macaque.o \
 	matching_ind.o \
 	matlab.o \
+	reachdist.o \
 	status.o \
 	strengths_dir.o \
 	strengths_und.o \

@@ -410,6 +410,24 @@ gsl_vector* matlab::logical_or(const gsl_vector* v1, const gsl_vector* v2) {
 }
 
 /*
+ * Emulates (m1 | m2).
+ */
+gsl_matrix* matlab::logical_or(const gsl_matrix* m1, const gsl_matrix* m2) {
+	if (m1->size1 != m2->size1) {
+		return NULL;
+	}
+	gsl_matrix* or_m = gsl_matrix_alloc(m1->size1, m1->size2);
+	for(int i = 0;i < m1->size1;i++) {
+		for(int j = 0;j < m1->size2;j++) {
+			bool nz1 = fp_nonzero(gsl_matrix_get(m1, i, j));
+			bool nz2 = fp_nonzero(gsl_matrix_get(m2, i, j));
+			gsl_matrix_set(or_m, i, j, (double)(nz1 || nz2));
+		}
+	}
+	return or_m;
+}
+
+/*
  * Emulates (m1 * m2).
  */
 gsl_matrix* matlab::mul(const gsl_matrix* m1, const gsl_matrix* m2) {
@@ -630,6 +648,21 @@ gsl_matrix* matlab::index(const gsl_matrix* m, const gsl_matrix* indices) {
 		}
 	}
 	return indexed;
+}
+
+/*
+ * Emulates matrix indexing by vectors with row and column indices, followed by assignment.
+ * m([r], [c])=x
+ */
+void matlab::index_assign(gsl_matrix* m, const gsl_vector* row_indices, const gsl_vector* col_indices, double x) {
+	for (int i = 0;i < row_indices->size; i++) {
+		int row = gsl_vector_get(row_indices, i);
+		for(int j = 0;j < col_indices->size;j++) {
+			int col = gsl_vector_get(col_indices, j);
+			int index = col*m->size1 + row;
+			index_assign(m, index, x);
+		}
+	}
 }
 
 /*
