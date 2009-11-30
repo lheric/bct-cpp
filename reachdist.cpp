@@ -3,6 +3,18 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_math.h>
 
+ /* Original comments:
+ * This function yields the reachability matrix and the distance matrix
+ * based on the power of the adjacency matrix - this will execute a lot
+ * faster for matrices with low average distance between vertices.
+ * Another way to get the reachability matrix and the distance matrix uses 
+ * breadth-first search (see 'breadthdist.m').  'reachdist' seems a 
+ * little faster most of the time.  However, 'breadthdist' uses less memory 
+ * in many cases.
+ *
+ * Olaf Sporns, Indiana University, 2002/2007/2008
+ */
+
 gsl_matrix* bct::reachdist(gsl_matrix *m, gsl_matrix* ret_R) {
 	gsl_matrix* R = gsl_matrix_alloc(m->size1, m->size2);
 	gsl_matrix* D = gsl_matrix_alloc(m->size1, m->size2);
