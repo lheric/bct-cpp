@@ -17,6 +17,7 @@ filenames = \
 	jdegree_od_cpp \
 	jdegree_bl_cpp \
 	matching_ind_cpp \
+	reachdist_cpp \
 	strengths_und_cpp \
 	strengths_dir_cpp
 

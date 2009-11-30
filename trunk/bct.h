@@ -31,6 +31,7 @@ namespace bct {
 	gsl_matrix* matching_ind(const gsl_matrix*); //returns all indices
 	gsl_matrix* matching_ind_in(const gsl_matrix*);
 	gsl_matrix* matching_ind_out(const gsl_matrix*);
+	gsl_matrix* reachdist(gsl_matrix*, gsl_matrix* = NULL);
 	gsl_vector* strengths_dir(const gsl_matrix*, gsl_vector* = NULL, gsl_vector* = NULL);
 	gsl_vector* strengths_und(const gsl_matrix*);
 

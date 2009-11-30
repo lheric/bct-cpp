@@ -42,6 +42,7 @@ namespace matlab {
 	gsl_vector* logical_and(const gsl_vector*, const gsl_vector*);
 	gsl_vector* logical_not(const gsl_vector*);
 	gsl_vector* logical_or(const gsl_vector*, const gsl_vector*);
+	gsl_matrix* logical_or(const gsl_matrix*, const gsl_matrix*);
 	gsl_matrix* mul(const gsl_matrix*, const gsl_matrix*);
 	gsl_vector* pow_elements(const gsl_vector*, double);
 	gsl_vector* pow_elements(const gsl_vector*, const gsl_vector*);
@@ -79,6 +80,7 @@ namespace matlab {
 	void index_assign(gsl_matrix*, int, double);
 	void index_assign(gsl_matrix*, const gsl_vector*, double);
 	void index_assign(gsl_matrix*, const gsl_matrix*, double);
+	void index_assign(gsl_matrix*, const gsl_vector*, const gsl_vector*, double);
 	gsl_vector* logical_index(const gsl_vector*, const gsl_vector*);
 	gsl_vector* logical_index(const gsl_matrix*, const gsl_vector*);
 	gsl_vector* logical_index(const gsl_matrix*, const gsl_matrix*);

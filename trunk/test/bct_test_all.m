@@ -105,6 +105,14 @@ for i = 1:size(m)(2)
 	%bct_test(sprintf("matching_ind_out %s", mname{i}), all(Mout == matching_ind_out_cpp(m{i})))
 end	
 
+%reachdist
+for i = 1:size(m)(2)
+	[R,D] = reachdist(m{i});
+	D_cpp = reachdist_cpp(m{i});
+	bct_test(sprintf("reachdist %s", mname{i}), all(D == D_cpp));
+	clear R D D_cpp;
+end
+
 % strengths_und
 for i = 1:size(m)(2)
 	bct_test(sprintf("strengths_und %s", mname{i}), all(strengths_und(m{i}) == strengths_und_cpp(m{i})))
