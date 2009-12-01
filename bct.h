@@ -18,14 +18,10 @@ namespace bct {
 	double assortativity_dir(const gsl_matrix*);
 	double assortativity_und(const gsl_matrix*);
 	double assortativity(const gsl_vector*, const gsl_vector*, int);
-	gsl_vector* breadth(const gsl_matrix*, int, gsl_vector* = NULL);
-	gsl_matrix* breadthdist(const gsl_matrix*, gsl_matrix* = NULL);
 	gsl_vector* degrees_dir(const gsl_matrix*, gsl_vector* = NULL, gsl_vector* = NULL);
 	gsl_vector* degrees_und(const gsl_matrix*);
 	double density_dir(const gsl_matrix*);
 	double density_und(const gsl_matrix*);
-	gsl_matrix* findpaths(const gsl_matrix*, const gsl_vector*, int, int, \
-						  gsl_matrix** = NULL, long int* = NULL , gsl_vector* = NULL, int* = NULL, gsl_matrix* = NULL);
 	gsl_matrix* jdegree(const gsl_matrix*); //returns the Joint distribution matrix
 	double jdegree_id(gsl_matrix*); //returns other metrices from the Joint dstrbn matrix
 	double jdegree_od(gsl_matrix*);
@@ -33,7 +29,6 @@ namespace bct {
 	gsl_matrix* matching_ind(const gsl_matrix*); //returns all indices
 	gsl_matrix* matching_ind_in(const gsl_matrix*);
 	gsl_matrix* matching_ind_out(const gsl_matrix*);
-	gsl_matrix* reachdist(gsl_matrix*, gsl_matrix* = NULL);
 	gsl_vector* strengths_dir(const gsl_matrix*, gsl_vector* = NULL, gsl_vector* = NULL);
 	gsl_vector* strengths_und(const gsl_matrix*);
 
@@ -44,6 +39,11 @@ namespace bct {
 	gsl_vector* clustering_coef_wu(const gsl_matrix*);
 
 	// Paths, distances, and cycles
+	gsl_vector* breadth(const gsl_matrix*, int, gsl_vector* = NULL);
+	gsl_matrix* breadthdist(const gsl_matrix*, gsl_matrix* = NULL);
+	gsl_matrix* findpaths(const gsl_matrix*, const gsl_vector*, int, int, \
+						  gsl_matrix** = NULL, long int* = NULL , gsl_vector* = NULL, int* = NULL, gsl_matrix* = NULL);
+	gsl_matrix* reachdist(gsl_matrix*, gsl_matrix* = NULL);
 
 	// Centrality
 	gsl_vector* betweenness_bin(const gsl_matrix*);
