@@ -92,6 +92,11 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("density_und %s", mname{i}), density_und(m{i}) == density_und_cpp(m{i}))
 end
 
+% edge_betweenness_wei
+for i = 1:size(m)(2)
+	bct_test(sprintf("edge_betweenness_wei %s", mname{i}), all(edge_betweenness_wei(m{i}) == edge_betweenness_wei_cpp(m{i})))
+end
+
 % findpaths
 sources = unique(floor(30*rand(1,5)+1));   % 5 random source nodes in the range (1, 30)
 path_len_max = floor(rand()*2+2);  %random number in the range [2,4]
