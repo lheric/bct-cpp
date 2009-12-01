@@ -16,7 +16,7 @@
  * Olaf Sporns, Indiana University, 2002/2007/2008
  */
 
-gsl_vector* bct::breadth(const gsl_matrix* CIJ, int source, gsl_vector* ret_distance) {
+gsl_vector* bct::breadth(const gsl_matrix* CIJ, int source, gsl_vector* ret_branch) {
 	if (CIJ->size1 != CIJ->size2) {
 		throw size_exception();
 	}
@@ -78,12 +78,12 @@ gsl_vector* bct::breadth(const gsl_matrix* CIJ, int source, gsl_vector* ret_dist
 		start_index++;
 	}
 	
-	if(ret_distance == NULL) {
-		ret_distance = gsl_vector_alloc(distance->size);
-		gsl_vector_memcpy(ret_distance, distance);
-		gsl_vector_free(distance);
+	if(ret_branch == NULL) {
+		ret_branch = gsl_vector_alloc(branch->size);
+		gsl_vector_memcpy(ret_branch, branch);
+		gsl_vector_free(branch);
 	}
-	return branch;
+	return distance;
 }
 				
 				
