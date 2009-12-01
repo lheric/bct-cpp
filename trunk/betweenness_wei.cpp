@@ -4,18 +4,55 @@
 #include <limits>
 
 /*
- * Computes the betweenness centrality for a weighted graph.  Results are
+ * Computes node betweenness centrality for a weighted graph.  Results are
  * returned in a vector where each element is the betweenness centrality of the
  * corresponding node.
  */
 gsl_vector* bct::betweenness_wei(const gsl_matrix* m) {
-	if (safe_mode) check_status(m, WEIGHTED, "betweenness_wei");
+	gsl_vector* betweenness = gsl_vector_alloc(m->size1);
+	node_and_edge_betweenness_wei(m, betweenness, NULL);
+	return betweenness;
+}
+
+/*
+ * Computes edge betweenness centrality for a weighted graph.  Results are
+ * returned in a matrix where each element is the betweenness centrality of the
+ * corresponding edge.
+ */
+gsl_matrix* bct::edge_betweenness_wei(const gsl_matrix* m) {
+	gsl_matrix* edge_betweenness = gsl_matrix_alloc(m->size1, m->size2);
+	node_and_edge_betweenness_wei(m, NULL, edge_betweenness);
+	return edge_betweenness;
+}
+
+/*
+ * Computes node and edge betweenness centrality for a weighted graph.  Results
+ * are stored in a vector (node betweenness) and a matrix (edge betweenness)
+ * that are provided by the caller.
+ */
+void bct::node_and_edge_betweenness_wei(const gsl_matrix* m, gsl_vector* node_betweenness, gsl_matrix* edge_betweenness) {
+	if (safe_mode) check_status(m, WEIGHTED, "node_and_edge_betweenness_wei");
 	if (m->size1 != m->size2) {
 		throw size_exception();
-	}
+	}	
+	bool free_node_betweenness = false;
+	bool free_edge_betweenness = false;
 	
 	// BC=zeros(n,1);
-	gsl_vector* betweenness = gsl_vector_calloc(m->size1);
+	if (node_betweenness == NULL) {
+		free_node_betweenness = true;
+		node_betweenness = gsl_vector_calloc(m->size1);
+	} else {
+		gsl_vector_set_zero(node_betweenness);
+	}
+	
+	// EBC=zeros(n);
+	if (edge_betweenness == NULL) {
+		free_edge_betweenness = true;
+		edge_betweenness = gsl_matrix_calloc(m->size1, m->size2);
+	} else {
+		gsl_matrix_set_zero(edge_betweenness);
+	}
 	
 	// for u=1:n
 	for (int u = 0; u < m->size1; u++) {
@@ -153,9 +190,9 @@ gsl_vector* bct::betweenness_wei(const gsl_matrix* m) {
 			int w = (int)gsl_vector_get(Q, Q_index);
 			
 			// BC(w)=BC(w)+DP(w)
-			double bcw = gsl_vector_get(betweenness, w);
+			double bcw = gsl_vector_get(node_betweenness, w);
 			double dpw = gsl_vector_get(dp, w);
-			gsl_vector_set(betweenness, w, bcw + dpw);
+			gsl_vector_set(node_betweenness, w, bcw + dpw);
 			
 			// for v=find(P(w,:))
 			gsl_vector_view p_row = gsl_matrix_row(p, w);
@@ -163,11 +200,18 @@ gsl_vector* bct::betweenness_wei(const gsl_matrix* m) {
 			for (int p_index = 0; found_p_row != NULL && p_index < found_p_row->size; p_index++) {
 				int v = (int)gsl_vector_get(found_p_row, p_index);
 				
-				// DP(v)=DP(v)+(1+DP(w)).*NP(v)./NP(w);
-				double dpv = gsl_vector_get(dp, v);
+				// DPvw=(1+DP(w)).*NP(v)./NP(w);
 				double npv = gsl_vector_get(np, v);
 				double npw = gsl_vector_get(np, w);
-				gsl_vector_set(dp, v, dpv + (1 + dpw) * npv / npw);
+				double dpvw = (1 + dpw) * npv / npw;
+				
+				// DP(v)=DP(v)+DPvw;
+				double dpv = gsl_vector_get(dp, v);
+				gsl_vector_set(dp, v, dpv + dpvw);
+				
+				// EBC(v,w)=EBC(v,w)+DPvw;
+				double ebcvw = gsl_matrix_get(edge_betweenness, v, w);
+				gsl_matrix_set(edge_betweenness, v, w, ebcvw + dpvw);
 			}
 			if (found_p_row != NULL) {
 				gsl_vector_free(found_p_row);
@@ -183,5 +227,10 @@ gsl_vector* bct::betweenness_wei(const gsl_matrix* m) {
 		gsl_vector_free(np);
 		gsl_vector_free(d);
 	}
-	return betweenness;
+	if (free_node_betweenness) {
+		gsl_vector_free(node_betweenness);
+	}
+	if (free_edge_betweenness) {
+		gsl_matrix_free(edge_betweenness);
+	}
 }
