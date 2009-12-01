@@ -40,8 +40,8 @@ end
 for i = 1:size(m)(2)
 	source = floor(5*rand())+1;  %a random source node in the range (1,5)
 	[distance, branch] = breadth(m{i}, source);
-	branch_cpp = breadth_cpp(m{i}, source);
-	bct_test(sprintf("breadth %s", mname{i}), all(branch == branch_cpp));
+	distance_cpp = breadth_cpp(m{i}, source);
+	bct_test(sprintf("breadth %s", mname{i}), all(distance == distance_cpp));
 end
 
 % clustering_coef_bd
@@ -86,7 +86,7 @@ for i = 1:size(m)(2)
 end
 
 % findpaths
-sources = unique(floor(30*rand(1,5)));
+sources = unique(floor(30*rand(1,5)+1));   % 5 random source nodes in the range (1, 30)
 path_len_max = floor(rand()*2+2);  %random number in the range [2,4]
 for i = 1:size(m)(2)
 	[Pq,tpath,plq,qstop,allpths,util] = findpaths(m{i}, sources, path_len_max, 1);
