@@ -19,6 +19,7 @@ namespace bct {
 	double assortativity_und(const gsl_matrix*);
 	double assortativity(const gsl_vector*, const gsl_vector*, int);
 	gsl_vector* breadth(const gsl_matrix*, int, gsl_vector* = NULL);
+	gsl_matrix* breadthdist(const gsl_matrix*, gsl_matrix* = NULL);
 	gsl_vector* degrees_dir(const gsl_matrix*, gsl_vector* = NULL, gsl_vector* = NULL);
 	gsl_vector* degrees_und(const gsl_matrix*);
 	double density_dir(const gsl_matrix*);
@@ -79,7 +80,7 @@ namespace bct {
 	bool has_no_loops(const gsl_matrix*);
 	
 	// Matrix conversion
-	gsl_matrix* binary(const gsl_matrix*);
+	gsl_matrix* binary(const gsl_matrix*, double = 0.0);
 	gsl_matrix* no_loops(const gsl_matrix*);
 	gsl_matrix* positive(const gsl_matrix*);
 	gsl_matrix* undirected(const gsl_matrix*);

@@ -6,8 +6,8 @@
 /*
  * Returns a binary copy of the given matrix.
  */
-gsl_matrix* bct::binary(const gsl_matrix* m) {
-	return compare_elements(m, cmp_not_equal, 0.0);
+gsl_matrix* bct::binary(const gsl_matrix* m, double cmp_val) {
+	return compare_elements(m, cmp_not_equal, cmp_val);
 }
 
 /*

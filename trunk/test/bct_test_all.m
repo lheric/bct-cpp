@@ -44,6 +44,13 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("breadth %s", mname{i}), all(distance == distance_cpp));
 end
 
+% breadthdist
+for i = 1:size(m)(2)
+	[R, D] = breadthdist(m{i});
+	distance_cpp = breadthdist_cpp(m{i});
+	bct_test(sprintf("breadthdist %s", mname{i}), all(D == distance_cpp));
+end
+
 % clustering_coef_bd
 for i = 1:size(m)(2)
 	bct_test(sprintf("clustering_coef_bd %s", mname{i}), all(clustering_coef_bd(m{i}) == clustering_coef_bd_cpp(m{i})'))
@@ -133,3 +140,7 @@ for i = 1:size(m)(2)
 end
 
 printf("Failures: %d\n", failures)
+
+clear;
+
+

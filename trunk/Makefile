@@ -3,6 +3,7 @@ objects = \
 	betweenness_bin.o \
 	betweenness_wei.o \
 	breadth.o \
+	breadthdist.o \
 	cat.o \
 	clustering_coef_bd.o \
 	clustering_coef_bu.o \
