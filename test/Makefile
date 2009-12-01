@@ -13,6 +13,7 @@ filenames = \
 	degrees_und_cpp \
 	density_dir_cpp \
 	density_und_cpp \
+	edge_betweenness_bin_cpp \
 	edge_betweenness_wei_cpp \
 	findpaths_cpp \
 	jdegree_cpp \

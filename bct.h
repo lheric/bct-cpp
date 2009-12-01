@@ -48,7 +48,9 @@ namespace bct {
 	// Centrality
 	gsl_vector* betweenness_bin(const gsl_matrix*);
 	gsl_vector* betweenness_wei(const gsl_matrix*);
+	gsl_matrix* edge_betweenness_bin(const gsl_matrix*);
 	gsl_matrix* edge_betweenness_wei(const gsl_matrix*);
+	void node_and_edge_betweenness_bin(const gsl_matrix*, gsl_vector* = NULL, gsl_matrix* = NULL);
 	void node_and_edge_betweenness_wei(const gsl_matrix*, gsl_vector* = NULL, gsl_matrix* = NULL);
 
 	// Motifs

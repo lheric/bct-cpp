@@ -4,114 +4,205 @@
 #include <limits>
 
 /*
- * Computes the betweenness centrality for a binary graph.  Results are returned
- * in a vector where each element is the betweenness centrality of the
+ * Computes node betweenness centrality for a binary graph.  Results are
+ * returned in a vector where each element is the betweenness centrality of the
  * corresponding node.
  */
 gsl_vector* bct::betweenness_bin(const gsl_matrix* m) {
-	if (safe_mode) check_status(m, BINARY, "betweenness_bin");
+	gsl_vector* betweenness = gsl_vector_alloc(m->size1);
+	node_and_edge_betweenness_bin(m, betweenness, NULL);
+	return betweenness;
+}
+
+/*
+ * Computes edge betweenness centrality for a binary graph.  Results are
+ * returned in a matrix where each element is the betweenness centrality of the
+ * corresponding edge.
+ */
+gsl_matrix* bct::edge_betweenness_bin(const gsl_matrix* m) {
+	gsl_matrix* edge_betweenness = gsl_matrix_alloc(m->size1, m->size2);
+	node_and_edge_betweenness_bin(m, NULL, edge_betweenness);
+	return edge_betweenness;
+}
+
+/*
+ * Computes node and edge betweenness centrality for a binary graph.  Results
+ * are stored in a vector (node betweenness) and a matrix (edge betweenness)
+ * that are provided by the caller.
+ */
+void bct::node_and_edge_betweenness_bin(const gsl_matrix* m, gsl_vector* node_betweenness, gsl_matrix* edge_betweenness) {
+	if (safe_mode) check_status(m, BINARY, "node_and_edge_betweenness_bin");
 	if (m->size1 != m->size2) {
 		throw size_exception();
+	}	
+	bool free_node_betweenness = false;
+	bool free_edge_betweenness = false;
+	
+	// BC=zeros(n,1);
+	if (node_betweenness == NULL) {
+		free_node_betweenness = true;
+		node_betweenness = gsl_vector_calloc(m->size1);
+	} else {
+		gsl_vector_set_zero(node_betweenness);
 	}
 	
-	// d=1;
-	int d = 1;
-	
-	// NPd=G;
-	gsl_matrix* npd = copy(m);
-	
-	// NSPd=NPd;
-	gsl_matrix* nspd = copy(m);
-	
-	// NSP=NSPd; NSP(I)=1;
-	gsl_matrix* nsp = copy(m);
-	gsl_vector_view nsp_diagonal = gsl_matrix_diagonal(nsp);
-	gsl_vector_set_all(&nsp_diagonal.vector, 1.0);
-	
-	// L=NSPd; L(I)=1;
-	gsl_matrix* l = copy(nsp);
-	
-	// while find(NSPd,1);
-	while (nnz(nspd) > 0) {
-		gsl_matrix* temp;
-		
-		// d=d+1;
-		d++;
-		
-		// NPd=NPd*G;
-		temp = mul(npd, m);
-		gsl_matrix_free(npd);
-		npd = temp;
-		
-		// NSPd=NPd.*(L==0);
-		gsl_matrix* l_equal_0 = compare_elements(l, cmp_equal, 0.0);
-		gsl_matrix_free(nspd);
-		nspd = copy(npd);
-		gsl_matrix_mul_elements(nspd, l_equal_0);
-		
-		// NSP=NSP+NSPd;
-		gsl_matrix_add(nsp, nspd);
-		
-		// L=L+d.*(NSPd~=0);
-		gsl_matrix* nspd_not_equal_0 = compare_elements(nspd, cmp_not_equal, 0.0);
-		gsl_matrix_scale(nspd_not_equal_0, d);
-		gsl_matrix_add(l, nspd_not_equal_0);
-		
-		gsl_matrix_free(nspd_not_equal_0);
-		gsl_matrix_free(l_equal_0);
+	// EBC=zeros(n);
+	if (edge_betweenness == NULL) {
+		free_edge_betweenness = true;
+		edge_betweenness = gsl_matrix_calloc(m->size1, m->size2);
+	} else {
+		gsl_matrix_set_zero(edge_betweenness);
 	}
 	
-	// L(~L)=inf; L(I)=0;
-	gsl_matrix* not_l = compare_elements(l, cmp_equal, 0.0);
-	logical_index_assign(l, not_l, std::numeric_limits<double>::max());
-	gsl_vector_view l_diagonal = gsl_matrix_diagonal(l);
-	gsl_vector_set_zero(&l_diagonal.vector);
-	
-	// NSP(~NSP) = 1;
-	gsl_matrix* not_nsp = compare_elements(nsp, cmp_equal, 0.0);
-	logical_index_assign(nsp, not_nsp, 1.0);
-	
-	// Gt=G.';
-	gsl_matrix* transpose_m = gsl_matrix_alloc(m->size1, m->size2);
-	gsl_matrix_transpose_memcpy(transpose_m, m);
-	
-	// DP=zeros(n);
-	gsl_matrix* dp = zeros(m->size1);
-	
-	// diam=d-1;
-	int diam = d - 1;
-	
-	// for d=diam:-1:2
-	for (int d = diam; d >= 2; d--) {
+	// for u=1:n
+	for (int u = 0; u < m->size1; u++) {
 		
-		// DPd1=(((L==d).*(1+DP)./NSP)*Gt).*((L==(d-1)).*NSP);
-		gsl_matrix* l_equal_d = compare_elements(l, cmp_equal, d);
-		gsl_matrix* dp_plus_1 = copy(dp);
-		gsl_matrix_add_constant(dp_plus_1, 1.0);
-		gsl_matrix_mul_elements(l_equal_d, dp_plus_1);
-		gsl_matrix_div_elements(l_equal_d, nsp);
-		gsl_matrix* dpd1 = mul(l_equal_d, transpose_m);
-		gsl_matrix* l_equal_d_less_1 = compare_elements(l, cmp_equal, d - 1.0);
-		gsl_matrix_mul_elements(l_equal_d_less_1, nsp);
-		gsl_matrix_mul_elements(dpd1, l_equal_d_less_1);
-		gsl_matrix_add(dp, dpd1);
+		// D=false(1,n); D(u) = 1;
+		gsl_vector* d = gsl_vector_calloc(m->size1);
+		gsl_vector_set(d, u, 1.0);
 		
-		gsl_matrix_free(l_equal_d_less_1);
-		gsl_matrix_free(dpd1);
-		gsl_matrix_free(dp_plus_1);
-		gsl_matrix_free(l_equal_d);
+		// NP=zeros(1,n); NP(u)=1;
+		gsl_vector* np = gsl_vector_calloc(m->size1);
+		gsl_vector_set(np, u, 1.0);
+		
+		// P=false(n);
+		gsl_matrix* p = gsl_matrix_calloc(m->size1, m->size2);
+		
+		// Q=zeros(1,n); q=n;
+		gsl_vector* Q = gsl_vector_calloc(m->size1);
+		int q = m->size1 - 1;
+		
+		// Gu=G;
+		gsl_matrix* copy_m = copy(m);
+		
+		// V=u;
+		gsl_vector* V = gsl_vector_alloc(1);
+		gsl_vector_set(V, 0, u);
+		
+		// while V
+		while (V != NULL) {
+			
+			// Gu(:,V)=0;
+			for (int V_index = 0; V_index < V->size; V_index++) {
+				int v = (int)gsl_vector_get(V, V_index);
+				gsl_vector_view copy_m_column = gsl_matrix_column(copy_m, v);
+				gsl_vector_set_zero(&copy_m_column.vector);
+			}
+			
+			// for v=V
+			for (int V_index = 0; V_index < V->size; V_index++) {
+				int v = (int)gsl_vector_get(V, V_index);
+				
+				// Q(q)=v; q=q-1;
+				gsl_vector_set(Q, q--, v);
+				
+				// W=find(Gu(v,:));
+				gsl_vector_view copy_m_row = gsl_matrix_row(copy_m, v);
+				gsl_vector* W = find(&copy_m_row.vector);
+				
+				// for w=W
+				for (int W_index = 0; W != NULL && W_index < W->size; W_index++) {
+					int w = (int)gsl_vector_get(W, W_index);
+					
+					// if D(w)
+					if (fp_nonzero(gsl_vector_get(d, w))) {
+						
+						// NP(w)=NP(w)+NP(v);
+						double npw = gsl_vector_get(np, w);
+						double npv = gsl_vector_get(np, v);
+						gsl_vector_set(np, w, npw + npv);
+						
+						// P(w,v)=1;
+						gsl_matrix_set(p, w, v, 1.0);
+					
+					// else
+					} else {
+						
+						// D(w)=1;
+						gsl_vector_set(d, w, 1.0);
+						
+						// NP(w)=NP(v);
+						gsl_vector_set(np, w, gsl_vector_get(np, v));
+
+						// P(w,v)=1;
+						gsl_matrix_set(p, w, v, 1.0);
+					}
+				}
+				if (W != NULL) {
+					gsl_vector_free(W);
+				}
+			}
+			
+			// V=find(any(Gu(V,:),1));
+			gsl_vector* column_indices = sequence(0, m->size2 - 1);
+			gsl_matrix* copy_m_rows = index(copy_m, V, column_indices);
+			gsl_vector* any_copy_m_rows = any(copy_m_rows);
+			gsl_vector_free(V);
+			V = find(any_copy_m_rows);
+			gsl_vector_free(any_copy_m_rows);
+			gsl_matrix_free(copy_m_rows);
+			gsl_vector_free(column_indices);
+		}
+		
+		// if ~all(D)
+		if (all(d) == 0) {
+			
+			// Q(1:q)=find(~D);
+			gsl_vector* not_d = logical_not(d);
+			gsl_vector* not_d_indices = find(not_d);
+			gsl_vector_view Q_upto_q = gsl_vector_subvector(Q, 0, q + 1);
+			gsl_vector_memcpy(&Q_upto_q.vector, not_d_indices);
+			gsl_vector_free(not_d_indices);
+			gsl_vector_free(not_d);
+		}
+		
+		// DP=zeros(n,1);
+		gsl_vector* dp = gsl_vector_calloc(m->size1);
+		
+		// for w=Q(1:n-1);
+		for (int Q_index = 0; Q_index < m->size1 - 1; Q_index++) {
+			int w = (int)gsl_vector_get(Q, Q_index);
+			
+			// BC(w)=BC(w)+DP(w)
+			double bcw = gsl_vector_get(node_betweenness, w);
+			double dpw = gsl_vector_get(dp, w);
+			gsl_vector_set(node_betweenness, w, bcw + dpw);
+			
+			// for v=find(P(w,:))
+			gsl_vector_view p_row = gsl_matrix_row(p, w);
+			gsl_vector* found_p_row = find(&p_row.vector);
+			for (int p_index = 0; found_p_row != NULL && p_index < found_p_row->size; p_index++) {
+				int v = (int)gsl_vector_get(found_p_row, p_index);
+				
+				// DPvw=(1+DP(w)).*NP(v)./NP(w);
+				double npv = gsl_vector_get(np, v);
+				double npw = gsl_vector_get(np, w);
+				double dpvw = (1 + dpw) * npv / npw;
+				
+				// DP(v)=DP(v)+DPvw;
+				double dpv = gsl_vector_get(dp, v);
+				gsl_vector_set(dp, v, dpv + dpvw);
+				
+				// EBC(v,w)=EBC(v,w)+DPvw;
+				double ebcvw = gsl_matrix_get(edge_betweenness, v, w);
+				gsl_matrix_set(edge_betweenness, v, w, ebcvw + dpvw);
+			}
+			if (found_p_row != NULL) {
+				gsl_vector_free(found_p_row);
+			}
+		}
+		
+		gsl_vector_free(dp);
+		gsl_matrix_free(copy_m);
+		gsl_vector_free(Q);
+		gsl_matrix_free(p);
+		gsl_vector_free(np);
+		gsl_vector_free(d);
 	}
-	
-	// BC=sum(DP,1);
-	gsl_vector* betweenness = sum(dp);
-	
-	gsl_matrix_free(dp);
-	gsl_matrix_free(transpose_m);
-	gsl_matrix_free(not_nsp);
-	gsl_matrix_free(not_l);
-	gsl_matrix_free(nsp);
-	gsl_matrix_free(nspd);
-	gsl_matrix_free(npd);
-	
-	return betweenness;
+	if (free_node_betweenness) {
+		gsl_vector_free(node_betweenness);
+	}
+	if (free_edge_betweenness) {
+		gsl_matrix_free(edge_betweenness);
+	}
 }
