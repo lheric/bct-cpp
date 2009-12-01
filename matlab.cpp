@@ -11,6 +11,64 @@
  * document instances where our version differs from the MATLAB version.
  */
 
+int matlab::all(const gsl_vector* v) {
+	for (int i = 0; i < v->size; i++) {
+		if (fp_zero(gsl_vector_get(v, i))) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+gsl_vector* matlab::all(const gsl_matrix* m, int dim) {
+	if (dim == 1) {
+		gsl_vector* all_v = gsl_vector_alloc(m->size2);
+		for (int i = 0; i < m->size2; i++) {
+			gsl_vector_const_view column = gsl_matrix_const_column(m, i);
+			gsl_vector_set(all_v, i, all(&column.vector));
+		}
+		return all_v;
+	} else if (dim == 2) {
+		gsl_vector* all_v = gsl_vector_alloc(m->size1);
+		for (int i = 0; i < m->size1; i++) {
+			gsl_vector_const_view row = gsl_matrix_const_row(m, i);
+			gsl_vector_set(all_v, i, all(&row.vector));
+		}
+		return all_v;
+	} else {
+		return NULL;
+	}
+}
+
+int matlab::any(const gsl_vector* v) {
+	for (int i = 0; i < v->size; i++) {
+		if (fp_nonzero(gsl_vector_get(v, i))) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+gsl_vector* matlab::any(const gsl_matrix* m, int dim) {
+	if (dim == 1) {
+		gsl_vector* any_v = gsl_vector_alloc(m->size2);
+		for (int i = 0; i < m->size2; i++) {
+			gsl_vector_const_view column = gsl_matrix_const_column(m, i);
+			gsl_vector_set(any_v, i, any(&column.vector));
+		}
+		return any_v;
+	} else if (dim == 2) {
+		gsl_vector* any_v = gsl_vector_alloc(m->size1);
+		for (int i = 0; i < m->size1; i++) {
+			gsl_vector_const_view row = gsl_matrix_const_row(m, i);
+			gsl_vector_set(any_v, i, any(&row.vector));
+		}
+		return any_v;
+	} else {
+		return NULL;
+	}
+}
+
 gsl_matrix* matlab::eye(int size) {
 	return eye(size, size);
 }
@@ -861,7 +919,3 @@ gsl_matrix* matlab::to_row_matrix(const gsl_vector* v) {
 	}
 	return m;
 }
-
-
-
-

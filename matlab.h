@@ -10,6 +10,10 @@ namespace matlab {
 	const double EPSILON = 1e-6;
 
 	// Functions
+	int all(const gsl_vector*);
+	gsl_vector* all(const gsl_matrix*, int = 1);
+	int any(const gsl_vector*);
+	gsl_vector* any(const gsl_matrix*, int = 1);
 	gsl_matrix* eye(int);
 	gsl_matrix* eye(int, int);
 	gsl_vector* find(const gsl_vector*, int = std::numeric_limits<int>::max(), const char* = NULL);
