@@ -36,6 +36,14 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("betweenness_wei %s", mname{i}), all(betweenness_wei(m{i}) == betweenness_wei_cpp(m{i})'))
 end
 
+% breadth
+for i = 1:size(m)(2)
+	source = floor(5*rand())+1;  %a random source node in the range (1,5)
+	[distance, branch] = breadth(m{i}, source);
+	branch_cpp = breadth_cpp(m{i}, source);
+	bct_test(sprintf("breadth %s", mname{i}), all(branch == branch_cpp));
+end
+
 % clustering_coef_bd
 for i = 1:size(m)(2)
 	bct_test(sprintf("clustering_coef_bd %s", mname{i}), all(clustering_coef_bd(m{i}) == clustering_coef_bd_cpp(m{i})'))
@@ -79,7 +87,7 @@ end
 
 % findpaths
 sources = unique(floor(30*rand(1,5)));
-path_len_max = floor(rand()*2+2); %random number in the range [2,4]
+path_len_max = floor(rand()*2+2);  %random number in the range [2,4]
 for i = 1:size(m)(2)
 	[Pq,tpath,plq,qstop,allpths,util] = findpaths(m{i}, sources, path_len_max, 1);
 	allpaths_cpp = findpaths_cpp(m{i}, sources, path_len_max, 1);

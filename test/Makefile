@@ -3,6 +3,7 @@ filenames = \
 	assortativity_und_cpp \
 	betweenness_bin_cpp \
 	betweenness_wei_cpp \
+	breadth_cpp \
 	clustering_coef_bd_cpp \
 	clustering_coef_bu_cpp \
 	clustering_coef_wd_cpp \

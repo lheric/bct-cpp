@@ -203,6 +203,20 @@ gsl_matrix* matlab::zeros(int size1, int size2) {
 }
 
 /*
+ * Emulates ([v1 x])
+ */
+gsl_vector* matlab::concatenate(const gsl_vector* v, const double x) {
+	if(v == NULL) {
+		return NULL;
+	}
+	gsl_vector* cat_v = gsl_vector_alloc(v->size + 1);
+	gsl_vector_view sub_v = gsl_vector_subvector(cat_v, 0, v->size);
+	gsl_vector_memcpy(&sub_v.vector, v);
+	gsl_vector_set(cat_v, v->size, x);
+	return cat_v;
+}
+ 
+/*
  * Emulates ([v1 v2]) for row vectors or ([v1 ; v2]) for column vectors.
  */
 gsl_vector* matlab::concatenate(const gsl_vector* v1, const gsl_vector* v2) {
