@@ -2,6 +2,7 @@ objects = \
 	assortativity.o \
 	betweenness_bin.o \
 	betweenness_wei.o \
+	breadth.o \
 	cat.o \
 	clustering_coef_bd.o \
 	clustering_coef_bu.o \
