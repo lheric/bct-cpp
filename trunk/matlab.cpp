@@ -500,6 +500,20 @@ gsl_matrix* matlab::logical_or(const gsl_matrix* m1, const gsl_matrix* m2) {
 }
 
 /*
+ * Emulates (~m)
+ */
+gsl_matrix* matlab::logical_not(const gsl_matrix* m) {
+	gsl_matrix* not_m = gsl_matrix_alloc(m->size1, m->size2);
+	for(int i = 0;i < m->size1;i++) {
+		for(int j = 0;j < m->size2;j++) {
+			bool z = fp_zero(gsl_matrix_get(m, i, j));
+			gsl_matrix_set(not_m, i, j, z);
+		}
+	}
+	return not_m;
+}
+
+/*
  * Emulates (m1 * m2).
  */
 gsl_matrix* matlab::mul(const gsl_matrix* m1, const gsl_matrix* m2) {

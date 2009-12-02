@@ -1,4 +1,4 @@
 #include "bct_test.h"
 #include "bct_test.cpp"
 
-EFFICIENCY_FUNCTION(efficiency)
+MATRIX_TO_MATRIX_FUNCTION(efficiency_local)

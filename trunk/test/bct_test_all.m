@@ -94,6 +94,16 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("density_und %s", mname{i}), density_und(m{i}) == density_und_cpp(m{i}))
 end
 
+% efficiency
+for i = 1:size(m)(2)
+	E_local = efficiency(m{i},1);
+	E_local_cpp = efficiency_local_cpp(m{i});
+	E_global = efficiency(m{i});
+	E_global_cpp = efficiency_global_cpp(m{i});
+	bct_test(sprintf("efficiency_local %s", mname{i}), all(E_local - E_local_cpp)<0.0000001);
+	bct_test(sprintf("efficiency_global %s", mname{i}), all(E_global - E_global_cpp)<0.0000001);
+end
+
 % edge_betweenness_bin
 for i = 1:size(m)(2)
 	bct_test(sprintf("edge_betweenness_bin %s", mname{i}), all(edge_betweenness_bin(m{i}) == edge_betweenness_bin_cpp(m{i})))

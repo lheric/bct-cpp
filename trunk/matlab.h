@@ -46,6 +46,7 @@ namespace matlab {
 	gsl_matrix* copy(const gsl_matrix*);
 	gsl_vector* logical_and(const gsl_vector*, const gsl_vector*);
 	gsl_vector* logical_not(const gsl_vector*);
+	gsl_matrix* logical_not(const gsl_matrix*);
 	gsl_vector* logical_or(const gsl_vector*, const gsl_vector*);
 	gsl_matrix* logical_or(const gsl_matrix*, const gsl_matrix*);
 	gsl_matrix* mul(const gsl_matrix*, const gsl_matrix*);
