@@ -14,33 +14,33 @@
  * For directed networks, local efficiency works with the out-degree.
  */
  
-gsl_matrix* bct::efficiency(const gsl_matrix* CIJ, int* local_ind) {
-	if (safe_mode) check_status(CIJ, BINARY | UNDIRECTED, "efficiency");
-	
+gsl_matrix* bct::efficiency_local(const gsl_matrix* CIJ) {
+	if (safe_mode) check_status(CIJ, BINARY | UNDIRECTED, "efficiency_local");
 	gsl_matrix* m =copy(CIJ);
-	if(local_ind != NULL) { //compute local efficiency
-		int N = m->size1;
-		gsl_matrix* E = zeros(N, 1);
-		for(int node=0;node < N;node++) {
-			gsl_vector_view neighbors_row = gsl_matrix_row(m, node);
-			gsl_vector* neighbors = find(&neighbors_row.vector);
-			int degree = neighbors->size;
-			if(degree >= 2) {
-				gsl_matrix* m_neighbors = index(m, neighbors, neighbors);
-				gsl_matrix* eff = bct::distance_inv(m_neighbors);
-				gsl_vector* eff_v = to_vector(eff);
-				double factor = (double)1/((degree*degree)-degree);
-				gsl_vector_scale(eff_v, factor);
-				double efficiency = sum(eff_v);
-				gsl_matrix_set(E, node, 0, efficiency);
-			}
+	int N = m->size1;
+	gsl_matrix* E = zeros(N, 1);
+	for(int node=0;node < N;node++) {
+		gsl_vector_view neighbors_row = gsl_matrix_row(m, node);
+		gsl_vector* neighbors = find(&neighbors_row.vector);
+		int degree = neighbors->size;
+		if(degree >= 2) {
+			gsl_matrix* m_neighbors = index(m, neighbors, neighbors);
+			gsl_matrix* eff = bct::distance_inv(m_neighbors);
+			gsl_vector* eff_v = to_vector(eff);
+			double factor = (double)1/((degree*degree)-degree);
+			gsl_vector_scale(eff_v, factor);
+			double efficiency = sum(eff_v);
+			gsl_matrix_set(E, node, 0, efficiency);
 		}
-		return E;
 	}
-	else {
-		gsl_matrix* E = distance_inv(m);
-		return E;
-	}
+	return E;
+}
+
+gsl_matrix* bct::efficiency_global(const gsl_matrix* CIJ) {	
+	if (safe_mode) check_status(CIJ, BINARY | UNDIRECTED, "efficiency_global");
+	gsl_matrix* m =copy(CIJ);
+	gsl_matrix* E = distance_inv(m);
+	return E;
 }
 
 gsl_matrix* bct::distance_inv(gsl_matrix* g) {
@@ -66,9 +66,8 @@ gsl_matrix* bct::distance_inv(gsl_matrix* g) {
 		L = L_temp;
 		gsl_matrix_free(D_zero_ind);
 	}
-	
+
 	gsl_matrix* notD_ind = compare_elements(D, cmp_equal, 0.0);
-	
 	logical_index_assign(D, notD_ind, GSL_POSINF);
 
 	//invert D. This is not the same as inverse of a matrix
