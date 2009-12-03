@@ -119,10 +119,10 @@ sources = unique(floor(30*rand(1,5)+1));   % 5 random source nodes in the range 
 path_len_max = floor(rand()*2+2);  %random number in the range [2,4]
 for i = 1:size(m)(2)
 	[Pq,tpath,plq,qstop,allpths,util] = findpaths(m{i}, sources, path_len_max, 1);
-	allpaths_cpp = findpaths_cpp(m{i}, sources, path_len_max, 1);
-	bct_test(sprintf("findpaths %s", mname{i}), all(allpths == allpaths_cpp));
-	clear allpaths_cpp;
-	clear Pq tpath plq qstop allpths util;
+	[allpaths_cpp Pq_cpp qstop_cpp] = findpaths_cpp(m{i}, sources, path_len_max, 1);
+	bct_test(sprintf("findpaths allpths %s", mname{i}), all(allpths == allpaths_cpp));
+	bct_test(sprintf("findpaths pq %s", mname{i}), all(Pq == Pq_cpp));
+	bct_test(sprintf("findpaths qstop %s", mname{i}), (qstop == qstop_cpp));
 end
 
 % jdegree
@@ -147,7 +147,6 @@ for i = 1:size(m)(2)
 	[R,D] = reachdist(m{i});
 	D_cpp = reachdist_cpp(m{i});
 	bct_test(sprintf("reachdist %s", mname{i}), all(D == D_cpp));
-	clear R D D_cpp;
 end
 
 % strengths_und

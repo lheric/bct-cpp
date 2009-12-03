@@ -11,6 +11,7 @@ namespace bct_test {
 	gsl_vector* to_gsl(const Array<int>);
 	Matrix from_gsl(const gsl_matrix*);
 	Matrix from_gsl(const gsl_vector*);
+	NDArray from_gsl(gsl_matrix**, int);
 };
 
 #define MATRIX_TO_SCALAR_FUNCTION(function_name) \
