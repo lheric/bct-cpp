@@ -3,7 +3,6 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_histogram.h>
 #include <math.h>
-#include <cstdio>
 
 /* Original comments: Paths are sequences of linked nodes, that never visit a single
  * node more than once. This function finds all paths that start at a set of 
