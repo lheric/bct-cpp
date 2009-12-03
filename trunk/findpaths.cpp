@@ -3,6 +3,7 @@
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_histogram.h>
 #include <math.h>
+#include <cstdio>
 
 /* Original comments: Paths are sequences of linked nodes, that never visit a single
  * node more than once. This function finds all paths that start at a set of 
@@ -25,7 +26,8 @@
  * from 1 to path_len_max.
  */
 
-gsl_matrix* bct::findpaths(const gsl_matrix* m, const gsl_vector* sources_input, int path_len_max, int savepaths, gsl_matrix** ret_pq, long int* ret_tpath, gsl_vector* ret_plq, int* ret_qstop, gsl_matrix* ret_util) {
+gsl_matrix* bct::findpaths(const gsl_matrix* m, const gsl_vector* sources_input, int path_len_max, int savepaths,\
+										  gsl_matrix** ret_pq, long int* ret_tpath, gsl_vector* ret_plq, int* ret_qstop, gsl_matrix* ret_util) {
 	
 	if (m->size1 != m->size2) {
 		throw size_exception();
@@ -358,9 +360,9 @@ gsl_matrix* bct::findpaths(const gsl_matrix* m, const gsl_vector* sources_input,
 	if(node_to_node_len != NULL) {
 		if(ret_pq == NULL) {
 			ret_pq = new gsl_matrix* [path_len_max];
-			for(int i=0;i < path_len_max;i++) {
-				ret_pq[i] = gsl_matrix_alloc(N, N);
-			}
+		}
+		for(int i=0;i < path_len_max;i++) {
+			ret_pq[i] = gsl_matrix_alloc(N, N);
 		}
 		for(int i=0;i < path_len_max;i++) {	
 			gsl_matrix_memcpy(ret_pq[i],node_to_node_len[i]);

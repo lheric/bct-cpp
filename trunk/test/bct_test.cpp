@@ -48,6 +48,30 @@ Matrix bct_test::from_gsl(const gsl_matrix* gslm) {
 }
 
 /*
+ * Converts a GSL 3D matrix to an Octave 3D matrix.
+ */
+NDArray bct_test::from_gsl(gsl_matrix** gslm, int gslm_len) {
+	//First identify the dimensions of the Nd-array to be filled
+	dim_vector dimv(3);
+	dimv.resize(3);
+	dimv(0) = (*gslm)->size1;
+	dimv(1) = (*gslm)->size2;
+	dimv(2) = gslm_len;
+	NDArray nd_oct(dimv);
+	for(int i = 0;i < gslm_len;i++) {
+		const gsl_matrix* gslm_m = gslm[i];
+		int rows = gslm_m->size1;
+		int columns = gslm_m->size2;
+		for (int j = 0; j < rows; j++) {
+			for (int k = 0; k < columns; k++) {
+				nd_oct(j, k, i) = gsl_matrix_get(gslm_m, j, k);
+			}
+		}
+	}
+	return nd_oct;
+}
+
+/*
  * Converts a GSL vector to an Octave matrix.
  */
 Matrix bct_test::from_gsl(const gsl_vector* gslv) {
