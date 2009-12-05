@@ -41,6 +41,8 @@ namespace bct {
 	// Paths, distances, and cycles
 	gsl_vector* breadth(const gsl_matrix*, int, gsl_vector* = NULL);
 	gsl_matrix* breadthdist(const gsl_matrix*, gsl_matrix* = NULL);
+	gsl_vector* cycprob_fcyc(gsl_matrix**, int);
+	gsl_vector* cycprob_pcyc(gsl_matrix**, int);
 	gsl_matrix* distance_inv(gsl_matrix*); //called by efficiency_*		
 	gsl_matrix* efficiency_local(const gsl_matrix*);
 	gsl_matrix* efficiency_global(const gsl_matrix*);

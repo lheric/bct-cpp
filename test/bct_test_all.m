@@ -114,15 +114,22 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("edge_betweenness_wei %s", mname{i}), all(edge_betweenness_wei(m{i}) == edge_betweenness_wei_cpp(m{i})))
 end
 
-% findpaths
+% findpaths and cycprob
 sources = unique(floor(30*rand(1,5)+1));   % 5 random source nodes in the range (1, 30)
 path_len_max = floor(rand()*2+2);  %random number in the range [2,4]
 for i = 1:size(m)(2)
 	[Pq,tpath,plq,qstop,allpths,util] = findpaths(m{i}, sources, path_len_max, 1);
 	[allpaths_cpp Pq_cpp qstop_cpp] = findpaths_cpp(m{i}, sources, path_len_max, 1);
-	bct_test(sprintf("findpaths allpths %s", mname{i}), all(allpths == allpaths_cpp));
-	bct_test(sprintf("findpaths pq %s", mname{i}), all(Pq == Pq_cpp));
+	bct_test(sprintf("findpaths allpaths %s", mname{i}), all(allpths == allpaths_cpp));
+	bct_test(sprintf("findpaths Pq %s", mname{i}), all(Pq == Pq_cpp));
 	bct_test(sprintf("findpaths qstop %s", mname{i}), (qstop == qstop_cpp));
+	
+	%cycprob ---------
+	[fcyc,pcyc] = cycprob(Pq);
+	fcyc_cpp = cycprob_fcyc_cpp(Pq_cpp, qstop_cpp);
+	pcyc_cpp = cycprob_pcyc_cpp(Pq_cpp, qstop_cpp);
+	bct_test(sprintf("cycprob fcyc %s", mname{i}), all(fcyc == fcyc_cpp));
+	bct_test(sprintf("cycprob pcyc %s", mname{i}), all(pcyc == pcyc_cpp));
 end
 
 % jdegree

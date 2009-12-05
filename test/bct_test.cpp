@@ -58,17 +58,36 @@ NDArray bct_test::from_gsl(gsl_matrix** gslm, int gslm_len) {
 	dimv(1) = (*gslm)->size2;
 	dimv(2) = gslm_len;
 	NDArray nd_oct(dimv);
+	int rows = dimv(0);
+	int columns = dimv(1);
 	for(int i = 0;i < gslm_len;i++) {
-		const gsl_matrix* gslm_m = gslm[i];
-		int rows = gslm_m->size1;
-		int columns = gslm_m->size2;
 		for (int j = 0; j < rows; j++) {
 			for (int k = 0; k < columns; k++) {
-				nd_oct(j, k, i) = gsl_matrix_get(gslm_m, j, k);
+				nd_oct(j, k, i) = gsl_matrix_get(gslm[i], j, k);
 			}
 		}
 	}
 	return nd_oct;
+}
+
+/*
+ * Converts a Octave 3D matrix to GSL 3D matrix.
+ */
+gsl_matrix** bct_test::to_gsl(const NDArray arr) {
+	dim_vector dimv = arr.dims();
+	int depth = dimv(2);
+	int rows = dimv(0);
+	int columns = dimv(1);
+	gsl_matrix** gslm = new gsl_matrix* [depth];
+	for(int i = 0;i < depth;i++) {
+		gslm[i] = gsl_matrix_alloc(rows, columns);
+		for (int j = 0; j < rows; j++) {
+			for (int k = 0; k < columns; k++) {
+				gsl_matrix_set(gslm[i], j, k, arr(j, k, i));
+			}
+		}
+	}
+	return gslm;
 }
 
 /*

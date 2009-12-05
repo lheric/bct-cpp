@@ -25,6 +25,9 @@ DEFUN_DLD(findpaths_cpp, args, , "Wrapper for C++ function.") {
 			retvals(0) = octave_value(bct_test::from_gsl(all_paths));
 			retvals(1) = octave_value(bct_test::from_gsl(ret_pq, *ret_qstop));
 			retvals(2) = octave_value(*ret_qstop);
+			for(int i = 0;i < path_len_max;i++) {
+				gsl_matrix_free(ret_pq[i]);
+			}
 			return retvals;
 		} else {
 			return octave_value_list();
