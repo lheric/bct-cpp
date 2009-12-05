@@ -1,7 +1,6 @@
 #include "bct.h"
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
-#include <cstdio>
 
 /* Assortativity coefficient. Essentially, the assortativity a correlation 
  * coefficient for the degrees of linked nodes. A positive assortativity coefficient 

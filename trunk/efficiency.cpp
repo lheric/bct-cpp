@@ -4,7 +4,6 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h> 
-#include <cstdio>
 
 /*
  * Computes the Global/local efficiency for binary undirected graph G.
