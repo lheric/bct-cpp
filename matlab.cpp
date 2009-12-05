@@ -156,6 +156,18 @@ int matlab::nnz(const gsl_matrix* m) {
 	return ret;
 }
 
+gsl_vector* matlab::nonzeros(const gsl_matrix* m) {
+	gsl_vector* found = find(m);
+	if (found != NULL) {
+		for (int i = 0; i < found->size; i++) {
+			int m_index = (int)gsl_vector_get(found, i);
+			double value = index(m, m_index);
+			gsl_vector_set(found, i, value);
+		}
+	}
+	return found;
+}
+
 gsl_matrix* matlab::ones(int size) {
 	return ones(size, size);
 }

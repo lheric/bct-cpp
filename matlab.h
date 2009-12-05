@@ -21,6 +21,7 @@ namespace matlab {
 	gsl_matrix* find_ij(const gsl_matrix*, int = GSL_POSINF, const char* = NULL);
 	int nnz(const gsl_vector*);
 	int nnz(const gsl_matrix*);
+	gsl_vector* nonzeros(const gsl_matrix*);
 	gsl_matrix* ones(int);
 	gsl_matrix* ones(int, int);
 	gsl_matrix* yens(int, double);
