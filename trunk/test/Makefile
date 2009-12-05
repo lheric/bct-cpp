@@ -9,6 +9,8 @@ filenames = \
 	clustering_coef_bu_cpp \
 	clustering_coef_wd_cpp \
 	clustering_coef_wu_cpp \
+	cycprob_fcyc_cpp \
+	cycprob_pcyc_cpp \
 	degrees_dir_cpp \
 	degrees_und_cpp \
 	density_dir_cpp \

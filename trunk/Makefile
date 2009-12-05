@@ -10,6 +10,7 @@ objects = \
 	clustering_coef_wd.o \
 	clustering_coef_wu.o \
 	convert.o \
+	cycprob.o \
 	debug.o \
 	degrees_dir.o \
 	degrees_und.o \
