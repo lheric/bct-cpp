@@ -466,6 +466,24 @@ gsl_vector* matlab::logical_and(const gsl_vector* v1, const gsl_vector* v2) {
 }
 
 /*
+ * Emulates (m1 & m2).
+ */
+gsl_matrix* matlab::logical_and(const gsl_matrix* m1, const gsl_matrix* m2) {
+	if (m1->size1 != m2->size1 || m1->size2 != m2->size2) {
+		return NULL;
+	}
+	gsl_matrix* and_m = gsl_matrix_alloc(m1->size1, m1->size2);
+	for (int i = 0; i < m1->size1; i++) {
+		for (int j = 0; j < m1->size2; j++) {
+			bool nz1 = fp_nonzero(gsl_matrix_get(m1, i, j));
+			bool nz2 = fp_nonzero(gsl_matrix_get(m2, i, j));
+			gsl_matrix_set(and_m, i, j, (double)(nz1 && nz2));
+		}
+	}
+	return and_m;
+}
+
+/*
  * Emulates (~v).
  */
 gsl_vector* matlab::logical_not(const gsl_vector* v) {
@@ -475,6 +493,20 @@ gsl_vector* matlab::logical_not(const gsl_vector* v) {
 		gsl_vector_set(not_v, i, (double)z);
 	}
 	return not_v;
+}
+
+/*
+ * Emulates (~m)
+ */
+gsl_matrix* matlab::logical_not(const gsl_matrix* m) {
+	gsl_matrix* not_m = gsl_matrix_alloc(m->size1, m->size2);
+	for(int i = 0;i < m->size1;i++) {
+		for(int j = 0;j < m->size2;j++) {
+			bool z = fp_zero(gsl_matrix_get(m, i, j));
+			gsl_matrix_set(not_m, i, j, z);
+		}
+	}
+	return not_m;
 }
 
 /*
@@ -497,7 +529,7 @@ gsl_vector* matlab::logical_or(const gsl_vector* v1, const gsl_vector* v2) {
  * Emulates (m1 | m2).
  */
 gsl_matrix* matlab::logical_or(const gsl_matrix* m1, const gsl_matrix* m2) {
-	if (m1->size1 != m2->size1) {
+	if (m1->size1 != m2->size1 || m1->size2 != m2->size2) {
 		return NULL;
 	}
 	gsl_matrix* or_m = gsl_matrix_alloc(m1->size1, m1->size2);
@@ -509,20 +541,6 @@ gsl_matrix* matlab::logical_or(const gsl_matrix* m1, const gsl_matrix* m2) {
 		}
 	}
 	return or_m;
-}
-
-/*
- * Emulates (~m)
- */
-gsl_matrix* matlab::logical_not(const gsl_matrix* m) {
-	gsl_matrix* not_m = gsl_matrix_alloc(m->size1, m->size2);
-	for(int i = 0;i < m->size1;i++) {
-		for(int j = 0;j < m->size2;j++) {
-			bool z = fp_zero(gsl_matrix_get(m, i, j));
-			gsl_matrix_set(not_m, i, j, z);
-		}
-	}
-	return not_m;
 }
 
 /*
