@@ -106,12 +106,17 @@ end
 
 % edge_betweenness_bin
 for i = 1:size(m)(2)
-	bct_test(sprintf("edge_betweenness_bin %s", mname{i}), all(edge_betweenness_bin(m{i}) == edge_betweenness_bin_cpp(m{i})))
+	bct_test(sprintf("edge_betweenness_bin %s", mname{i}), all(all(edge_betweenness_bin(m{i}) == edge_betweenness_bin_cpp(m{i}))))
 end
 
 % edge_betweenness_wei
 for i = 1:size(m)(2)
-	bct_test(sprintf("edge_betweenness_wei %s", mname{i}), all(edge_betweenness_wei(m{i}) == edge_betweenness_wei_cpp(m{i})))
+	bct_test(sprintf("edge_betweenness_wei %s", mname{i}), all(all(edge_betweenness_wei(m{i}) == edge_betweenness_wei_cpp(m{i}))))
+end
+
+% erange
+for i = 1:size(m)(2)
+	bct_test(sprintf("erange %s", mname{i}), all(all(erange(m{i}) == erange_cpp(m{i}))))
 end
 
 % findpaths and cycprob

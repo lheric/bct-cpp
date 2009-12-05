@@ -19,6 +19,7 @@ filenames = \
 	efficiency_global_cpp \
 	edge_betweenness_bin_cpp \
 	edge_betweenness_wei_cpp \
+	erange_cpp \
 	findpaths_cpp \
 	jdegree_cpp \
 	jdegree_id_cpp \
