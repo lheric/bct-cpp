@@ -1,9 +1,9 @@
 #ifndef MATLAB_H
 #define MATLAB_H
 
+#include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
-#include <limits>
 
 namespace matlab {
 	typedef bool (*compare_fn)(double, double);
@@ -16,9 +16,9 @@ namespace matlab {
 	gsl_vector* any(const gsl_matrix*, int = 1);
 	gsl_matrix* eye(int);
 	gsl_matrix* eye(int, int);
-	gsl_vector* find(const gsl_vector*, int = std::numeric_limits<int>::max(), const char* = NULL);
-	gsl_vector* find(const gsl_matrix*, int = std::numeric_limits<int>::max(), const char* = NULL);
-	gsl_matrix* find_ij(const gsl_matrix*, int = std::numeric_limits<int>::max(), const char* = NULL);
+	gsl_vector* find(const gsl_vector*, int = GSL_POSINF, const char* = NULL);
+	gsl_vector* find(const gsl_matrix*, int = GSL_POSINF, const char* = NULL);
+	gsl_matrix* find_ij(const gsl_matrix*, int = GSL_POSINF, const char* = NULL);
 	int nnz(const gsl_vector*);
 	int nnz(const gsl_matrix*);
 	gsl_matrix* ones(int);
