@@ -1,7 +1,6 @@
 #include "bct.h"
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
-#include <cstdio>
 
 /*
  * cycprob_fcyc computes the proportion of paths that are cycels.
