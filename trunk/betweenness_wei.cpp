@@ -1,7 +1,7 @@
 #include "bct.h"
+#include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
-#include <limits>
 
 /*
  * Computes node betweenness centrality for a weighted graph.  Results are
@@ -59,7 +59,7 @@ void bct::node_and_edge_betweenness_wei(const gsl_matrix* m, gsl_vector* node_be
 		
 		// D=inf(1,n); D(u) = 0;
 		gsl_vector* d = gsl_vector_alloc(m->size1);
-		gsl_vector_set_all(d, std::numeric_limits<double>::max());
+		gsl_vector_set_all(d, GSL_POSINF);
 		gsl_vector_set(d, u, 0.0);
 		
 		// NP=zeros(1,n); NP(u)=1;
@@ -113,10 +113,7 @@ void bct::node_and_edge_betweenness_wei(const gsl_matrix* m, gsl_vector* node_be
 					int w = (int)gsl_vector_get(W, W_index);
 					
 					// Duw=D(v)+G1(v,w);
-					int duw = (int)std::numeric_limits<double>::max();
-					if (gsl_vector_get(d, v) < std::numeric_limits<double>::max()) {
-						duw = (int)(gsl_vector_get(d, v) + gsl_matrix_get(copy_m, v, w));
-					}
+					double duw = gsl_vector_get(d, v) + gsl_matrix_get(copy_m, v, w);
 					
 					// if Duw<D(w)
 					if (duw < gsl_vector_get(d, w)) {
@@ -135,7 +132,7 @@ void bct::node_and_edge_betweenness_wei(const gsl_matrix* m, gsl_vector* node_be
 						gsl_matrix_set(p, w, v, 1.0);
 						
 					// elseif Duw==D(w)
-					} else if (duw == (int)gsl_vector_get(d, w)) {
+					} else if (duw == gsl_vector_get(d, w)) {
 						
 						// NP(w)=NP(w)+NP(v);
 						double npw = gsl_vector_get(np, w);
@@ -162,10 +159,10 @@ void bct::node_and_edge_betweenness_wei(const gsl_matrix* m, gsl_vector* node_be
 				gsl_vector_free(d_s);
 				
 				// elseif isinf(minD),
-				if (fp_equal(min_d, std::numeric_limits<double>::max())) {
+				if (gsl_isinf(min_d)) {
 					
 					// Q(1:q)=find(isinf(D)); break
-					gsl_vector* isinf_d = compare_elements(d, cmp_equal, std::numeric_limits<double>::max());
+					gsl_vector* isinf_d = compare_elements(d, cmp_equal, GSL_POSINF);
 					gsl_vector* isinf_d_indices = find(isinf_d);
 					gsl_vector_view Q_upto_q = gsl_vector_subvector(Q, 0, q + 1);
 					gsl_vector_memcpy(&Q_upto_q.vector, isinf_d_indices);
