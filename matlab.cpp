@@ -1,4 +1,5 @@
 #include <cmath>
+#include <cstdio>
 #include <cstring>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_math.h>
@@ -66,6 +67,39 @@ gsl_vector* matlab::any(const gsl_matrix* m, int dim) {
 		return any_v;
 	} else {
 		return NULL;
+	}
+}
+
+void matlab::dec2bin(int n, char* bin) {
+	if (n <= 0) {
+		bin[0] = '0';
+		bin[1] = '\0';
+		return;
+	}
+	int len = (int)(std::floor(1.0 + std::log(n) / std::log(2)));
+	bin[len] = '\0';
+	for (int i = len - 1; i >= 0; i--) {
+		int remainder = n % 2;
+		if (remainder) {
+			bin[i] = '1';
+		} else {
+			bin[i] = '0';
+		}
+		n >>= 1;
+	}
+}
+
+void matlab::dec2bin(int n, int len, char* bin) {
+	dec2bin(n, bin);
+	int strlen = std::strlen(bin);
+	if (len > strlen) {
+		for (int i = strlen, j = len; j >= 0; i--, j--) {
+			if (i >= 0) {
+				bin[j] = bin[i];
+			} else {
+				bin[j] = '0';
+			}
+		}
 	}
 }
 
@@ -264,6 +298,7 @@ gsl_matrix* matlab::triu(const gsl_matrix* m, int k) {
 	return triu;
 }
 
+// TODO: Single-argument zeros should return a vector?
 gsl_matrix* matlab::zeros(int size) {
 	return gsl_matrix_calloc(size, size);
 }
