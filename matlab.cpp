@@ -866,6 +866,22 @@ void matlab::index_assign(gsl_matrix* m, const gsl_vector* row_indices, const gs
 }
 
 /*
+ * Emulates matrix indexing by vectors with row and column indices, followed by assignment.
+ * m([r], [c])=m2
+ */
+void matlab::index_assign(gsl_matrix* m, const gsl_vector* row_indices, const gsl_vector* col_indices, const gsl_matrix* source) {
+	for (int i = 0, source_i = 0;i < row_indices->size && source_i < source->size1; i++, source_i++) {
+		int row = gsl_vector_get(row_indices, i);
+		for(int j = 0, source_j = 0;j < col_indices->size && source_j < source->size2; j++, source_j++) {
+			int col = gsl_vector_get(col_indices, j);
+			int index = col*m->size1 + row;
+			double source_val = gsl_matrix_get(source, source_i, source_j);
+			index_assign(m, index, source_val);
+		}
+	}
+}
+
+/*
  * Emulates vector indexing and assignment (v(indices) = x).
  */
 void matlab::index_assign(gsl_vector* v, const gsl_vector* indices, double x) {
