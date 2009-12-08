@@ -16,6 +16,7 @@ objects = \
 	degrees_und.o \
 	density_dir.o \
 	density_und.o \
+	distance_wei.o \
 	efficiency.o \
 	erange.o \
 	findpaths.o \
