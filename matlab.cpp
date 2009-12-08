@@ -13,6 +13,9 @@
  */
  
 gsl_vector* matlab::min(const gsl_matrix* m) {
+	if(m == NULL) {
+		return NULL;
+	}
 	gsl_vector* minv = gsl_vector_alloc(m->size2);
 	for(int col = 0;col < m->size2;col++) {
 		gsl_vector_const_view column = gsl_matrix_const_column(m, col);
@@ -516,6 +519,21 @@ gsl_matrix* matlab::copy(const gsl_matrix* m) {
 }
 
 /*
+ * Returns the truth value of a matrix: 1 if all the elements are non-zero,
+ * 0 if at least 1 element is zero
+ */
+bool matlab::truth(const gsl_matrix* m) {
+	for(int i = 0;i < m->size1;i++) {
+		for(int j = 0;j < m->size2;j++) {  
+			if(fp_zero(gsl_matrix_get(m, i,j ))) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+  
+/*
  * Emulates (v1 & v2).
  */
 gsl_vector* matlab::logical_and(const gsl_vector* v1, const gsl_vector* v2) {
@@ -897,7 +915,7 @@ void matlab::index_assign(gsl_matrix* m, const gsl_matrix* indices, double x) {
  */
 gsl_matrix* matlab::mixed_logical_index(const gsl_matrix* m, const gsl_vector* rows, const gsl_vector* logical_cols) {
 	int columns = nnz(logical_cols);
-	if (columns == 0) {
+	if (columns == 0 || rows == NULL || m == NULL) {
 		return NULL;
 	}
 	gsl_matrix* indexed = gsl_matrix_alloc(rows->size, columns);
