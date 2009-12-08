@@ -11,6 +11,16 @@
  * See MATLAB documentation for descriptions of these functions.  We will
  * document instances where our version differs from the MATLAB version.
  */
+ 
+gsl_vector* matlab::min(const gsl_matrix* m) {
+	gsl_vector* minv = gsl_vector_alloc(m->size2);
+	for(int col = 0;col < m->size2;col++) {
+		gsl_vector_const_view column = gsl_matrix_const_column(m, col);
+		double minval = gsl_vector_min(&column.vector);
+		gsl_vector_set(minv, col, minval);
+	}
+	return minv;
+}
 
 int matlab::all(const gsl_vector* v) {
 	for (int i = 0; i < v->size; i++) {
@@ -401,6 +411,27 @@ gsl_matrix* matlab::concatenate_columns(const gsl_vector* v, const gsl_matrix* m
 	gsl_vector_memcpy(&cat_v.vector, v);
 	gsl_matrix_memcpy(&cat_m.matrix, m);
 	return cat_mv;
+}
+
+/*
+ * Emulates ([v1 ; v2]) for row vectors
+ */
+gsl_matrix* matlab::concatenate_columns(const gsl_vector* v1, const gsl_vector* v2) {
+	if (v1 == NULL && v2 == NULL) {
+		return NULL;
+	} else if (v1 == NULL) {
+		return to_row_matrix(v2);
+	} else if (v2 == NULL) {
+		return to_row_matrix(v1);
+	} else if (v1->size != v2->size) {
+		return NULL;
+	}
+	gsl_matrix* cat_vv = gsl_matrix_alloc(2, v1->size);
+	gsl_vector_view cat_v1 = gsl_matrix_row(cat_vv, 0);
+	gsl_vector_view cat_v2 = gsl_matrix_row(cat_vv, 1);
+	gsl_vector_memcpy(&cat_v1.vector, v1);
+	gsl_vector_memcpy(&cat_v2.vector, v2);
+	return cat_vv;
 }
 
 /*
@@ -859,6 +890,29 @@ void matlab::index_assign(gsl_matrix* m, const gsl_matrix* indices, double x) {
 			index_assign(m, index, x);
 		}
 	}
+}
+
+/*
+ * Emulates m(r,c) where r is a vector of actual row indices and c is a vector of 1's and 0's
+ */
+gsl_matrix* matlab::mixed_logical_index(const gsl_matrix* m, const gsl_vector* rows, const gsl_vector* logical_cols) {
+	int columns = nnz(logical_cols);
+	if (columns == 0) {
+		return NULL;
+	}
+	gsl_matrix* indexed = gsl_matrix_alloc(rows->size, columns);
+	int column = 0;
+	for (int j = 0; j < logical_cols->size; j++) {
+		if (fp_nonzero(gsl_vector_get(logical_cols, j))) {
+			for (int i = 0; i < rows->size; i++) {
+				int row = (int)gsl_vector_get(rows, i);
+				double value = gsl_matrix_get(m, row, j);
+				gsl_matrix_set(indexed, i, column, value);
+			}
+			column += 1;
+		}
+	}
+	return indexed;
 }
 
 /*

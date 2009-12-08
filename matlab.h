@@ -10,6 +10,7 @@ namespace matlab {
 	const double EPSILON = 1e-6;
 
 	// Functions
+	gsl_vector* min(const gsl_matrix*);
 	int all(const gsl_vector*);
 	gsl_vector* all(const gsl_matrix*, int = 1);
 	int any(const gsl_vector*);
@@ -42,6 +43,7 @@ namespace matlab {
 	gsl_matrix* concatenate_columns(const gsl_matrix*, const gsl_matrix*);
 	gsl_matrix* concatenate_columns(const gsl_matrix*, const gsl_vector*);
 	gsl_matrix* concatenate_columns(const gsl_vector*, const gsl_matrix*);	
+	gsl_matrix* concatenate_columns(const gsl_vector*, const gsl_vector*);
 	gsl_matrix* concatenate_rows(const gsl_matrix*, const gsl_matrix*);
 	gsl_matrix* concatenate_rows(const gsl_matrix*, const gsl_vector*);
 	gsl_matrix* concatenate_rows(const gsl_vector*, const gsl_matrix*);	
@@ -91,6 +93,7 @@ namespace matlab {
 	void index_assign(gsl_matrix*, const gsl_vector*, double);
 	void index_assign(gsl_matrix*, const gsl_matrix*, double);
 	void index_assign(gsl_matrix*, const gsl_vector*, const gsl_vector*, double);
+	gsl_matrix* mixed_logical_index(const gsl_matrix*, const gsl_vector*, const gsl_vector*);
 	gsl_vector* logical_index(const gsl_vector*, const gsl_vector*);
 	gsl_vector* logical_index(const gsl_matrix*, const gsl_vector*);
 	gsl_vector* logical_index(const gsl_matrix*, const gsl_matrix*);
