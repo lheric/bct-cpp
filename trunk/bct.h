@@ -44,6 +44,7 @@ namespace bct {
 	gsl_vector* cycprob_fcyc(gsl_matrix**, int);
 	gsl_vector* cycprob_pcyc(gsl_matrix**, int);
 	gsl_matrix* distance_inv(gsl_matrix*); //called by efficiency_*		
+	gsl_matrix* distance_wei(const gsl_matrix*); 
 	gsl_matrix* efficiency_local(const gsl_matrix*);
 	gsl_matrix* efficiency_global(const gsl_matrix*);
 	gsl_matrix* findpaths(const gsl_matrix*, const gsl_vector*, int, int, \
