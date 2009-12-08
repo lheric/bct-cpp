@@ -49,6 +49,7 @@ namespace matlab {
 	gsl_matrix* concatenate_rows(const gsl_vector*, const gsl_matrix*);	
 	gsl_vector* copy(const gsl_vector*);
 	gsl_matrix* copy(const gsl_matrix*);
+	bool truth(const gsl_matrix*);
 	gsl_vector* logical_and(const gsl_vector*, const gsl_vector*);
 	gsl_matrix* logical_and(const gsl_matrix*, const gsl_matrix*);
 	gsl_vector* logical_not(const gsl_vector*);
