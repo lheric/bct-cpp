@@ -80,6 +80,8 @@ namespace bct {
 		NO_LOOPS = 64, LOOPS = 128
 	};
 	extern bool safe_mode;
+	bool get_safe_mode();
+	void set_safe_mode(bool);
 	bool check_status(const gsl_matrix*, int, const char* = NULL);
 	bool is_undirected(const gsl_matrix*);
 	bool is_directed(const gsl_matrix*);
