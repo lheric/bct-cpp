@@ -4,6 +4,7 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
+#include <gsl/gsl_sort_vector.h>
 #include <gsl/gsl_vector.h>
 #include "matlab.h"
 
@@ -253,6 +254,25 @@ gsl_vector* matlab::sequence(int start, int end) {
 	return v;
 }
 
+// TODO: Add the two-argument version
+// TODO: Replace bubble sort with something from <algorithm>?
+gsl_matrix* matlab::sortrows(const gsl_matrix* m) {
+	gsl_matrix* sorted = copy(m);
+	int swaps;
+	do {
+		swaps = 0;
+		for (int i = 0; i < sorted->size1 - 1; i++) {
+			gsl_vector_view row1 = gsl_matrix_row(sorted, i);
+			gsl_vector_view row2 = gsl_matrix_row(sorted, i + 1);
+			if (compare(&row1.vector, &row2.vector) == 1) {
+				gsl_matrix_swap_rows(sorted, i, i + 1);
+				swaps++;
+			}
+		}
+	} while (swaps > 0);
+	return sorted;
+}
+
 double matlab::sum(const gsl_vector* v) {
 	double sum = 0.0;
 	for (int i = 0; i < v->size; i++) {
@@ -311,7 +331,58 @@ gsl_matrix* matlab::triu(const gsl_matrix* m, int k) {
 	return triu;
 }
 
-// TODO: Single-argument zeros should return a vector?
+// TODO: Implement other "unique" variants?
+/*
+ * Emulates unique(m, "rows").
+ */
+gsl_matrix* matlab::unique_rows(const gsl_matrix* m, gsl_vector* i, gsl_vector* j) {
+	gsl_matrix* unique_m = gsl_matrix_alloc(m->size1, m->size2);
+	gsl_vector* temp_i = gsl_vector_alloc(m->size1);
+	gsl_vector* temp_j = gsl_vector_alloc(m->size1);
+	int uniqueSize = 0;
+	for (int rowIndex = 0; rowIndex < m->size1; rowIndex++) {
+		gsl_vector_const_view row = gsl_matrix_const_row(m, rowIndex);
+		bool found = false;
+		for (int uniqueIndex = 0; uniqueIndex < uniqueSize; uniqueIndex++) {
+			gsl_vector_view uniqueRow = gsl_matrix_row(unique_m, uniqueIndex);
+			if (compare(&row.vector, &uniqueRow.vector) == 0) {
+				found = true;
+				gsl_vector_set(temp_j, rowIndex, uniqueIndex);
+				break;
+			}
+		}
+		if (!found) {
+			gsl_matrix_set_row(unique_m, uniqueSize, &row.vector);
+			gsl_vector_set(temp_i, uniqueSize, rowIndex);
+			gsl_vector_set(temp_j, rowIndex, uniqueSize);
+			uniqueSize++;
+		}
+	}
+	
+	// TODO: This should be sorted before returning
+	gsl_matrix* unique_m_sized = gsl_matrix_alloc(uniqueSize, m->size2);
+	gsl_matrix_view unique_mv = gsl_matrix_submatrix(unique_m, 0, 0, uniqueSize, m->size2);
+	gsl_matrix_memcpy(unique_m_sized, &unique_mv.matrix);
+	gsl_matrix_free(unique_m);
+	
+	if (i != NULL) {
+		gsl_vector_free(i);
+		i = gsl_vector_alloc(uniqueSize);
+		gsl_vector_view temp_iv = gsl_vector_subvector(temp_i, 0, uniqueSize);
+		gsl_vector_memcpy(i, &temp_iv.vector);
+	}
+	gsl_vector_free(temp_i);
+	
+	if (j != NULL) {
+		gsl_vector_free(j);
+		j = temp_j;
+	} else {
+		gsl_vector_free(temp_j);
+	}
+	
+	return unique_m_sized;
+}
+
 gsl_matrix* matlab::zeros(int size) {
 	return gsl_matrix_calloc(size, size);
 }
@@ -498,6 +569,25 @@ gsl_matrix* matlab::concatenate_rows(const gsl_vector* v, const gsl_matrix* m) {
 	gsl_vector_memcpy(&cat_v.vector, v);
 	gsl_matrix_memcpy(&cat_m.matrix, m);
 	return cat_mv;
+}
+
+/*
+ * Emulates ([v1 v2]) for column vectors.
+ */
+gsl_matrix* matlab::concatenate_rows(const gsl_vector* v1, const gsl_vector* v2) {
+	if (v1 == NULL && v2 == NULL) {
+		return NULL;
+	} else if (v2 == NULL) {
+		return to_column_matrix(v1);
+	} else if (v1 == NULL) {
+		return to_column_matrix(v2);
+	} else if (v1->size != v2->size) {
+		return NULL;
+	}
+	gsl_matrix* cat_vv = gsl_matrix_alloc(v1->size, 2);
+	gsl_matrix_set_col(cat_vv, 0, v1);
+	gsl_matrix_set_col(cat_vv, 1, v2);
+	return cat_vv;
 }
 
 /*
@@ -1085,4 +1175,50 @@ gsl_matrix* matlab::to_row_matrix(const gsl_vector* v) {
 		gsl_matrix_set(m, 0, i, gsl_vector_get(v, i));
 	}
 	return m;
+}
+
+/*
+ * Compares two vectors lexicographically, returning -1, 0, or 1 if the first
+ * vector is less than, equal to, or greater than the second.
+ */
+int matlab::compare(const gsl_vector* v1, const gsl_vector* v2) {
+	int i = 0;
+	for ( ; i < v1->size; i++) {
+		if (i >= v2->size) {
+			return 1;
+		}
+		int result = fp_compare(gsl_vector_get(v1, i), gsl_vector_get(v2, i));
+		if (result != 0) {
+			return result;
+		}
+	}
+	if (i < v2->size) {
+		return -1;
+	} else {
+		return 0;
+	}
+}
+
+/*
+ * Compares two matrices lexicographically, returning -1, 0, or 1 if the first
+ * matrix is less than, equal to, or greater than the second.
+ */
+int matlab::compare(const gsl_matrix* m1, const gsl_matrix* m2) {
+	int i = 0;
+	int size1 = (int)m1->size1 * (int)m1->size2;
+	int size2 = (int)m2->size1 * (int)m2->size2;
+	for ( ; i < size1; i++) {
+		if (i >= size2) {
+			return 1;
+		}
+		int result = fp_compare(index(m1, i), index(m2, i));
+		if (result != 0) {
+			return result;
+		}
+	}
+	if (i < size2) {
+		return -1;
+	} else {
+		return 0;
+	}
 }
