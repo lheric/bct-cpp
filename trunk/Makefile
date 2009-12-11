@@ -24,7 +24,7 @@ objects = \
 	jdegree.o \
 	macaque.o \
 	matching_ind.o \
-	matlab.o \
+	matlab/matlab.o \
 	reachdist.o \
 	status.o \
 	strengths_dir.o \
@@ -38,16 +38,19 @@ all: libbct.a
 libbct.a: $(objects)
 	ar crs libbct.a $(objects)
 
-$(objects): matlab.h bct.h
+$(objects): matlab/matlab.h bct.h
 
 install: libbct.a
-	cp matlab.h /usr/local/include
-	cp bct.h /usr/local/include
+	if [ ! -d /usr/local/include/bct ]; then \
+		mkdir /usr/local/include/bct; \
+		mkdir /usr/local/include/bct/matlab; \
+	fi
+	cp matlab/matlab.h /usr/local/include/bct/matlab
+	cp bct.h /usr/local/include/bct
 	cp libbct.a /usr/local/lib
 
 uninstall:
-	-rm /usr/local/include/matlab.h
-	-rm /usr/local/include/bct.h
+	-rm -rf /usr/local/include/bct
 	-rm /usr/local/lib/libbct.a
 
 clean:

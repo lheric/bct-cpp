@@ -43,7 +43,7 @@ all: $(oct_files)
 
 .SECONDEXPANSION:
 
-$(oct_files): ../libbct.a bct_test.h bct_test.cpp $$(basename $$@).cpp
+$(oct_files): /usr/local/lib/libbct.a bct_test.h bct_test.cpp $$(basename $$@).cpp
 	mkoctfile -lbct -lgsl -lgslcblas $(basename $@).cpp
 
 install:
