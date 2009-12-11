@@ -5,6 +5,9 @@
 
 bool bct::safe_mode = false;
 
+bool bct::get_safe_mode() { return safe_mode; }
+void bct::set_safe_mode(bool safe_mode) { bct::safe_mode = safe_mode; }
+
 /*
  * Returns whether a matrix matches the given status flags.  If the check fails,
  * a message is printed to stderr starting with the given text.
