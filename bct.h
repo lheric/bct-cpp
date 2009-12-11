@@ -4,7 +4,7 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
-#include "matlab.h"
+#include "matlab/matlab.h"
 
 namespace bct {
 	using namespace matlab;
