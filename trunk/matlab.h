@@ -30,10 +30,12 @@ namespace matlab {
 	gsl_matrix* yens(int, double);
 	gsl_matrix* yens(int, int, double);
 	gsl_vector* sequence(int, int);
+	gsl_matrix* sortrows(const gsl_matrix*);
 	double sum(const gsl_vector*);
 	gsl_vector* sum(const gsl_matrix*, int = 1);
 	gsl_matrix* tril(const gsl_matrix*, int = 0);
 	gsl_matrix* triu(const gsl_matrix*, int = 0);
+	gsl_matrix* unique_rows(const gsl_matrix*, gsl_vector* = NULL, gsl_vector* = NULL);
 	gsl_matrix* zeros(int);
 	gsl_matrix* zeros(int, int);
 	
@@ -46,7 +48,8 @@ namespace matlab {
 	gsl_matrix* concatenate_columns(const gsl_vector*, const gsl_vector*);
 	gsl_matrix* concatenate_rows(const gsl_matrix*, const gsl_matrix*);
 	gsl_matrix* concatenate_rows(const gsl_matrix*, const gsl_vector*);
-	gsl_matrix* concatenate_rows(const gsl_vector*, const gsl_matrix*);	
+	gsl_matrix* concatenate_rows(const gsl_vector*, const gsl_matrix*);
+	gsl_matrix* concatenate_rows(const gsl_vector*, const gsl_vector*);
 	gsl_vector* copy(const gsl_vector*);
 	gsl_matrix* copy(const gsl_matrix*);
 	bool truth(const gsl_matrix*);
@@ -107,6 +110,10 @@ namespace matlab {
 	gsl_vector* to_vector(const gsl_matrix*);
 	gsl_matrix* to_row_matrix(const gsl_vector*);
 	gsl_matrix* to_column_matrix(const gsl_vector*);
+	
+	// Support functions
+	int compare(const gsl_vector*, const gsl_vector*);
+	int compare(const gsl_matrix*, const gsl_matrix*);
 };
 
 #endif
