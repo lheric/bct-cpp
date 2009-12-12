@@ -1,5 +1,6 @@
 #include <cmath>
 #include <cstring>
+#include <gsl/gsl_heapsort.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include "matlab.h"
@@ -235,22 +236,30 @@ gsl_matrix* matlab::yens(int size1, int size2, double n) {
 	return m;
 }
 
-// TODO: Add the two-argument version
-// TODO: Replace bubble sort with something from <algorithm>?
+// TODO: Add the two-argument version?
 gsl_matrix* matlab::sortrows(const gsl_matrix* m) {
+	const gsl_vector* rows[m->size1];
+	for (int i = 0; i < m->size1; i++) {
+		gsl_vector_const_view row = gsl_matrix_const_row(m, i);
+		rows[i] = &row.vector;
+	}
+	size_t indices[m->size1];
+	gsl_heapsort_index(indices, rows, m->size1, sizeof(gsl_vector), (gsl_comparison_fn_t)compare_vectors);
 	gsl_matrix* sorted = copy(m);
-	int swaps;
-	do {
-		swaps = 0;
-		for (int i = 0; i < sorted->size1 - 1; i++) {
-			gsl_vector_view row1 = gsl_matrix_row(sorted, i);
-			gsl_vector_view row2 = gsl_matrix_row(sorted, i + 1);
-			if (compare(&row1.vector, &row2.vector) == 1) {
-				gsl_matrix_swap_rows(sorted, i, i + 1);
-				swaps++;
+	for (int i = 0; i < sorted->size1 - 1; i++) {
+		int index1 = indices[i];
+		if (index1 != i) {
+			for (int j = i + 1; j < sorted->size1; j++) {
+				int index2 = indices[j];
+				if (index2 == i) {
+					gsl_matrix_swap_rows(sorted, i, j);
+					indices[i] = index2;
+					indices[j] = index1;
+					break;
+				}
 			}
 		}
-	} while (swaps > 0);
+	}
 	return sorted;
 }
 
@@ -326,7 +335,7 @@ gsl_matrix* matlab::unique_rows(const gsl_matrix* m, gsl_vector* i, gsl_vector* 
 		bool found = false;
 		for (int uniqueIndex = 0; uniqueIndex < uniqueSize; uniqueIndex++) {
 			gsl_vector_view uniqueRow = gsl_matrix_row(unique_m, uniqueIndex);
-			if (compare(&row.vector, &uniqueRow.vector) == 0) {
+			if (compare_vectors(&row.vector, &uniqueRow.vector) == 0) {
 				found = true;
 				gsl_vector_set(temp_j, rowIndex, uniqueIndex);
 				break;
