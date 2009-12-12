@@ -24,7 +24,11 @@ objects = \
 	jdegree.o \
 	macaque.o \
 	matching_ind.o \
-	matlab/matlab.o \
+	matlab/compare.o \
+	matlab/convert.o \
+	matlab/functions.o \
+	matlab/index.o \
+	matlab/operators.o \
 	reachdist.o \
 	status.o \
 	strengths_dir.o \
