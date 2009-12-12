@@ -76,8 +76,8 @@ namespace matlab {
 	bool fp_negative(double);
 	
 	// Vector/matrix comparisons
-	int compare(const gsl_vector*, const gsl_vector*);
-	int compare(const gsl_matrix*, const gsl_matrix*);
+	int compare_vectors(const gsl_vector*, const gsl_vector*);
+	int compare_matrices(const gsl_matrix*, const gsl_matrix*);
 	gsl_vector* compare_elements(const gsl_vector*, compare_fn, double);
 	gsl_vector* compare_elements(const gsl_vector*, compare_fn, const gsl_vector*);
 	gsl_matrix* compare_elements(const gsl_matrix*, compare_fn, double);

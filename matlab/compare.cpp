@@ -27,7 +27,7 @@ bool matlab::fp_negative(double x) { return x < -EPSILON; }
  * Compares two vectors lexicographically, returning -1, 0, or 1 if the first
  * vector is less than, equal to, or greater than the second.
  */
-int matlab::compare(const gsl_vector* v1, const gsl_vector* v2) {
+int matlab::compare_vectors(const gsl_vector* v1, const gsl_vector* v2) {
 	int i = 0;
 	for ( ; i < v1->size; i++) {
 		if (i >= v2->size) {
@@ -49,7 +49,7 @@ int matlab::compare(const gsl_vector* v1, const gsl_vector* v2) {
  * Compares two matrices lexicographically, returning -1, 0, or 1 if the first
  * matrix is less than, equal to, or greater than the second.
  */
-int matlab::compare(const gsl_matrix* m1, const gsl_matrix* m2) {
+int matlab::compare_matrices(const gsl_matrix* m1, const gsl_matrix* m2) {
 	int i = 0;
 	int size1 = (int)m1->size1 * (int)m1->size2;
 	int size2 = (int)m2->size1 * (int)m2->size2;
