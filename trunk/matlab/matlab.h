@@ -35,6 +35,7 @@ namespace matlab {
 	gsl_matrix* tril(const gsl_matrix*, int = 0);
 	gsl_matrix* triu(const gsl_matrix*, int = 0);
 	gsl_matrix* unique_rows(const gsl_matrix*, gsl_vector* = NULL, gsl_vector* = NULL);
+	gsl_matrix* unique_rows(const gsl_matrix*, const char*, gsl_vector* = NULL, gsl_vector* = NULL);
 	gsl_matrix* zeros(int);
 	gsl_matrix* zeros(int, int);
 	
@@ -77,7 +78,9 @@ namespace matlab {
 	
 	// Vector/matrix comparisons
 	int compare_vectors(const gsl_vector*, const gsl_vector*);
+	int compare_pvectors(const gsl_vector**, const gsl_vector**);
 	int compare_matrices(const gsl_matrix*, const gsl_matrix*);
+	int compare_pmatrices(const gsl_matrix**, const gsl_matrix**);
 	gsl_vector* compare_elements(const gsl_vector*, compare_fn, double);
 	gsl_vector* compare_elements(const gsl_vector*, compare_fn, const gsl_vector*);
 	gsl_matrix* compare_elements(const gsl_matrix*, compare_fn, double);

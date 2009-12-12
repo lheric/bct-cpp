@@ -46,6 +46,13 @@ int matlab::compare_vectors(const gsl_vector* v1, const gsl_vector* v2) {
 }
 
 /*
+ * For use with gsl_heapsort.
+ */
+int matlab::compare_pvectors(const gsl_vector** v1, const gsl_vector** v2) {
+	return compare_vectors(*v1, *v2);
+}
+
+/*
  * Compares two matrices lexicographically, returning -1, 0, or 1 if the first
  * matrix is less than, equal to, or greater than the second.
  */
@@ -67,6 +74,13 @@ int matlab::compare_matrices(const gsl_matrix* m1, const gsl_matrix* m2) {
 	} else {
 		return 0;
 	}
+}
+
+/*
+ * For use with gsl_heapsort.
+ */
+int matlab::compare_pmatrices(const gsl_matrix** m1, const gsl_matrix** m2) {
+	return compare_matrices(*m1, *m2);
 }
 
 /*
