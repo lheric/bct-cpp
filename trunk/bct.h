@@ -72,7 +72,7 @@ namespace bct {
 	extern double macaque47[];
 	extern double macaque71[];
 	
-	// Matrix status
+	// Matrix status checking
 	enum status {
 		UNDIRECTED = 1, DIRECTED = 2,
 		BINARY = 4, WEIGHTED = 8,
