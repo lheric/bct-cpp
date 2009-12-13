@@ -88,7 +88,7 @@ void bct::node_and_edge_betweenness_wei(const gsl_matrix* m, gsl_vector* node_be
 		while (true) {
 			
 			// S(V)=0;
-			ord_index_assign(s, V, 0.0);
+			ordinal_index_assign(s, V, 0.0);
 			
 			// G1(:,V)=0;
 			for (int V_index = 0; V_index < V->size; V_index++) {
