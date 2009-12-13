@@ -3,9 +3,18 @@
 #include "matlab.h"
 
 /*
+ * Our indexing-with-assignment functions do not automatically resize vectors
+ * and matrices as MATLAB's do.  Thus, while the MATLAB code
+ * (A = [1 2 3]; A([4 5]) = 5) yields (A = [1 2 3 5 5]), the equivalent C++ code
+ * would result in an error.  In general, it is the caller's responsibility to
+ * ensure that a call to one of these functions does not attempt to index past
+ * the end of a vector or matrix.
+ */
+
+/*
  * Emulates (v[indices]) using ordinal indexing.
  */
-gsl_vector* matlab::ord_index(const gsl_vector* v, const gsl_vector* indices) {
+gsl_vector* matlab::ordinal_index(const gsl_vector* v, const gsl_vector* indices) {
 	gsl_vector* indexed = gsl_vector_alloc(indices->size);
 	for (int i = 0; i < indices->size; i++) {
 		int index = (int)gsl_vector_get(indices, i);
@@ -18,7 +27,7 @@ gsl_vector* matlab::ord_index(const gsl_vector* v, const gsl_vector* indices) {
 /*
  * Emulates (v[indices] = value) using ordinal indexing.
  */
-void matlab::ord_index_assign(gsl_vector* v, const gsl_vector* indices, double value) {
+void matlab::ordinal_index_assign(gsl_vector* v, const gsl_vector* indices, double value) {
 	for (int i = 0; i < indices->size; i++) {
 		int index = (int)gsl_vector_get(indices, i);
 		gsl_vector_set(v, index, value);
@@ -28,10 +37,48 @@ void matlab::ord_index_assign(gsl_vector* v, const gsl_vector* indices, double v
 /*
  * Emulates (v[indices] = values) using ordinal indexing.
  */
-void matlab::ord_index_assign(gsl_vector* v, const gsl_vector* indices, const gsl_vector* values) {
+void matlab::ordinal_index_assign(gsl_vector* v, const gsl_vector* indices, const gsl_vector* values) {
 	for (int i = 0; i < indices->size; i++) {
 		int index = (int)gsl_vector_get(indices, i);
 		double value = gsl_vector_get(values, i);
+		gsl_vector_set(v, index, value);
+	}
+}
+
+/*
+ * Emulates (v[log_v]) using logical indexing.
+ */
+gsl_vector* matlab::logical_index(const gsl_vector* v, const gsl_vector* log_v) {
+	gsl_vector* indexed = gsl_vector_alloc(nnz(log_v));
+	for (int i = 0, index = 0; i < log_v->size; i++) {
+		if (fp_nonzero(gsl_vector_get(log_v, i))) {
+			double value = gsl_vector_get(v, i);
+			gsl_vector_set(indexed, index++, value);
+		}
+	}
+	return indexed;
+}
+
+/*
+ * Emulates (v[log_v] = value) using logical indexing.
+ */
+void matlab::logical_index_assign(gsl_vector* v, const gsl_vector* log_v, double value) {
+	for (int i = 0; i < log_v->size; i++) {
+		if (fp_nonzero(gsl_vector_get(log_v, i))) {
+			gsl_vector_set(v, i, value);
+		}
+	}
+}
+
+/*
+ * Emulates (v[log_v] = values) using logical indexing.
+ */
+void matlab::logical_index_assign(gsl_vector* v, const gsl_vector* log_v, const gsl_vector* values) {
+	for (int i = 0, index = 0; i < log_v->size; i++) {
+		if (fp_nonzero(gsl_vector_get(log_v, i))) {
+			double value = gsl_vector_get(values, index++);
+			gsl_vector_set(v, i, value);
+		}
 	}
 }
 
@@ -162,26 +209,6 @@ gsl_matrix* matlab::mixed_logical_index(const gsl_matrix* m, const gsl_vector* r
 }
 
 /*
- * Emulates vector logical indexing by another vector.
- */
-gsl_vector* matlab::logical_index(const gsl_vector* v, const gsl_vector* lv) {
-	int size = nnz(lv);
-	if (size == 0 || v->size < lv->size) {
-		return NULL;
-	}
-	gsl_vector* indexed = gsl_vector_alloc(size);
-	int position = 0;
-	for (int i = 0; i < lv->size; i++) {
-		if (fp_nonzero(gsl_vector_get(lv, i))) {
-			double value = gsl_vector_get(v, i);
-			gsl_vector_set(indexed, position, value);
-			position++;
-		}
-	}
-	return indexed;
-}
-
-/*
  * Emulates matrix logical indexing by a vector.
  */
 gsl_vector* matlab::logical_index(const gsl_matrix* m, const gsl_vector* lv) {
@@ -224,17 +251,6 @@ gsl_vector* matlab::logical_index(const gsl_matrix* m, const gsl_matrix* lm) {
 		}
 	}
 	return indexed;
-}
-
-/*
- * Emulates vector logical indexing and assignment (v(lv) = x).
- */
-void matlab::logical_index_assign(gsl_vector* v, const gsl_vector* lv, double x) {
-	for (int i = 0; i < lv->size; i++) {
-		if (fp_nonzero(gsl_vector_get(lv, i)) && i < v->size) {
-			gsl_vector_set(v, i, x);
-		}
-	}
 }
 
 /*
