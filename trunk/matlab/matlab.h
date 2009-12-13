@@ -93,27 +93,33 @@ namespace matlab {
 	bool cmp_less(double, double);
 	bool cmp_less_or_equal(double, double);
 	
-	// Vector/matrix indexing
+	// Vector-by-vector indexing
 	gsl_vector* ordinal_index(const gsl_vector*, const gsl_vector*);
 	void ordinal_index_assign(gsl_vector*, const gsl_vector*, double);
 	void ordinal_index_assign(gsl_vector*, const gsl_vector*, const gsl_vector*);
 	gsl_vector* logical_index(const gsl_vector*, const gsl_vector*);
 	void logical_index_assign(gsl_vector*, const gsl_vector*, double);
 	void logical_index_assign(gsl_vector*, const gsl_vector*, const gsl_vector*);
+	
+	// Matrix-by-integer indexing
 	double ordinal_index(const gsl_matrix*, int);
 	void ordinal_index_assign(gsl_matrix*, int, double);
+	
+	// Matrix-by-vector indexing
 	gsl_vector* ordinal_index(const gsl_matrix*, const gsl_vector*);
 	void ordinal_index_assign(gsl_matrix*, const gsl_vector*, double);
 	void ordinal_index_assign(gsl_matrix*, const gsl_vector*, const gsl_vector*);
+	gsl_vector* logical_index(const gsl_matrix*, const gsl_vector*);
+	void logical_index_assign(gsl_matrix*, const gsl_vector*, double);
+	void logical_index_assign(gsl_matrix*, const gsl_vector*, const gsl_vector*);
+	
 	gsl_matrix* index(const gsl_matrix*, const gsl_vector*, const gsl_vector*);
 	gsl_matrix* index(const gsl_matrix*, const gsl_matrix*);
 	void index_assign(gsl_matrix*, const gsl_matrix*, double);
 	void index_assign(gsl_matrix*, const gsl_vector*, const gsl_vector*, double);
 	void index_assign(gsl_matrix*, const gsl_vector*, const gsl_vector*, const gsl_matrix*);
 	gsl_matrix* mixed_logical_index(const gsl_matrix*, const gsl_vector*, const gsl_vector*);
-	gsl_vector* logical_index(const gsl_matrix*, const gsl_vector*);
 	gsl_vector* logical_index(const gsl_matrix*, const gsl_matrix*);
-	void logical_index_assign(gsl_matrix*, const gsl_vector*, double);
 	void logical_index_assign(gsl_matrix*, const gsl_matrix*, double);
 	
 	// Vector/matrix conversion
