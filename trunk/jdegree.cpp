@@ -20,7 +20,7 @@ gsl_matrix* bct::jdegree(const gsl_matrix* m) {
 	int J_od, J_id, J_bl;
 	double max_id, max_od;
 
-	bin_m = binary(m);
+	bin_m = to_binary(m);
 	N = m->size1;
 	id = sum(bin_m,1);
 	od = sum(bin_m,2);

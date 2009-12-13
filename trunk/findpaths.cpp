@@ -33,7 +33,7 @@ gsl_matrix* bct::findpaths(const gsl_matrix* m, const gsl_vector* sources_input,
 	}
 	
 	
-	gsl_matrix* CIJ = binary(m);
+	gsl_matrix* CIJ = to_binary(m);
 	gsl_vector* sources = copy(sources_input);
 	
 	int N = CIJ->size1;

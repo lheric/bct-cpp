@@ -4,16 +4,9 @@
 #include <gsl/gsl_vector.h>
 
 /*
- * Returns a binary copy of the given matrix.
- */
-gsl_matrix* bct::binary(const gsl_matrix* m, double cmp_val) {
-	return compare_elements(m, cmp_not_equal, cmp_val);
-}
-
-/*
  * Returns a copy of the given matrix with no loops.
  */
-gsl_matrix* bct::no_loops(const gsl_matrix* m) {
+gsl_matrix* bct::remove_loops(const gsl_matrix* m) {
 	gsl_matrix* no_loops_m = copy(m);
 	gsl_vector_view diagonal = gsl_matrix_diagonal(no_loops_m);
 	gsl_vector_set_zero(&diagonal.vector);
@@ -21,9 +14,16 @@ gsl_matrix* bct::no_loops(const gsl_matrix* m) {
 }
 
 /*
+ * Returns a binary copy of the given matrix.
+ */
+gsl_matrix* bct::to_binary(const gsl_matrix* m) {
+	return compare_elements(m, cmp_not_equal, 0.0);
+}
+
+/*
  * Returns a positive copy of the given matrix.
  */
-gsl_matrix* bct::positive(const gsl_matrix* m) {
+gsl_matrix* bct::to_positive(const gsl_matrix* m) {
 	gsl_matrix* positive_m = gsl_matrix_alloc(m->size1, m->size2);
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {
@@ -41,7 +41,7 @@ gsl_matrix* bct::positive(const gsl_matrix* m) {
  * - If m(i, j) and m(j, i) are different nonzero values, they are both set to
  *   the average of these values.
  */
-gsl_matrix* bct::undirected(const gsl_matrix* m) {
+gsl_matrix* bct::to_undirected(const gsl_matrix* m) {
 	if (m->size1 != m->size2) {
 		throw size_exception();
 	}

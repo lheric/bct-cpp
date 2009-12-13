@@ -14,7 +14,7 @@ gsl_vector* bct::clustering_coef_wd(const gsl_matrix* m) {
 	}
 	
 	// A=W~=0;
-	gsl_matrix* a = binary(m);
+	gsl_matrix* a = to_binary(m);
 	
 	// S=W.^(1/3)+(W.').^(1/3);
 	gsl_matrix* s = pow_elements(m, 1.0 / 3.0);
