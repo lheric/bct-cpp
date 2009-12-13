@@ -106,82 +106,98 @@ gsl_matrix* matlab::eye(int size) {
 }
 
 gsl_matrix* matlab::eye(int size1, int size2) {
-	gsl_matrix* m = gsl_matrix_calloc(size1, size2);
-	gsl_vector_view diagonal = gsl_matrix_diagonal(m);
+	gsl_matrix* eye_m = gsl_matrix_calloc(size1, size2);
+	gsl_vector_view diagonal = gsl_matrix_diagonal(eye_m);
 	gsl_vector_set_all(&diagonal.vector, 1.0);
-	return m;
+	return eye_m;
 }
 
 gsl_vector* matlab::find(const gsl_vector* v, int n, const char* direction) {
-	int size = nnz(v);
-	if (size == 0 || n < 1) {
+	int n_find = nnz(v);
+	if (n_find == 0 || n < 1) {
 		return NULL;
 	}
-	gsl_vector* found = gsl_vector_alloc((n < size) ? n : size);
+	gsl_vector* find_v = gsl_vector_alloc((n < n_find) ? n : n_find);
 	if (direction == NULL || std::strcmp(direction, "first") == 0) {
 		int position = 0;
-		for (int i = 0; i < v->size && position < found->size; i++) {
+		for (int i = 0; i < v->size && position < find_v->size; i++) {
 			if (fp_nonzero(gsl_vector_get(v, i))) {
-				gsl_vector_set(found, position, i);
+				gsl_vector_set(find_v, position, i);
 				position++;
 			}
 		}
-		return found;
+		return find_v;
 	} else if (std::strcmp(direction, "last") == 0) {
-		int position = found->size - 1;
+		int position = find_v->size - 1;
 		for (int i = v->size - 1; i >= 0 && position >= 0; i--) {
 			if (fp_nonzero(gsl_vector_get(v, i))) {
-				gsl_vector_set(found, position, i);
+				gsl_vector_set(find_v, position, i);
 				position--;
 			}
 		}
-		return found;
+		return find_v;
 	} else {
-		gsl_vector_free(found);
+		gsl_vector_free(find_v);
 		return NULL;
 	}
 }
 
 gsl_vector* matlab::find(const gsl_matrix* m, int n, const char* direction) {
 	gsl_vector* v = to_vector(m);
-	gsl_vector* ret = find(v, n, direction);
+	gsl_vector* find_v = find(v, n, direction);
 	gsl_vector_free(v);
-	return ret;
+	return find_v;
 }
 
 /*
- * Emulates the two-return version of find.
+ * Emulates the two-return version of "find".
  */
 gsl_matrix* matlab::find_ij(const gsl_matrix* m, int n, const char* direction) {
-	gsl_vector* found_v = find(m, n, direction);
-	gsl_matrix* found_m;
-	if (found_v == NULL) {
-		found_m = NULL;
+	gsl_vector* find_v = find(m, n, direction);
+	if (find_v == NULL) {
+		return NULL;
 	} else {
-		found_m = gsl_matrix_alloc(found_v->size, 2);
-		for (int i = 0; i < found_v->size; i++) {
-			int index = (int)gsl_vector_get(found_v, i);
+		gsl_matrix* found_m = gsl_matrix_alloc(find_v->size, 2);
+		for (int i = 0; i < find_v->size; i++) {
+			int index = (int)gsl_vector_get(find_v, i);
 			int row = index % (int)m->size1;
 			int column = index / (int)m->size1;
 			gsl_matrix_set(found_m, i, 0, (double)row);
 			gsl_matrix_set(found_m, i, 1, (double)column);
 		}
-		gsl_vector_free(found_v);
+		gsl_vector_free(find_v);
+		return found_m;
 	}
-	return found_m;
+}
+
+// TODO: Implement other "max" and "min" variants?
+
+double matlab::max(const gsl_vector* v) {
+	return gsl_vector_max(v);
+}
+
+gsl_vector* matlab::max(const gsl_matrix* m) {
+	gsl_vector* max_v = gsl_vector_alloc(m->size2);
+	for (int i = 0; i < m->size2; i++) {
+		gsl_vector_const_view column = gsl_matrix_const_column(m, i);
+		double value = gsl_vector_max(&column.vector);
+		gsl_vector_set(max_v, i, value);
+	}
+	return max_v;
+}
+
+double matlab::min(const gsl_vector* v) {
+	return gsl_vector_min(v);
 }
 
 gsl_vector* matlab::min(const gsl_matrix* m) {
-	if(m == NULL) {
-		return NULL;
+	gsl_vector* min_v = gsl_vector_alloc(m->size2);
+	for (int i = 0; i < m->size2; i++) {
+		gsl_vector_const_view column = gsl_matrix_const_column(m, i);
+		double value = gsl_vector_min(&column.vector);
+		gsl_vector_set(min_v, i, value);
 	}
-	gsl_vector* minv = gsl_vector_alloc(m->size2);
-	for(int col = 0;col < m->size2;col++) {
-		gsl_vector_const_view column = gsl_matrix_const_column(m, col);
-		double minval = gsl_vector_min(&column.vector);
-		gsl_vector_set(minv, col, minval);
-	}
-	return minv;
+	return min_v;
 }
 
 int matlab::nnz(const gsl_vector* v) {
@@ -196,21 +212,21 @@ int matlab::nnz(const gsl_vector* v) {
 
 int matlab::nnz(const gsl_matrix* m) {
 	gsl_vector* v = to_vector(m);
-	int ret = nnz(v);
+	int nnz_v = nnz(v);
 	gsl_vector_free(v);
-	return ret;
+	return nnz_v;
 }
 
 gsl_vector* matlab::nonzeros(const gsl_matrix* m) {
-	gsl_vector* found = find(m);
-	if (found != NULL) {
-		for (int i = 0; i < found->size; i++) {
-			int m_index = (int)gsl_vector_get(found, i);
-			double value = index(m, m_index);
-			gsl_vector_set(found, i, value);
+	gsl_vector* nz_v = find(m);
+	if (nz_v != NULL) {
+		for (int i = 0; i < nz_v->size; i++) {
+			int i_m = (int)gsl_vector_get(nz_v, i);
+			double value = index(m, i_m);
+			gsl_vector_set(nz_v, i, value);
 		}
 	}
-	return found;
+	return nz_v;
 }
 
 gsl_matrix* matlab::ones(int size) {
@@ -218,25 +234,13 @@ gsl_matrix* matlab::ones(int size) {
 }
 
 gsl_matrix* matlab::ones(int size1, int size2) {
-	gsl_matrix* m = gsl_matrix_alloc(size1, size2);
-	gsl_matrix_set_all(m, 1);
-	return m;
+	gsl_matrix* ones_m = gsl_matrix_alloc(size1, size2);
+	gsl_matrix_set_all(ones_m, 1);
+	return ones_m;
 }
 
-/*
- * Emulates ones with a scale
- */
-gsl_matrix* matlab::yens(int size, double n) {
-	return yens(size, size, n);
-}
+// TODO: Implement the two-argument version?
 
-gsl_matrix* matlab::yens(int size1, int size2, double n) {
-	gsl_matrix* m = gsl_matrix_alloc(size1, size2);
-	gsl_matrix_set_all(m, n);
-	return m;
-}
-
-// TODO: Add the two-argument version?
 gsl_matrix* matlab::sortrows(const gsl_matrix* m) {
 	gsl_vector* rows[m->size1];
 	for (int i = 0; i < m->size1; i++) {
@@ -248,38 +252,38 @@ gsl_matrix* matlab::sortrows(const gsl_matrix* m) {
 	for (int i = 0; i < m->size1; i++) {
 		gsl_vector_free(rows[i]);
 	}
-	gsl_matrix* sorted = gsl_matrix_alloc(m->size1, m->size2);
+	gsl_matrix* sorted_m = gsl_matrix_alloc(m->size1, m->size2);
 	for (int i = 0; i < m->size1; i++) {
 		int index = indices[i];
 		gsl_vector_const_view row = gsl_matrix_const_row(m, index);
-		gsl_matrix_set_row(sorted, i, &row.vector);
+		gsl_matrix_set_row(sorted_m, i, &row.vector);
 	}
-	return sorted;
+	return sorted_m;
 }
 
 double matlab::sum(const gsl_vector* v) {
-	double sum = 0.0;
+	double total = 0.0;
 	for (int i = 0; i < v->size; i++) {
-		sum += gsl_vector_get(v, i);
+		total += gsl_vector_get(v, i);
 	}
-	return sum;
+	return total;
 }
 
 gsl_vector* matlab::sum(const gsl_matrix* m, int dim) {
 	if (dim == 1) {
-		gsl_vector* sum = gsl_vector_calloc(m->size2);
+		gsl_vector* sum_v = gsl_vector_calloc(m->size2);
 		for (int i = 0; i < m->size1; i++) {
 			gsl_vector_const_view row = gsl_matrix_const_row(m, i);
-			gsl_vector_add(sum, &row.vector);
+			gsl_vector_add(sum_v, &row.vector);
 		}
-		return sum;
+		return sum_v;
 	} else if (dim == 2) {
-		gsl_vector* sum = gsl_vector_calloc(m->size1);
+		gsl_vector* sum_v = gsl_vector_calloc(m->size1);
 		for (int i = 0; i < m->size2; i++) {
 			gsl_vector_const_view column = gsl_matrix_const_column(m, i);
-			gsl_vector_add(sum, &column.vector);
+			gsl_vector_add(sum_v, &column.vector);
 		}
-		return sum;
+		return sum_v;
 	} else {
 		return NULL;
 	}
@@ -289,30 +293,30 @@ gsl_matrix* matlab::tril(const gsl_matrix* m, int k) {
 	if (k <= -(int)m->size1 || k >= (int)m->size2) {
 		return NULL;
 	}
-	gsl_matrix* tril = copy(m);
+	gsl_matrix* tril_m = copy(m);
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = i + k + 1; j < m->size2; j++) {
 			if (j >= 0) {
-				gsl_matrix_set(tril, i, j, 0.0);
+				gsl_matrix_set(tril_m, i, j, 0.0);
 			}
 		}
 	}
-	return tril;
+	return tril_m;
 }
 
 gsl_matrix* matlab::triu(const gsl_matrix* m, int k) {
 	if (k <= -(int)m->size1 || k >= (int)m->size2) {
 		return NULL;
 	}
-	gsl_matrix* triu = copy(m);
+	gsl_matrix* triu_m = copy(m);
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = i + k - 1; j >= 0; j--) {
 			if (j < m->size2) {
-				gsl_matrix_set(triu, i, j, 0.0);
+				gsl_matrix_set(triu_m, i, j, 0.0);
 			}
 		}
 	}
-	return triu;
+	return triu_m;
 }
 
 // TODO: Implement other "unique" variants?
@@ -325,7 +329,7 @@ gsl_matrix* matlab::unique_rows(const gsl_matrix* m, gsl_vector* i, gsl_vector* 
 }
 
 /*
- * Emulates (unique(m, "rows", first_or_last)).
+ * Emulates (unique(m, "rows", "first")) or (unique(m, "rows", "last")).
  */
 gsl_matrix* matlab::unique_rows(const gsl_matrix* m, const char* first_or_last, gsl_vector* i, gsl_vector* j) {
 	if (std::strcmp(first_or_last, "first") != 0 && std::strcmp(first_or_last, "last") != 0) {
@@ -351,13 +355,11 @@ gsl_matrix* matlab::unique_rows(const gsl_matrix* m, const char* first_or_last, 
 		}
 	}
 	
-	// Resize unique matrix
+	// Resize and sort unique matrix
 	gsl_matrix* unique_m_sized = gsl_matrix_alloc(n_unique, unique_m->size2);
-	gsl_matrix_view unique_mv = gsl_matrix_submatrix(unique_m, 0, 0, n_unique, unique_m->size2);
-	gsl_matrix_memcpy(unique_m_sized, &unique_mv.matrix);
+	gsl_matrix_view unique_subm = gsl_matrix_submatrix(unique_m, 0, 0, n_unique, unique_m->size2);
+	gsl_matrix_memcpy(unique_m_sized, &unique_subm.matrix);
 	gsl_matrix_free(unique_m);
-	
-	// Sort unique matrix
 	gsl_matrix* unique_m_sorted = sortrows(unique_m_sized);
 	gsl_matrix_free(unique_m_sized);
 	

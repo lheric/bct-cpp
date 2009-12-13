@@ -21,14 +21,15 @@ namespace matlab {
 	gsl_vector* find(const gsl_vector*, int = GSL_POSINF, const char* = NULL);
 	gsl_vector* find(const gsl_matrix*, int = GSL_POSINF, const char* = NULL);
 	gsl_matrix* find_ij(const gsl_matrix*, int = GSL_POSINF, const char* = NULL);
+	double max(const gsl_vector*);
+	gsl_vector* max(const gsl_matrix*);
+	double min(const gsl_vector*);
 	gsl_vector* min(const gsl_matrix*);
 	int nnz(const gsl_vector*);
 	int nnz(const gsl_matrix*);
 	gsl_vector* nonzeros(const gsl_matrix*);
 	gsl_matrix* ones(int);
 	gsl_matrix* ones(int, int);
-	gsl_matrix* yens(int, double);
-	gsl_matrix* yens(int, int, double);
 	gsl_matrix* sortrows(const gsl_matrix*);
 	double sum(const gsl_vector*);
 	gsl_vector* sum(const gsl_matrix*, int = 1);
@@ -42,14 +43,14 @@ namespace matlab {
 	// Operators
 	gsl_vector* concatenate(const gsl_vector*, const double);
 	gsl_vector* concatenate(const gsl_vector*, const gsl_vector*);
-	gsl_matrix* concatenate_columns(const gsl_matrix*, const gsl_matrix*);
+	gsl_matrix* concatenate_columns(const gsl_vector*, const gsl_vector*);
 	gsl_matrix* concatenate_columns(const gsl_matrix*, const gsl_vector*);
 	gsl_matrix* concatenate_columns(const gsl_vector*, const gsl_matrix*);	
-	gsl_matrix* concatenate_columns(const gsl_vector*, const gsl_vector*);
-	gsl_matrix* concatenate_rows(const gsl_matrix*, const gsl_matrix*);
+	gsl_matrix* concatenate_columns(const gsl_matrix*, const gsl_matrix*);
+	gsl_matrix* concatenate_rows(const gsl_vector*, const gsl_vector*);
 	gsl_matrix* concatenate_rows(const gsl_matrix*, const gsl_vector*);
 	gsl_matrix* concatenate_rows(const gsl_vector*, const gsl_matrix*);
-	gsl_matrix* concatenate_rows(const gsl_vector*, const gsl_vector*);
+	gsl_matrix* concatenate_rows(const gsl_matrix*, const gsl_matrix*);
 	gsl_vector* copy(const gsl_vector*);
 	gsl_matrix* copy(const gsl_matrix*);
 	gsl_vector* logical_and(const gsl_vector*, const gsl_vector*);
@@ -59,15 +60,15 @@ namespace matlab {
 	gsl_vector* logical_or(const gsl_vector*, const gsl_vector*);
 	gsl_matrix* logical_or(const gsl_matrix*, const gsl_matrix*);
 	gsl_matrix* mul(const gsl_matrix*, const gsl_matrix*);
+	gsl_matrix* pow(const gsl_matrix*, int);
 	gsl_vector* pow_elements(const gsl_vector*, double);
 	gsl_vector* pow_elements(const gsl_vector*, const gsl_vector*);
 	gsl_matrix* pow_elements(const gsl_matrix*, double);
 	gsl_matrix* pow_elements(const gsl_matrix*, const gsl_matrix*);
-	gsl_matrix* pow(const gsl_matrix*, int);
 	gsl_vector* sequence(int, int);
-	bool truth(const gsl_matrix*);
+	gsl_vector* sequence(int, int, int);
 	
-	// Floating-point comparisons
+	// Floating-point comparison
 	int fp_compare(double, double);
 	bool fp_equal(double, double);
 	bool fp_not_equal(double, double);
@@ -76,7 +77,7 @@ namespace matlab {
 	bool fp_positive(double);
 	bool fp_negative(double);
 	
-	// Vector/matrix comparisons
+	// Vector/matrix comparison
 	int compare_vectors(const gsl_vector*, const gsl_vector*);
 	int compare_pvectors(const gsl_vector**, const gsl_vector**);
 	int compare_matrices(const gsl_matrix*, const gsl_matrix*);
@@ -112,6 +113,8 @@ namespace matlab {
 	void logical_index_assign(gsl_matrix*, const gsl_matrix*, double);
 	
 	// Vector/matrix conversion
+	bool to_bool(const gsl_vector*);
+	bool to_bool(const gsl_matrix*);
 	gsl_vector* to_vector(const gsl_matrix*);
 	gsl_matrix* to_column_matrix(const gsl_vector*);
 	gsl_matrix* to_row_matrix(const gsl_vector*);

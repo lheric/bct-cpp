@@ -103,6 +103,8 @@ namespace bct {
 	void gsl_free(gsl_vector*);
 	void gsl_free(gsl_matrix*);
 	void init();
+	gsl_matrix* yens(int, double);
+	gsl_matrix* yens(int, int, double);
 	
 	// Debugging
 	void printf(const gsl_vector*, const char*);

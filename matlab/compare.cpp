@@ -28,8 +28,7 @@ bool matlab::fp_negative(double x) { return x < -EPSILON; }
  * vector is less than, equal to, or greater than the second.
  */
 int matlab::compare_vectors(const gsl_vector* v1, const gsl_vector* v2) {
-	int i = 0;
-	for ( ; i < v1->size; i++) {
+	for (int i = 0; i < v1->size; i++) {
 		if (i >= v2->size) {
 			return 1;
 		}
@@ -38,7 +37,7 @@ int matlab::compare_vectors(const gsl_vector* v1, const gsl_vector* v2) {
 			return result;
 		}
 	}
-	if (i < v2->size) {
+	if (v1->size < v2->size) {
 		return -1;
 	} else {
 		return 0;
@@ -57,10 +56,9 @@ int matlab::compare_pvectors(const gsl_vector** v1, const gsl_vector** v2) {
  * matrix is less than, equal to, or greater than the second.
  */
 int matlab::compare_matrices(const gsl_matrix* m1, const gsl_matrix* m2) {
-	int i = 0;
 	int size1 = (int)m1->size1 * (int)m1->size2;
 	int size2 = (int)m2->size1 * (int)m2->size2;
-	for ( ; i < size1; i++) {
+	for (int i = 0; i < size1; i++) {
 		if (i >= size2) {
 			return 1;
 		}
@@ -69,7 +67,7 @@ int matlab::compare_matrices(const gsl_matrix* m1, const gsl_matrix* m2) {
 			return result;
 		}
 	}
-	if (i < size2) {
+	if (size1 < size2) {
 		return -1;
 	} else {
 		return 0;
