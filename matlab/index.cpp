@@ -11,18 +11,16 @@
  * the end of a vector or matrix.
  */
 
-/*
- * Vector indexing by an ordinal vector.
- */
+// Vector-by-vector indexing
 
 gsl_vector* matlab::ordinal_index(const gsl_vector* v, const gsl_vector* indices) {
-	gsl_vector* indexed = gsl_vector_alloc(indices->size);
+	gsl_vector* index_v = gsl_vector_alloc(indices->size);
 	for (int i = 0; i < indices->size; i++) {
 		int index = (int)gsl_vector_get(indices, i);
 		double value = gsl_vector_get(v, index);
-		gsl_vector_set(indexed, i, value);
+		gsl_vector_set(index_v, i, value);
 	}
-	return indexed;
+	return index_v;
 }
 
 void matlab::ordinal_index_assign(gsl_vector* v, const gsl_vector* indices, double value) {
@@ -40,41 +38,39 @@ void matlab::ordinal_index_assign(gsl_vector* v, const gsl_vector* indices, cons
 	}
 }
 
-/*
- * Vector indexing by a logical vector.
- */
-
-gsl_vector* matlab::logical_index(const gsl_vector* v, const gsl_vector* log_v) {
-	gsl_vector* indexed = gsl_vector_alloc(nnz(log_v));
-	for (int i = 0, index = 0; i < log_v->size; i++) {
-		if (fp_nonzero(gsl_vector_get(log_v, i))) {
+gsl_vector* matlab::logical_index(const gsl_vector* v, const gsl_vector* logical_v) {
+	int n_indexed = nnz(logical_v);
+	if (n_indexed == 0) {
+		return NULL;
+	}
+	gsl_vector* index_v = gsl_vector_alloc(n_indexed);
+	for (int i = 0, index = 0; i < logical_v->size; i++) {
+		if (fp_nonzero(gsl_vector_get(logical_v, i))) {
 			double value = gsl_vector_get(v, i);
-			gsl_vector_set(indexed, index++, value);
+			gsl_vector_set(index_v, index++, value);
 		}
 	}
-	return indexed;
+	return index_v;
 }
 
-void matlab::logical_index_assign(gsl_vector* v, const gsl_vector* log_v, double value) {
-	for (int i = 0; i < log_v->size; i++) {
-		if (fp_nonzero(gsl_vector_get(log_v, i))) {
+void matlab::logical_index_assign(gsl_vector* v, const gsl_vector* logical_v, double value) {
+	for (int i = 0; i < logical_v->size; i++) {
+		if (fp_nonzero(gsl_vector_get(logical_v, i))) {
 			gsl_vector_set(v, i, value);
 		}
 	}
 }
 
-void matlab::logical_index_assign(gsl_vector* v, const gsl_vector* log_v, const gsl_vector* values) {
-	for (int i = 0, index = 0; i < log_v->size; i++) {
-		if (fp_nonzero(gsl_vector_get(log_v, i))) {
+void matlab::logical_index_assign(gsl_vector* v, const gsl_vector* logical_v, const gsl_vector* values) {
+	for (int i = 0, index = 0; i < logical_v->size; i++) {
+		if (fp_nonzero(gsl_vector_get(logical_v, i))) {
 			double value = gsl_vector_get(values, index++);
 			gsl_vector_set(v, i, value);
 		}
 	}
 }
 
-/*
- * Matrix indexing by an ordinal integer.
- */
+// Matrix-by-integer indexing
 
 double matlab::ordinal_index(const gsl_matrix* m, int index) {
 	int row = index % (int)m->size1;
@@ -88,18 +84,16 @@ void matlab::ordinal_index_assign(gsl_matrix* m, int index, double value) {
 	gsl_matrix_set(m, row, column, value);
 }
 
-/*
- * Matrix indexing by an ordinal vector.
- */
+// Matrix-by-vector indexing
 
 gsl_vector* matlab::ordinal_index(const gsl_matrix* m, const gsl_vector* indices) {
-	gsl_vector* indexed = gsl_vector_alloc(indices->size);
+	gsl_vector* index_v = gsl_vector_alloc(indices->size);
 	for (int i = 0; i < indices->size; i++) {
 		int index = (int)gsl_vector_get(indices, i);
 		double value = ordinal_index(m, index);
-		gsl_vector_set(indexed, i, value);
+		gsl_vector_set(index_v, i, value);
 	}
-	return indexed;
+	return index_v;
 }
 
 void matlab::ordinal_index_assign(gsl_matrix* m, const gsl_vector* indices, double value) {
@@ -114,6 +108,38 @@ void matlab::ordinal_index_assign(gsl_matrix* m, const gsl_vector* indices, cons
 		int index = (int)gsl_vector_get(indices, i);
 		double value = gsl_vector_get(values, i);
 		ordinal_index_assign(m, index, value);
+	}
+}
+
+gsl_vector* matlab::logical_index(const gsl_matrix* m, const gsl_vector* logical_v) {
+	int n_indexed = nnz(logical_v);
+	if (n_indexed == 0) {
+		return NULL;
+	}
+	gsl_vector* index_v = gsl_vector_alloc(n_indexed);
+	for (int i = 0, index = 0; i < logical_v->size; i++) {
+		if (fp_nonzero(gsl_vector_get(logical_v, i))) {
+			double value = ordinal_index(m, i);
+			gsl_vector_set(index_v, index++, value);
+		}
+	}
+	return index_v;
+}
+
+void matlab::logical_index_assign(gsl_matrix* m, const gsl_vector* logical_v, double value) {
+	for (int i = 0; i < logical_v->size; i++) {
+		if (fp_nonzero(gsl_vector_get(logical_v, i))) {
+			ordinal_index_assign(m, i, value);
+		}
+	}
+}
+
+void matlab::logical_index_assign(gsl_matrix* m, const gsl_vector* logical_v, const gsl_vector* values) {
+	for (int i = 0, index = 0; i < logical_v->size; i++) {
+		if (fp_nonzero(gsl_vector_get(logical_v, i))) {
+			double value = gsl_vector_get(values, index++);
+			ordinal_index_assign(m, i, value);
+		}
 	}
 }
 
@@ -214,27 +240,6 @@ gsl_matrix* matlab::mixed_logical_index(const gsl_matrix* m, const gsl_vector* r
 }
 
 /*
- * Emulates matrix logical indexing by a vector.
- */
-gsl_vector* matlab::logical_index(const gsl_matrix* m, const gsl_vector* lv) {
-	int size = nnz(lv);
-	int m_size = (int)m->size1 * (int)m->size2;
-	if (size == 0 || m_size < lv->size) {
-		return NULL;
-	}
-	gsl_vector* indexed = gsl_vector_alloc(size);
-	int position = 0;
-	for (int i = 0; i < lv->size; i++) {
-		if (fp_nonzero(gsl_vector_get(lv, i))) {
-			double value = ordinal_index(m, i);
-			gsl_vector_set(indexed, position, value);
-			position++;
-		}
-	}
-	return indexed;
-}
-
-/*
  * Emulates matrix logical indexing by another matrix.
  */
 gsl_vector* matlab::logical_index(const gsl_matrix* m, const gsl_matrix* lm) {
@@ -256,17 +261,6 @@ gsl_vector* matlab::logical_index(const gsl_matrix* m, const gsl_matrix* lm) {
 		}
 	}
 	return indexed;
-}
-
-/*
- * Emulates matrix logical indexing and assignment (m(lv) = x).
- */
-void matlab::logical_index_assign(gsl_matrix* m, const gsl_vector* lv, double x) {
-	for (int i = 0; i < lv->size; i++) {
-		if (fp_nonzero(gsl_vector_get(lv, i))) {
-			ordinal_index_assign(m, i, x);
-		}
-	}
 }
 
 /*
