@@ -62,7 +62,7 @@ int matlab::compare_matrices(const gsl_matrix* m1, const gsl_matrix* m2) {
 		if (i >= size2) {
 			return 1;
 		}
-		int result = fp_compare(index(m1, i), index(m2, i));
+		int result = fp_compare(ordinal_index(m1, i), ordinal_index(m2, i));
 		if (result != 0) {
 			return result;
 		}

@@ -83,12 +83,21 @@ void matlab::logical_index_assign(gsl_vector* v, const gsl_vector* log_v, const 
 }
 
 /*
- * Emulates matrix indexing by a scalar.
+ * Emulates (m[index]) using ordinal indexing.
  */
-double matlab::index(const gsl_matrix* m, int index) {
+double matlab::ordinal_index(const gsl_matrix* m, int index) {
 	int row = index % (int)m->size1;
 	int column = index / (int)m->size1;
 	return gsl_matrix_get(m, row, column);
+}
+
+/*
+ * Emulates (m[index] = value) using ordinal indexing.
+ */
+void matlab::ordinal_index_assign(gsl_matrix* m, int index, double value) {
+	int row = index % (int)m->size1;
+	int column = index / (int)m->size1;
+	gsl_matrix_set(m, row, column, value);
 }
 
 /*
@@ -114,7 +123,7 @@ gsl_matrix* matlab::index(const gsl_matrix* m, const gsl_matrix* indices) {
 	gsl_matrix* indexed = gsl_matrix_alloc(indices->size1, indices->size2);
 	for (int i = 0; i < indices->size1; i++) {
 		for (int j = 0; j < indices->size2; j++) {
-			double value = index(m, gsl_matrix_get(indices, i, j));
+			double value = ordinal_index(m, gsl_matrix_get(indices, i, j));
 			gsl_matrix_set(indexed, i, j, value);
 		}
 	}
@@ -131,7 +140,7 @@ void matlab::index_assign(gsl_matrix* m, const gsl_vector* row_indices, const gs
 		for(int j = 0;j < col_indices->size;j++) {
 			int col = gsl_vector_get(col_indices, j);
 			int index = col*m->size1 + row;
-			index_assign(m, index, x);
+			ordinal_index_assign(m, index, x);
 		}
 	}
 }
@@ -147,19 +156,8 @@ void matlab::index_assign(gsl_matrix* m, const gsl_vector* row_indices, const gs
 			int col = gsl_vector_get(col_indices, j);
 			int index = col*m->size1 + row;
 			double source_val = gsl_matrix_get(source, source_i, source_j);
-			index_assign(m, index, source_val);
+			ordinal_index_assign(m, index, source_val);
 		}
-	}
-}
-
-/*
- * Emulates matrix indexing and assignment (m(index) = x).
- */
-void matlab::index_assign(gsl_matrix* m, int index, double x) {
-	int row = index % (int)m->size1;
-	int column = index / (int)m->size1;
-	if (row < m->size1 && column < m->size2) {
-		gsl_matrix_set(m, row, column, x);
 	}
 }
 
@@ -169,7 +167,7 @@ void matlab::index_assign(gsl_matrix* m, int index, double x) {
 void matlab::index_assign(gsl_matrix* m, const gsl_vector* indices, double x) {
 	for (int i = 0; i < indices->size; i++) {
 		int index = (int)gsl_vector_get(indices, i);
-		index_assign(m, index, x);
+		ordinal_index_assign(m, index, x);
 	}
 }
 
@@ -180,7 +178,7 @@ void matlab::index_assign(gsl_matrix* m, const gsl_matrix* indices, double x) {
 	for (int i = 0; i < indices->size1; i++) {
 		for (int j = 0; j < indices->size2; j++) {
 			int index = (int)gsl_matrix_get(indices, i, j);
-			index_assign(m, index, x);
+			ordinal_index_assign(m, index, x);
 		}
 	}
 }
@@ -221,7 +219,7 @@ gsl_vector* matlab::logical_index(const gsl_matrix* m, const gsl_vector* lv) {
 	int position = 0;
 	for (int i = 0; i < lv->size; i++) {
 		if (fp_nonzero(gsl_vector_get(lv, i))) {
-			double value = index(m, i);
+			double value = ordinal_index(m, i);
 			gsl_vector_set(indexed, position, value);
 			position++;
 		}
@@ -244,7 +242,7 @@ gsl_vector* matlab::logical_index(const gsl_matrix* m, const gsl_matrix* lm) {
 	for (int j = 0; j < lm->size2; j++) {
 		for (int i = 0; i < lm->size1; i++) {
 			if (fp_nonzero(gsl_matrix_get(lm, i, j))) {
-				double value = index(m, j * lm->size1 + i);
+				double value = ordinal_index(m, j * lm->size1 + i);
 				gsl_vector_set(indexed, position, value);
 				position++;
 			}
@@ -259,7 +257,7 @@ gsl_vector* matlab::logical_index(const gsl_matrix* m, const gsl_matrix* lm) {
 void matlab::logical_index_assign(gsl_matrix* m, const gsl_vector* lv, double x) {
 	for (int i = 0; i < lv->size; i++) {
 		if (fp_nonzero(gsl_vector_get(lv, i))) {
-			index_assign(m, i, x);
+			ordinal_index_assign(m, i, x);
 		}
 	}
 }
@@ -272,7 +270,7 @@ void matlab::logical_index_assign(gsl_matrix* m, const gsl_matrix* lm, double x)
 		for (int i = 0; i < lm->size1; i++) {
 			if (fp_nonzero(gsl_matrix_get(lm, i, j))) {
 				int index = j * lm->size1 + i;
-				index_assign(m, index, x);
+				ordinal_index_assign(m, index, x);
 			}
 		}
 	}

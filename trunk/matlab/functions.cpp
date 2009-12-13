@@ -222,7 +222,7 @@ gsl_vector* matlab::nonzeros(const gsl_matrix* m) {
 	if (nz_v != NULL) {
 		for (int i = 0; i < nz_v->size; i++) {
 			int i_m = (int)gsl_vector_get(nz_v, i);
-			double value = index(m, i_m);
+			double value = ordinal_index(m, i_m);
 			gsl_vector_set(nz_v, i, value);
 		}
 	}
