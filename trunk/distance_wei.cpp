@@ -29,7 +29,7 @@ gsl_matrix* bct::distance_wei(const gsl_matrix* m) {
 		gsl_vector* V = gsl_vector_alloc(1);
 		gsl_vector_set(V, 0, u);
 		while(true) {
-			index_assign(S, V, 0.0);
+			ord_index_assign(S, V, 0.0);
 			//G1(:,V)=0;
 			gsl_vector* all_rows = sequence(0, N-1);
 			index_assign(G1, all_rows, V, 0.0);
@@ -41,10 +41,10 @@ gsl_matrix* bct::distance_wei(const gsl_matrix* m) {
 				//D(u,W)=min([D(u,W);D(u,v)+G1(v,W)]);
 				if(W != NULL) {
 					double dist_uv = gsl_matrix_get(D, u, v);
-					gsl_vector* G1_v_indxd = index(&G1_row_v.vector, W);
+					gsl_vector* G1_v_indxd = ord_index(&G1_row_v.vector, W);
 					gsl_vector_add_constant(G1_v_indxd, dist_uv);
 					gsl_vector_view D_row_u = gsl_matrix_row(D, u);
-					gsl_vector* D_u_indxd = index(&D_row_u.vector, W);
+					gsl_vector* D_u_indxd = ord_index(&D_row_u.vector, W);
 					gsl_matrix* concat_DG = concatenate_columns(D_u_indxd, G1_v_indxd);
 					gsl_vector* min_DG = min(concat_DG);
 					gsl_matrix* min_DG_m = to_row_matrix(min_DG);
