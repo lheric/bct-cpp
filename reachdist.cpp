@@ -44,7 +44,7 @@ gsl_matrix* bct::reachdist(gsl_matrix *m, gsl_matrix* ret_R) {
 		CIJpwr = CIJpwr_temp;
 		
 		//R = double(R | ((CIJpwr)~=0));
-		gsl_matrix* CIJpwr_bin = binary(CIJpwr);
+		gsl_matrix* CIJpwr_bin = to_binary(CIJpwr);
 		gsl_matrix* R_temp = logical_or(R, CIJpwr_bin);
 		gsl_matrix_free(R);
 		R = R_temp;

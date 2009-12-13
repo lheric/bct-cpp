@@ -14,7 +14,7 @@ gsl_vector* bct::clustering_coef_wu(const gsl_matrix* m) {
 	}
 	
 	// K=sum(W~=0,2);
-	gsl_matrix* binary_m = binary(m);
+	gsl_matrix* binary_m = to_binary(m);
 	gsl_vector* k = sum(binary_m, 2);
 	
 	// cyc3=diag((W.^(1/3))^3);

@@ -93,10 +93,10 @@ namespace bct {
 	bool has_no_loops(const gsl_matrix*);
 	
 	// Matrix conversion
-	gsl_matrix* binary(const gsl_matrix*, double = 0.0);
-	gsl_matrix* no_loops(const gsl_matrix*);
-	gsl_matrix* positive(const gsl_matrix*);
-	gsl_matrix* undirected(const gsl_matrix*);
+	gsl_matrix* remove_loops(const gsl_matrix*);
+	gsl_matrix* to_binary(const gsl_matrix*);
+	gsl_matrix* to_positive(const gsl_matrix*);
+	gsl_matrix* to_undirected(const gsl_matrix*);
 	
 	// Utility
 	void gsl_error_handler(const char*, const char*, int, int);

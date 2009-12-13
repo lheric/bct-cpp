@@ -46,7 +46,7 @@ gsl_matrix* bct::distance_inv(gsl_matrix* g) {
 	gsl_matrix* D = eye(g->size1);
 	int n = 1;
 	gsl_matrix* npath = copy(g);
-	gsl_matrix* L = binary(npath);
+	gsl_matrix* L = to_binary(npath);
 	
 	gsl_vector* L_non_zero;
 	while((L_non_zero = find(L, 1)) != NULL) {
@@ -58,7 +58,7 @@ gsl_matrix* bct::distance_inv(gsl_matrix* g) {
 		gsl_matrix* npath_temp = mul(npath, g);
 		gsl_matrix_free(npath);
 		npath = npath_temp;
-		gsl_matrix* L_temp = binary(npath);
+		gsl_matrix* L_temp = to_binary(npath);
 		gsl_matrix* D_zero_ind = compare_elements(D, cmp_equal, 0.0);
 		gsl_matrix_mul_elements(L_temp, D_zero_ind);
 		gsl_matrix_free(L);
