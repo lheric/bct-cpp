@@ -26,3 +26,16 @@ void bct::gsl_free(gsl_matrix* m) { gsl_matrix_free(m); }
 void bct::init() {
 	gsl_set_error_handler(gsl_error_handler);
 }
+
+/*
+ * Emulates ones with a scale
+ */
+gsl_matrix* bct::yens(int size, double n) {
+	return yens(size, size, n);
+}
+
+gsl_matrix* bct::yens(int size1, int size2, double n) {
+	gsl_matrix* m = gsl_matrix_alloc(size1, size2);
+	gsl_matrix_set_all(m, n);
+	return m;
+}
