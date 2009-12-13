@@ -12,8 +12,9 @@
  */
 
 /*
- * Emulates (v[indices]) using ordinal indexing.
+ * Vector indexing by an ordinal vector.
  */
+
 gsl_vector* matlab::ordinal_index(const gsl_vector* v, const gsl_vector* indices) {
 	gsl_vector* indexed = gsl_vector_alloc(indices->size);
 	for (int i = 0; i < indices->size; i++) {
@@ -24,9 +25,6 @@ gsl_vector* matlab::ordinal_index(const gsl_vector* v, const gsl_vector* indices
 	return indexed;
 }
 
-/*
- * Emulates (v[indices] = value) using ordinal indexing.
- */
 void matlab::ordinal_index_assign(gsl_vector* v, const gsl_vector* indices, double value) {
 	for (int i = 0; i < indices->size; i++) {
 		int index = (int)gsl_vector_get(indices, i);
@@ -34,9 +32,6 @@ void matlab::ordinal_index_assign(gsl_vector* v, const gsl_vector* indices, doub
 	}
 }
 
-/*
- * Emulates (v[indices] = values) using ordinal indexing.
- */
 void matlab::ordinal_index_assign(gsl_vector* v, const gsl_vector* indices, const gsl_vector* values) {
 	for (int i = 0; i < indices->size; i++) {
 		int index = (int)gsl_vector_get(indices, i);
@@ -46,8 +41,9 @@ void matlab::ordinal_index_assign(gsl_vector* v, const gsl_vector* indices, cons
 }
 
 /*
- * Emulates (v[log_v]) using logical indexing.
+ * Vector indexing by a logical vector.
  */
+
 gsl_vector* matlab::logical_index(const gsl_vector* v, const gsl_vector* log_v) {
 	gsl_vector* indexed = gsl_vector_alloc(nnz(log_v));
 	for (int i = 0, index = 0; i < log_v->size; i++) {
@@ -59,9 +55,6 @@ gsl_vector* matlab::logical_index(const gsl_vector* v, const gsl_vector* log_v) 
 	return indexed;
 }
 
-/*
- * Emulates (v[log_v] = value) using logical indexing.
- */
 void matlab::logical_index_assign(gsl_vector* v, const gsl_vector* log_v, double value) {
 	for (int i = 0; i < log_v->size; i++) {
 		if (fp_nonzero(gsl_vector_get(log_v, i))) {
@@ -70,9 +63,6 @@ void matlab::logical_index_assign(gsl_vector* v, const gsl_vector* log_v, double
 	}
 }
 
-/*
- * Emulates (v[log_v] = values) using logical indexing.
- */
 void matlab::logical_index_assign(gsl_vector* v, const gsl_vector* log_v, const gsl_vector* values) {
 	for (int i = 0, index = 0; i < log_v->size; i++) {
 		if (fp_nonzero(gsl_vector_get(log_v, i))) {
@@ -83,21 +73,48 @@ void matlab::logical_index_assign(gsl_vector* v, const gsl_vector* log_v, const 
 }
 
 /*
- * Emulates (m[index]) using ordinal indexing.
+ * Matrix indexing by an ordinal integer.
  */
+
 double matlab::ordinal_index(const gsl_matrix* m, int index) {
 	int row = index % (int)m->size1;
 	int column = index / (int)m->size1;
 	return gsl_matrix_get(m, row, column);
 }
 
-/*
- * Emulates (m[index] = value) using ordinal indexing.
- */
 void matlab::ordinal_index_assign(gsl_matrix* m, int index, double value) {
 	int row = index % (int)m->size1;
 	int column = index / (int)m->size1;
 	gsl_matrix_set(m, row, column, value);
+}
+
+/*
+ * Matrix indexing by an ordinal vector.
+ */
+
+gsl_vector* matlab::ordinal_index(const gsl_matrix* m, const gsl_vector* indices) {
+	gsl_vector* indexed = gsl_vector_alloc(indices->size);
+	for (int i = 0; i < indices->size; i++) {
+		int index = (int)gsl_vector_get(indices, i);
+		double value = ordinal_index(m, index);
+		gsl_vector_set(indexed, i, value);
+	}
+	return indexed;
+}
+
+void matlab::ordinal_index_assign(gsl_matrix* m, const gsl_vector* indices, double value) {
+	for (int i = 0; i < indices->size; i++) {
+		int index = (int)gsl_vector_get(indices, i);
+		ordinal_index_assign(m, index, value);
+	}
+}
+
+void matlab::ordinal_index_assign(gsl_matrix* m, const gsl_vector* indices, const gsl_vector* values) {
+	for (int i = 0; i < indices->size; i++) {
+		int index = (int)gsl_vector_get(indices, i);
+		double value = gsl_vector_get(values, i);
+		ordinal_index_assign(m, index, value);
+	}
 }
 
 /*
@@ -158,16 +175,6 @@ void matlab::index_assign(gsl_matrix* m, const gsl_vector* row_indices, const gs
 			double source_val = gsl_matrix_get(source, source_i, source_j);
 			ordinal_index_assign(m, index, source_val);
 		}
-	}
-}
-
-/*
- * Emulates matrix indexing and assignment (m(indices) = x).
- */
-void matlab::index_assign(gsl_matrix* m, const gsl_vector* indices, double x) {
-	for (int i = 0; i < indices->size; i++) {
-		int index = (int)gsl_vector_get(indices, i);
-		ordinal_index_assign(m, index, x);
 	}
 }
 
