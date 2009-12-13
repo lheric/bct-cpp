@@ -94,11 +94,12 @@ namespace matlab {
 	bool cmp_less_or_equal(double, double);
 	
 	// Vector/matrix indexing
-	gsl_vector* index(const gsl_vector*, const gsl_vector*);
+	gsl_vector* ord_index(const gsl_vector*, const gsl_vector*);
+	void ord_index_assign(gsl_vector*, const gsl_vector*, double);
+	void ord_index_assign(gsl_vector*, const gsl_vector*, const gsl_vector*);
 	double index(const gsl_matrix*, int);
 	gsl_matrix* index(const gsl_matrix*, const gsl_vector*, const gsl_vector*);
 	gsl_matrix* index(const gsl_matrix*, const gsl_matrix*);
-	void index_assign(gsl_vector*, const gsl_vector*, double);
 	void index_assign(gsl_matrix*, int, double);
 	void index_assign(gsl_matrix*, const gsl_vector*, double);
 	void index_assign(gsl_matrix*, const gsl_matrix*, double);

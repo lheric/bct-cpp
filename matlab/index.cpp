@@ -3,16 +3,36 @@
 #include "matlab.h"
 
 /*
- * Emulates vector indexing by another vector.
+ * Emulates (v[indices]) using ordinal indexing.
  */
-gsl_vector* matlab::index(const gsl_vector* v, const gsl_vector* indices) {
+gsl_vector* matlab::ord_index(const gsl_vector* v, const gsl_vector* indices) {
 	gsl_vector* indexed = gsl_vector_alloc(indices->size);
 	for (int i = 0; i < indices->size; i++) {
-		int position = (int)gsl_vector_get(indices, i);
-		double value = gsl_vector_get(v, position);
+		int index = (int)gsl_vector_get(indices, i);
+		double value = gsl_vector_get(v, index);
 		gsl_vector_set(indexed, i, value);
 	}
 	return indexed;
+}
+
+/*
+ * Emulates (v[indices] = value) using ordinal indexing.
+ */
+void matlab::ord_index_assign(gsl_vector* v, const gsl_vector* indices, double value) {
+	for (int i = 0; i < indices->size; i++) {
+		int index = (int)gsl_vector_get(indices, i);
+		gsl_vector_set(v, index, value);
+	}
+}
+
+/*
+ * Emulates (v[indices] = values) using ordinal indexing.
+ */
+void matlab::ord_index_assign(gsl_vector* v, const gsl_vector* indices, const gsl_vector* values) {
+	for (int i = 0; i < indices->size; i++) {
+		int index = (int)gsl_vector_get(indices, i);
+		double value = gsl_vector_get(values, i);
+	}
 }
 
 /*
@@ -81,18 +101,6 @@ void matlab::index_assign(gsl_matrix* m, const gsl_vector* row_indices, const gs
 			int index = col*m->size1 + row;
 			double source_val = gsl_matrix_get(source, source_i, source_j);
 			index_assign(m, index, source_val);
-		}
-	}
-}
-
-/*
- * Emulates vector indexing and assignment (v(indices) = x).
- */
-void matlab::index_assign(gsl_vector* v, const gsl_vector* indices, double x) {
-	for (int i = 0; i < indices->size; i++) {
-		int index = (int)gsl_vector_get(indices, i);
-		if (index < v->size) {
-			gsl_vector_set(v, index, x);
 		}
 	}
 }
