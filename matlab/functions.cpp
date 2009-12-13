@@ -74,9 +74,9 @@ void matlab::dec2bin(int n, char* bin) {
 		bin[1] = '\0';
 		return;
 	}
-	int len = (int)(std::floor(1.0 + std::log(n) / std::log(2)));
-	bin[len] = '\0';
-	for (int i = len - 1; i >= 0; i--) {
+	int strlen = (int)(std::floor(1.0 + std::log(n) / std::log(2)));
+	bin[strlen] = '\0';
+	for (int i = strlen - 1; i >= 0; i--) {
 		int remainder = n % 2;
 		if (remainder) {
 			bin[i] = '1';
