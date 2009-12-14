@@ -316,28 +316,34 @@ void matlab::log_ord_index_assign(gsl_matrix* m, const gsl_vector* logical_rows,
 	}
 }
 
-/*
- * Emulates matrix indexing by another matrix.
- */
-gsl_matrix* matlab::index(const gsl_matrix* m, const gsl_matrix* indices) {
-	gsl_matrix* indexed = gsl_matrix_alloc(indices->size1, indices->size2);
-	for (int i = 0; i < indices->size1; i++) {
-		for (int j = 0; j < indices->size2; j++) {
-			double value = ordinal_index(m, gsl_matrix_get(indices, i, j));
-			gsl_matrix_set(indexed, i, j, value);
-		}
-	}
-	return indexed;
-}
-
-/*
- * Emulates matrix indexing and assignment (m(indices) = x).
- */
-void matlab::index_assign(gsl_matrix* m, const gsl_matrix* indices, double x) {
+// Matrix-by-matrix indexing
+gsl_matrix* matlab::ordinal_index(const gsl_matrix* m, const gsl_matrix* indices) {
+	gsl_matrix* index_m = gsl_matrix_alloc(indices->size1, indices->size2);
 	for (int i = 0; i < indices->size1; i++) {
 		for (int j = 0; j < indices->size2; j++) {
 			int index = (int)gsl_matrix_get(indices, i, j);
-			ordinal_index_assign(m, index, x);
+			double value = ordinal_index(m, index);
+			gsl_matrix_set(index_m, i, j, value);
+		}
+	}
+	return index_m;
+}
+
+void matlab::ordinal_index_assign(gsl_matrix* m, const gsl_matrix* indices, double value) {
+	for (int i = 0; i < indices->size1; i++) {
+		for (int j = 0; j < indices->size2; j++) {
+			int index = (int)gsl_matrix_get(indices, i, j);
+			ordinal_index_assign(m, index, value);
+		}
+	}
+}
+
+void matlab::ordinal_index_assign(gsl_matrix* m, const gsl_matrix* indices, const gsl_matrix* values) {
+	for (int i = 0; i < indices->size1; i++) {
+		for (int j = 0; j < indices->size2; j++) {
+			int index = (int)gsl_matrix_get(indices, i, j);
+			double value = gsl_matrix_get(values, i, j);
+			ordinal_index_assign(m, index, value);
 		}
 	}
 }
