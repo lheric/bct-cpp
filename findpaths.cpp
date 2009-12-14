@@ -161,7 +161,7 @@ gsl_matrix* bct::findpaths(const gsl_matrix* m, const gsl_vector* sources_input,
 					
 					//pb_temp = pb(sum(j==pths(2:q,pb),1)==0);
 					gsl_vector* row_indices = sequence(0, path_len-1); //check for NULL return from sequence?
-					gsl_matrix* paths_term_at_endnode_all = index(paths, row_indices, end_nodes_col);
+					gsl_matrix* paths_term_at_endnode_all = ordinal_index(paths, row_indices, end_nodes_col);
 					gsl_matrix_view paths_term_at_endnode = gsl_matrix_submatrix(paths_term_at_endnode_all, 1, 0, path_len-1,\
 																				 paths_term_at_endnode_all->size2);
 					gsl_matrix* temp1 = compare_elements(&paths_term_at_endnode.matrix, cmp_equal, next_node);
@@ -173,7 +173,7 @@ gsl_matrix* bct::findpaths(const gsl_matrix* m, const gsl_vector* sources_input,
 						//npths(:,npthscnt+1:npthscnt+length(pb_temp)) = [pths(:,pb_temp)' ones(length(pb_temp),1)*j]';
 						// Improved version: [pths(:,pb_temp); ones(1,length(pb_temp))*j]
 						row_indices = sequence(0, path_len-1);
-						gsl_matrix* paths_sub = index(paths_term_at_endnode_all, row_indices, no_prev_visits_col);
+						gsl_matrix* paths_sub = ordinal_index(paths_term_at_endnode_all, row_indices, no_prev_visits_col);
 					
 						gsl_matrix* new_node_matrix = yens(1, no_prev_visits_col->size, (double)next_node);
 						gsl_matrix* new_paths = concatenate_columns(paths_sub, new_node_matrix);

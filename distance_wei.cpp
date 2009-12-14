@@ -32,7 +32,7 @@ gsl_matrix* bct::distance_wei(const gsl_matrix* m) {
 			ordinal_index_assign(S, V, 0.0);
 			//G1(:,V)=0;
 			gsl_vector* all_rows = sequence(0, N-1);
-			index_assign(G1, all_rows, V, 0.0);
+			ordinal_index_assign(G1, all_rows, V, 0.0);
 			for(int i = 0;i < V->size;i++) {
 				int v = gsl_vector_get(V, i);
 				//W=find(G1(v,:))				
@@ -50,7 +50,7 @@ gsl_matrix* bct::distance_wei(const gsl_matrix* m) {
 					gsl_matrix* min_DG_m = to_row_matrix(min_DG);
 					gsl_vector* row_index = gsl_vector_alloc(1);
 					gsl_vector_set(row_index, 0, u);
-					index_assign(D, row_index, W, min_DG_m);
+					ordinal_index_assign(D, row_index, W, min_DG_m);
 					//free resources
 					gsl_vector_free(G1_v_indxd);
 					gsl_vector_free(D_u_indxd);

@@ -18,7 +18,7 @@ gsl_vector* bct::clustering_coef_bu(const gsl_matrix* m) {
 		int k = nnz(&row.vector);
 		if (k >= 2) {
 			gsl_vector* neighbors = find(&row.vector);
-			gsl_matrix* neighbors_m = index(m, neighbors, neighbors);
+			gsl_matrix* neighbors_m = ordinal_index(m, neighbors, neighbors);
 			gsl_vector* connections_v = sum(neighbors_m);
 			int connections = sum(connections_v);
 			int possible_connections = k * (k - 1);

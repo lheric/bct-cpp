@@ -143,20 +143,40 @@ void matlab::logical_index_assign(gsl_matrix* m, const gsl_vector* logical_v, co
 	}
 }
 
-/*
- * Emulates matrix indexing by two vectors.
- */
-gsl_matrix* matlab::index(const gsl_matrix* m, const gsl_vector* rows, const gsl_vector* columns) {
-	gsl_matrix* indexed = gsl_matrix_alloc(rows->size, columns->size);
+// Matrix-by-two-vectors indexing (non-mixed)
+
+gsl_matrix* matlab::ordinal_index(const gsl_matrix* m, const gsl_vector* rows, const gsl_vector* columns) {
+	gsl_matrix* indexed_m = gsl_matrix_alloc(rows->size, columns->size);
 	for (int i = 0; i < rows->size; i++) {
 		int row = (int)gsl_vector_get(rows, i);
 		for (int j = 0; j < columns->size; j++) {
 			int column = (int)gsl_vector_get(columns, j);
 			double value = gsl_matrix_get(m, row, column);
-			gsl_matrix_set(indexed, i, j, value);
+			gsl_matrix_set(indexed_m, i, j, value);
 		}
 	}
-	return indexed;
+	return indexed_m;
+}
+
+void matlab::ordinal_index_assign(gsl_matrix* m, const gsl_vector* rows, const gsl_vector* columns, double value) {
+	for (int i = 0; i < rows->size; i++) {
+		int row = (int)gsl_vector_get(rows, i);
+		for (int j = 0; j < columns->size; j++) {
+			int column = (int)gsl_vector_get(columns, j);
+			gsl_matrix_set(m, row, column, value);
+		}
+	}
+}
+
+void matlab::ordinal_index_assign(gsl_matrix* m, const gsl_vector* rows, const gsl_vector* columns, const gsl_matrix* values) {
+	for (int i = 0; i < rows->size; i++) {
+		int row = (int)gsl_vector_get(rows, i);
+		for (int j = 0; j < columns->size; j++) {
+			int column = (int)gsl_vector_get(columns, j);
+			double value = gsl_matrix_get(values, i, j);
+			gsl_matrix_set(m, row, column, value);
+		}
+	}
 }
 
 /*
@@ -171,37 +191,6 @@ gsl_matrix* matlab::index(const gsl_matrix* m, const gsl_matrix* indices) {
 		}
 	}
 	return indexed;
-}
-
-/*
- * Emulates matrix indexing by vectors with row and column indices, followed by assignment.
- * m([r], [c])=x
- */
-void matlab::index_assign(gsl_matrix* m, const gsl_vector* row_indices, const gsl_vector* col_indices, double x) {
-	for (int i = 0;i < row_indices->size; i++) {
-		int row = gsl_vector_get(row_indices, i);
-		for(int j = 0;j < col_indices->size;j++) {
-			int col = gsl_vector_get(col_indices, j);
-			int index = col*m->size1 + row;
-			ordinal_index_assign(m, index, x);
-		}
-	}
-}
-
-/*
- * Emulates matrix indexing by vectors with row and column indices, followed by assignment.
- * m([r], [c])=m2
- */
-void matlab::index_assign(gsl_matrix* m, const gsl_vector* row_indices, const gsl_vector* col_indices, const gsl_matrix* source) {
-	for (int i = 0, source_i = 0;i < row_indices->size && source_i < source->size1; i++, source_i++) {
-		int row = gsl_vector_get(row_indices, i);
-		for(int j = 0, source_j = 0;j < col_indices->size && source_j < source->size2; j++, source_j++) {
-			int col = gsl_vector_get(col_indices, j);
-			int index = col*m->size1 + row;
-			double source_val = gsl_matrix_get(source, source_i, source_j);
-			ordinal_index_assign(m, index, source_val);
-		}
-	}
 }
 
 /*
