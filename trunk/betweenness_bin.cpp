@@ -135,7 +135,7 @@ void bct::node_and_edge_betweenness_bin(const gsl_matrix* m, gsl_vector* node_be
 			
 			// V=find(any(Gu(V,:),1));
 			gsl_vector* column_indices = sequence(0, m->size2 - 1);
-			gsl_matrix* copy_m_rows = index(copy_m, V, column_indices);
+			gsl_matrix* copy_m_rows = ordinal_index(copy_m, V, column_indices);
 			gsl_vector* any_copy_m_rows = any(copy_m_rows);
 			gsl_vector_free(V);
 			V = find(any_copy_m_rows);

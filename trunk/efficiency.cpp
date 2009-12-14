@@ -23,7 +23,7 @@ gsl_matrix* bct::efficiency_local(const gsl_matrix* CIJ) {
 		gsl_vector* neighbors = find(&neighbors_row.vector);
 		int degree = neighbors->size;
 		if(degree >= 2) {
-			gsl_matrix* m_neighbors = index(m, neighbors, neighbors);
+			gsl_matrix* m_neighbors = ordinal_index(m, neighbors, neighbors);
 			gsl_matrix* eff = bct::distance_inv(m_neighbors);
 			gsl_vector* eff_v = to_vector(eff);
 			double factor = (double)1/((degree*degree)-degree);

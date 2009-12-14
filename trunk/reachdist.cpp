@@ -52,7 +52,7 @@ gsl_matrix* bct::reachdist(gsl_matrix *m, gsl_matrix* ret_R) {
 		gsl_matrix_add(D, R);
 
 		//if ((powr<=N)&&(~isempty(nonzeros(R(row,col)==0)))) 
-		gsl_matrix* R_indxd = index(R, row, col);
+		gsl_matrix* R_indxd = ordinal_index(R, row, col);
 		gsl_matrix* zeros_in_Rindxd = compare_elements(R_indxd, cmp_equal, 0.0);
 		int nnz_value = nnz(zeros_in_Rindxd);
 		gsl_matrix_free(R_indxd);
@@ -71,12 +71,12 @@ gsl_matrix* bct::reachdist(gsl_matrix *m, gsl_matrix* ret_R) {
 	logical_index_assign(D, D_ind, GSL_POSINF); //assigns the value 'inf', meaning positive infinity
 	if(id_0 != NULL) {
 		gsl_vector* all_rows = sequence(0, N-1);
-		index_assign(D, all_rows, id_0, GSL_POSINF);
+		ordinal_index_assign(D, all_rows, id_0, GSL_POSINF);
 		gsl_vector_free(all_rows);
 	}
 	if(od_0 != NULL) {
 		gsl_vector* all_columns = sequence(0, N-1);
-		index_assign(D, od_0, all_columns, GSL_POSINF);
+		ordinal_index_assign(D, od_0, all_columns, GSL_POSINF);
 		gsl_vector_free(all_columns);
 	}
 	
