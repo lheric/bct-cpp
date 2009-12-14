@@ -64,7 +64,7 @@ gsl_matrix* bct::distance_wei(const gsl_matrix* m) {
 			//minD=min(D(u,S));
 			gsl_vector* row_index = gsl_vector_alloc(1);
 			gsl_vector_set(row_index, 0, u);
-			gsl_matrix* D_S_indxd = mixed_logical_index(D, row_index, S);
+			gsl_matrix* D_S_indxd = ord_log_index(D, row_index, S);
 			double minD = -1;
 			if(D_S_indxd != NULL) {
 				minD = gsl_matrix_min(D_S_indxd);

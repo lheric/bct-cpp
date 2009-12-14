@@ -228,6 +228,51 @@ void matlab::logical_index_assign(gsl_matrix* m, const gsl_vector* logical_rows,
 	}
 }
 
+// Matrix-by-two-vectors indexing (mixed)
+
+gsl_matrix* matlab::ord_log_index(const gsl_matrix* m, const gsl_vector* rows, const gsl_vector* logical_columns) {
+	int n_columns = nnz(logical_columns);
+	if (n_columns == 0) {
+		return NULL;
+	}
+	gsl_matrix* index_m = gsl_matrix_alloc(rows->size, n_columns);
+	for (int j = 0, column = 0; j < logical_columns->size; j++) {
+		if (fp_nonzero(gsl_vector_get(logical_columns, j))) {
+			for (int i = 0; i < rows->size; i++) {
+				int row = (int)gsl_vector_get(rows, i);
+				double value = gsl_matrix_get(m, row, j);
+				gsl_matrix_set(index_m, i, column, value);
+			}
+			column++;
+		}
+	}
+	return index_m;
+}
+
+void matlab::ord_log_index_assign(gsl_matrix* m, const gsl_vector* rows, const gsl_vector* logical_columns, double value) {
+	for (int j = 0; j < logical_columns->size; j++) {
+		if (fp_nonzero(gsl_vector_get(logical_columns, j))) {
+			for (int i = 0; i < rows->size; i++) {
+				int row = (int)gsl_vector_get(rows, i);
+				gsl_matrix_set(m, row, j, value);
+			}
+		}
+	}
+}
+
+void matlab::ord_log_index_assign(gsl_matrix* m, const gsl_vector* rows, const gsl_vector* logical_columns, const gsl_matrix* values) {
+	for (int j = 0, column = 0; j < logical_columns->size; j++) {
+		if (fp_nonzero(gsl_vector_get(logical_columns, j))) {
+			for (int i = 0; i < rows->size; i++) {
+				int row = (int)gsl_vector_get(rows, i);
+				double value = gsl_matrix_get(values, i, column);
+				gsl_matrix_set(m, row, j, value);
+			}
+			column++;
+		}
+	}
+}
+
 /*
  * Emulates matrix indexing by another matrix.
  */
@@ -252,29 +297,6 @@ void matlab::index_assign(gsl_matrix* m, const gsl_matrix* indices, double x) {
 			ordinal_index_assign(m, index, x);
 		}
 	}
-}
-
-/*
- * Emulates m(r,c) where r is a vector of actual row indices and c is a vector of 1's and 0's
- */
-gsl_matrix* matlab::mixed_logical_index(const gsl_matrix* m, const gsl_vector* rows, const gsl_vector* logical_cols) {
-	int columns = nnz(logical_cols);
-	if (columns == 0 || rows == NULL || m == NULL) {
-		return NULL;
-	}
-	gsl_matrix* indexed = gsl_matrix_alloc(rows->size, columns);
-	int column = 0;
-	for (int j = 0; j < logical_cols->size; j++) {
-		if (fp_nonzero(gsl_vector_get(logical_cols, j))) {
-			for (int i = 0; i < rows->size; i++) {
-				int row = (int)gsl_vector_get(rows, i);
-				double value = gsl_matrix_get(m, row, j);
-				gsl_matrix_set(indexed, i, column, value);
-			}
-			column += 1;
-		}
-	}
-	return indexed;
 }
 
 /*
