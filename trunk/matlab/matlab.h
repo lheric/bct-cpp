@@ -133,9 +133,9 @@ namespace matlab {
 	gsl_matrix* ordinal_index(const gsl_matrix*, const gsl_matrix*);
 	void ordinal_index_assign(gsl_matrix*, const gsl_matrix*, double);
 	void ordinal_index_assign(gsl_matrix*, const gsl_matrix*, const gsl_matrix*);
-	
 	gsl_vector* logical_index(const gsl_matrix*, const gsl_matrix*);
 	void logical_index_assign(gsl_matrix*, const gsl_matrix*, double);
+	void logical_index_assign(gsl_matrix*, const gsl_matrix*, const gsl_vector*);
 	
 	// Vector/matrix conversion
 	bool to_bool(const gsl_vector*);
