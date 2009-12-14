@@ -113,10 +113,13 @@ namespace matlab {
 	void logical_index_assign(gsl_matrix*, const gsl_vector*, double);
 	void logical_index_assign(gsl_matrix*, const gsl_vector*, const gsl_vector*);
 	
-	// Matrix-by-two-vectors indexing
+	// Matrix-by-two-vectors indexing (non-mixed)
 	gsl_matrix* ordinal_index(const gsl_matrix*, const gsl_vector*, const gsl_vector*);
 	void ordinal_index_assign(gsl_matrix*, const gsl_vector*, const gsl_vector*, double);
 	void ordinal_index_assign(gsl_matrix*, const gsl_vector*, const gsl_vector*, const gsl_matrix*);
+	gsl_matrix* logical_index(const gsl_matrix*, const gsl_vector*, const gsl_vector*);
+	void logical_index_assign(gsl_matrix*, const gsl_vector*, const gsl_vector*, double);
+	void logical_index_assign(gsl_matrix*, const gsl_vector*, const gsl_vector*, const gsl_matrix*);
 	
 	gsl_matrix* index(const gsl_matrix*, const gsl_matrix*);
 	void index_assign(gsl_matrix*, const gsl_matrix*, double);
