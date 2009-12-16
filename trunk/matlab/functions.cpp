@@ -241,7 +241,7 @@ gsl_matrix* matlab::ones(int size1, int size2) {
 
 // TODO: Implement the two-argument version?
 
-gsl_matrix* matlab::sortrows(const gsl_matrix* m) {
+gsl_matrix* matlab::sortrows(const gsl_matrix* m, gsl_vector* ind) {
 	gsl_vector* rows[m->size1];
 	for (int i = 0; i < m->size1; i++) {
 		rows[i] = gsl_vector_alloc(m->size2);
@@ -257,6 +257,9 @@ gsl_matrix* matlab::sortrows(const gsl_matrix* m) {
 		int index = indices[i];
 		gsl_vector_const_view row = gsl_matrix_const_row(m, index);
 		gsl_matrix_set_row(sorted_m, i, &row.vector);
+		if (ind != NULL) {
+			gsl_vector_set(ind, i, index);
+		}
 	}
 	return sorted_m;
 }
