@@ -23,6 +23,7 @@ objects = \
 	fve.o \
 	jdegree.o \
 	macaque.o \
+	make_motif34lib.o \
 	matching_ind.o \
 	matlab/compare.o \
 	matlab/convert.o \
