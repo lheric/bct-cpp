@@ -3,6 +3,7 @@
 
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_matrix.h>
+#include <gsl/gsl_permutation.h>
 #include <gsl/gsl_vector.h>
 #include "matlab/matlab.h"
 
@@ -103,6 +104,8 @@ namespace bct {
 	void gsl_free(gsl_vector*);
 	void gsl_free(gsl_matrix*);
 	void init();
+	gsl_matrix* permute_columns(const gsl_permutation*, const gsl_matrix*);
+	gsl_matrix* permute_rows(const gsl_permutation*, const gsl_matrix*);
 	gsl_matrix* yens(int, double);
 	gsl_matrix* yens(int, int, double);
 	
