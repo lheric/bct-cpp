@@ -368,6 +368,8 @@ gsl_matrix* matlab::unique_rows(const gsl_matrix* m, const char* first_or_last, 
 	
 	// Calculate additional returns if necessary
 	if (i != NULL) {
+		
+		// TODO: Can't do this, but how does the caller know the right size?
 		if (i->size != n_unique) {
 			gsl_vector_free(i);
 			i = gsl_vector_alloc(n_unique);
@@ -386,10 +388,6 @@ gsl_matrix* matlab::unique_rows(const gsl_matrix* m, const char* first_or_last, 
 		}
 	}
 	if (j != NULL) {
-		if (j->size != m->size1) {
-			gsl_vector_free(j);
-			j = gsl_vector_alloc(m->size1);
-		}
 		for (int i_m = 0; i_m < m->size1; i_m++) {
 			gsl_vector_const_view row_m = gsl_matrix_const_row(m, i_m);
 			for (int i_unique = 0; i_unique < n_unique; i_unique++) {
