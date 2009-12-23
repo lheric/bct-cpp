@@ -123,9 +123,9 @@ gsl_matrix* bct::motif3generate(gsl_vector* Mn, gsl_vector* ID, gsl_vector* N) {
 	}
 	
 	// M=M(ind,:);
-	gsl_matrix* permute_m = permute_rows(ind, M);
+	gsl_matrix* permute_M = permute_rows(ind, M);
 	gsl_matrix_free(M);
-	M = permute_m;
+	M = permute_M;
 	gsl_permutation_free(ind);
 	
 	// N=sum(M,2);
