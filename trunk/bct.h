@@ -62,7 +62,8 @@ namespace bct {
 	void node_and_edge_betweenness_wei(const gsl_matrix*, gsl_vector* = NULL, gsl_matrix* = NULL);
 
 	// Motifs
-	gsl_matrix* motif3generate(gsl_vector* = NULL, gsl_vector* = NULL, gsl_vector* = NULL);
+	gsl_matrix* motif3generate(gsl_vector_long* = NULL, gsl_vector* = NULL, gsl_vector* = NULL);
+	gsl_matrix* motif4generate(gsl_vector_long* = NULL, gsl_vector* = NULL, gsl_vector* = NULL);
 
 	// Modularity and community structure
 
