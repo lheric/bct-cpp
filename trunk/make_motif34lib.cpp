@@ -88,6 +88,7 @@ gsl_matrix* bct::motif3generate(gsl_vector* Mn, gsl_vector* ID, gsl_vector* N) {
 	// [u1 u2 ID]=unique(CL,'rows');
 	gsl_vector* temp_ID = gsl_vector_alloc(54);
 	gsl_matrix* u1 = unique_rows(CL, "last", NULL, temp_ID);
+	gsl_vector_add_constant(temp_ID, 1.0);
 	gsl_matrix_free(u1);
 	gsl_vector_free(cl);
 	gsl_matrix_free(CL);
@@ -100,8 +101,8 @@ gsl_matrix* bct::motif3generate(gsl_vector* Mn, gsl_vector* ID, gsl_vector* N) {
 	
 	// %convert IDs into Sporns & Kotter classification
 	for (int i_ID = 0; i_ID < temp_ID->size; i_ID++) {
+		int ID_value = (int)gsl_vector_get(temp_ID, i_ID);
 		for (int i_id = 0; i_id < 7; i_id++) {
-			int ID_value = (int)gsl_vector_get(temp_ID, i_ID);
 			if (ID_value == id_mika[i_id]) {
 				gsl_vector_set(temp_ID, i_ID, id_olaf[i_id]);
 			}
@@ -110,7 +111,7 @@ gsl_matrix* bct::motif3generate(gsl_vector* Mn, gsl_vector* ID, gsl_vector* N) {
 	
 	// [X ind]=sortrows(ID);
 	gsl_permutation* ind = gsl_permutation_alloc(54);
-	gsl_sort_vector_index(ind, temp_ID);
+	gsl_sort_vector_index(ind, temp_ID);  // TODO: Not stable!
 	
 	// ID=ID(ind,:);
 	if (ID == NULL) {

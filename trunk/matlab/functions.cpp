@@ -240,6 +240,7 @@ gsl_matrix* matlab::ones(int size1, int size2) {
 }
 
 // TODO: Implement the two-argument version?
+// TODO: Switch to stable sorting algorithm
 
 gsl_matrix* matlab::sortrows(const gsl_matrix* m, gsl_vector* ind) {
 	gsl_vector* rows[m->size1];
