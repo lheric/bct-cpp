@@ -22,6 +22,7 @@ namespace matlab {
 	gsl_vector* find(const gsl_matrix*, int = GSL_POSINF, const char* = NULL);
 	gsl_matrix* find_ij(const gsl_matrix*, int = GSL_POSINF, const char* = NULL);
 	double max(const gsl_vector*);
+	gsl_vector* max(const gsl_matrix*, int);
 	gsl_vector* max(const gsl_matrix*);
 	double min(const gsl_vector*);
 	gsl_vector* min(const gsl_matrix*);
