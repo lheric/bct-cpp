@@ -9,7 +9,7 @@
  * Note: Weights are discarded.
  */
 
-gsl_vector* bct::findwalks(gsl_matrix* m, gsl_matrix** ret_Wq, double* ret_twalk) {
+gsl_vector* bct::findwalks(const gsl_matrix* m, gsl_matrix** ret_Wq, double* ret_twalk) {
 	gsl_matrix* CIJ = to_binary(m);
 	int N = CIJ->size1;
 	//Wq = zeros(N,N,N);
