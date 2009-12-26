@@ -6,7 +6,7 @@
 #include <gsl/gsl_vector.h>
 
 namespace matlab {
-	typedef bool (*compare_fn)(double, double);
+	typedef bool (*double_cmp_fn)(double, double);
 	const double EPSILON = 1e-6;
 
 	// Functions
@@ -82,10 +82,10 @@ namespace matlab {
 	int compare_vectorps(const gsl_vector**, const gsl_vector**);
 	int compare_matrices(const gsl_matrix*, const gsl_matrix*);
 	int compare_matrixps(const gsl_matrix**, const gsl_matrix**);
-	gsl_vector* compare_elements(const gsl_vector*, compare_fn, double);
-	gsl_vector* compare_elements(const gsl_vector*, compare_fn, const gsl_vector*);
-	gsl_matrix* compare_elements(const gsl_matrix*, compare_fn, double);
-	gsl_matrix* compare_elements(const gsl_matrix*, compare_fn, const gsl_matrix*);
+	gsl_vector* compare_elements(const gsl_vector*, double_cmp_fn, double);
+	gsl_vector* compare_elements(const gsl_vector*, double_cmp_fn, const gsl_vector*);
+	gsl_matrix* compare_elements(const gsl_matrix*, double_cmp_fn, double);
+	gsl_matrix* compare_elements(const gsl_matrix*, double_cmp_fn, const gsl_matrix*);
 	bool cmp_equal(double, double);
 	bool cmp_not_equal(double, double);
 	bool cmp_greater(double, double);
@@ -143,6 +143,9 @@ namespace matlab {
 	gsl_vector* to_vector(const gsl_matrix*);
 	gsl_matrix* to_column_matrix(const gsl_vector*);
 	gsl_matrix* to_row_matrix(const gsl_vector*);
+	
+	// Utility
+	void quicksort(void*, size_t, size_t, 
 };
 
 #endif
