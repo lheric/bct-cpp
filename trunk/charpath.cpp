@@ -4,6 +4,12 @@
 #include <gsl/gsl_vector.h>
 #include <math.h>
 
+/*
+ * Characteristic path length is calculated as the global mean of the
+ * distance matrix D, not taking into account any 'Infs' but including the
+ * distances on the main diagonal.
+ */
+
 double bct::charpath_lambda(const gsl_matrix* D) {
 	//lambda = sum(sum(D(D~=Inf)))/length(nonzeros(D~=Inf));
 	gsl_matrix* D_not_inf = compare_elements(D, cmp_not_equal, GSL_POSINF);
