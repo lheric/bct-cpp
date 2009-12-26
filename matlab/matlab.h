@@ -146,7 +146,7 @@ namespace matlab {
 	gsl_matrix* to_row_matrix(const gsl_vector*);
 	
 	// Utility
-	void quicksort(void*, size_t, size_t, 
+	//void quicksort(void*, size_t, size_t, 
 };
 
 #endif
