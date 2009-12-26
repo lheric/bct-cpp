@@ -99,6 +99,15 @@ for i = 1:size(m)(2)
 	D = distance_wei(m{i});
 	D_cpp = distance_wei_cpp(m{i});
 	bct_test(sprintf("distance_wei %s", mname{i}), all(D == D_cpp));
+	
+	%charpath ------
+	[lambda,ecc,radius,diameter] = charpath(D);
+	lambda_cpp = charpath_lambda_cpp(D);
+	bct_test(sprintf("charpath lambda %s", mname{i}), lambda == lambda_cpp);
+	[ecc_cpp, radius_cpp, diameter_cpp] = charpath_ecc_cpp(D);
+	bct_test(sprintf("charpath ecc %s", mname{i}), all(ecc' == ecc_cpp));
+	bct_test(sprintf("charpath radius %s", mname{i}), radius == radius_cpp);
+	bct_test(sprintf("charpath diameter %s", mname{i}), diameter == diameter_cpp);
 end
 
 % efficiency
@@ -129,6 +138,8 @@ end
 % findpaths and cycprob
 sources = unique(floor(30*rand(1,5)+1));   % 5 random source nodes in the range (1, 30)
 path_len_max = floor(rand()*2+2);  %random number in the range [2,4]
+disp(['sources' sources]); 
+disp(['path_len_max' path_len_max]); 
 for i = 1:size(m)(2)
 	[Pq,tpath,plq,qstop,allpths,util] = findpaths(m{i}, sources, path_len_max, 1);
 	[allpaths_cpp Pq_cpp qstop_cpp] = findpaths_cpp(m{i}, sources, path_len_max, 1);
@@ -166,6 +177,15 @@ for i = 1:size(m)(2)
 	[R,D] = reachdist(m{i});
 	D_cpp = reachdist_cpp(m{i});
 	bct_test(sprintf("reachdist %s", mname{i}), all(D == D_cpp));
+	
+	%charpath ------
+	[lambda,ecc,radius,diameter] = charpath(D);
+	lambda_cpp = charpath_lambda_cpp(D);
+	bct_test(sprintf("charpath lambda %s", mname{i}), lambda == lambda_cpp);
+	[ecc_cpp, radius_cpp, diameter_cpp] = charpath_ecc_cpp(D);
+	bct_test(sprintf("charpath ecc %s", mname{i}), all(ecc' == ecc_cpp));
+	bct_test(sprintf("charpath radius %s", mname{i}), radius == radius_cpp);
+	bct_test(sprintf("charpath diameter %s", mname{i}), diameter == diameter_cpp);	
 end
 
 % strengths_und
