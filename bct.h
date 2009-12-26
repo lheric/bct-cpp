@@ -52,6 +52,7 @@ namespace bct {
 	gsl_matrix* efficiency_global(const gsl_matrix*);
 	gsl_matrix* findpaths(const gsl_matrix*, const gsl_vector*, int, int, \
 						  gsl_matrix** = NULL, long int* = NULL , gsl_vector* = NULL, int* = NULL, gsl_matrix* = NULL);
+	gsl_vector* findwalks(gsl_matrix*, gsl_matrix** = NULL, double* = NULL);
 	gsl_matrix* reachdist(gsl_matrix*, gsl_matrix* = NULL);
 
 	// Centrality
