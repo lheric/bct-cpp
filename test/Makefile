@@ -24,6 +24,7 @@ filenames = \
 	edge_betweenness_wei_cpp \
 	erange_cpp \
 	findpaths_cpp \
+	findwalks_cpp \
 	jdegree_cpp \
 	jdegree_id_cpp \
 	jdegree_od_cpp \

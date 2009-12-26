@@ -21,6 +21,7 @@ objects = \
 	efficiency.o \
 	erange.o \
 	findpaths.o \
+	findwalks.o \
 	fve.o \
 	jdegree.o \
 	macaque.o \
