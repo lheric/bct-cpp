@@ -5,6 +5,7 @@ objects = \
 	breadth.o \
 	breadthdist.o \
 	cat.o \
+	charpath.o \
 	clustering_coef_bd.o \
 	clustering_coef_bu.o \
 	clustering_coef_wd.o \

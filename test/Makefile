@@ -5,6 +5,8 @@ filenames = \
 	betweenness_wei_cpp \
 	breadth_cpp \
 	breadthdist_cpp \
+	charpath_ecc_cpp \
+	charpath_lambda_cpp \
 	clustering_coef_bd_cpp \
 	clustering_coef_bu_cpp \
 	clustering_coef_wd_cpp \
