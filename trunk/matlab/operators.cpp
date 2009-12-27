@@ -271,7 +271,7 @@ gsl_matrix* matlab::logical_not(const gsl_matrix* m) {
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {
 			bool z = fp_zero(gsl_matrix_get(m, i, j));
-			gsl_matrix_set(not_m, i, j, z);
+			gsl_matrix_set(not_m, i, j, (double)z);
 		}
 	}
 	return not_m;
