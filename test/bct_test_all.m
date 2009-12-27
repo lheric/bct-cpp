@@ -94,6 +94,13 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("density_und %s", mname{i}), density_und(m{i}) == density_und_cpp(m{i}))
 end
 
+% distance_bin
+for i = 1:size(m)(2)
+	D=distance_bin(m{i});
+	D_cpp = distance_bin_cpp(m{i});
+	bct_test(sprintf("distance_bin %s", mname{i}), all(D == D_cpp));
+end
+
 % distance_wei
 for i = 1:size(m)(2)
 	D = distance_wei(m{i});

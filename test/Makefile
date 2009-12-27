@@ -17,6 +17,7 @@ filenames = \
 	degrees_und_cpp \
 	density_dir_cpp \
 	density_und_cpp \
+	distance_bin_cpp \
 	distance_wei_cpp \
 	efficiency_local_cpp \
 	efficiency_global_cpp \
