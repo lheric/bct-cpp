@@ -406,7 +406,7 @@ gsl_vector* matlab::sequence(int start, int end) {
  */
 gsl_vector* matlab::sequence(int start, int step, int end) {
 	int n_sequence = (end - start) / step + 1;
-	if (n_sequence <= 0) {
+	if ((n_sequence < 0 && step > 0) || (n_sequence > 0 && step < 0) || (n_sequence == 0)) {
 		return NULL;
 	}
 	gsl_vector* sequence_v = gsl_vector_alloc(n_sequence);
