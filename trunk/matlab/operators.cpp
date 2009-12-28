@@ -19,6 +19,22 @@ gsl_vector* matlab::concatenate(const gsl_vector* v, const double x) {
 	gsl_vector_set(cat_v, v->size, x);
 	return cat_v;
 }
+
+/*
+ * Emulates ([x v]) for a row vector or ([x ; v]) for a column vector.
+ */
+gsl_vector* matlab::concatenate(const double x, const gsl_vector* v) {
+	if (v == NULL) {
+		gsl_vector* cat_v = gsl_vector_alloc(1);
+		gsl_vector_set(cat_v, 0, x);
+		return cat_v;
+	}
+	gsl_vector* cat_v = gsl_vector_alloc(v->size + 1);
+	gsl_vector_view cat_subv = gsl_vector_subvector(cat_v, 1, v->size);
+	gsl_vector_memcpy(&cat_subv.vector, v);
+	gsl_vector_set(cat_v, 0, x);
+	return cat_v;
+}
  
 /*
  * Emulates ([v1 v2]) for row vectors or ([v1 ; v2]) for column vectors.
@@ -406,7 +422,7 @@ gsl_vector* matlab::sequence(int start, int end) {
  */
 gsl_vector* matlab::sequence(int start, int step, int end) {
 	int n_sequence = (end - start) / step + 1;
-	if ((n_sequence < 0 && step > 0) || (n_sequence > 0 && step < 0) || (n_sequence == 0)) {
+	if (n_sequence <= 0) {
 		return NULL;
 	}
 	gsl_vector* sequence_v = gsl_vector_alloc(n_sequence);
