@@ -37,6 +37,11 @@ gsl_matrix* bct::distance_bin(const gsl_matrix* m) {
 	logical_index_assign(D, not_D, GSL_POSINF);
 	gsl_matrix* m_eye = eye(m->size1);
 	gsl_matrix_sub(D, m_eye);
+	
+	gsl_matrix_free(npath);
+	gsl_matrix_free(L);
+	gsl_matrix_free(m_eye);
+	
 	return D;
 }
 	
