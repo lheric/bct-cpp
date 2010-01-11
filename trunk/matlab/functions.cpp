@@ -260,6 +260,14 @@ gsl_matrix* matlab::ones(int size1, int size2) {
 	return ones_m;
 }
 
+gsl_vector* matlab::reverse(gsl_vector* v) {
+	gsl_vector* rev_v = gsl_vector_alloc(v->size);
+	for(int i = (v->size-1),j = 0;i >= 0;i--,j++) {
+		gsl_vector_set(rev_v, j, gsl_vector_get(v, i));
+	}
+	return rev_v;
+}
+
 // TODO: Implement the two-argument version?
 // TODO: Switch to stable sorting algorithm
 
