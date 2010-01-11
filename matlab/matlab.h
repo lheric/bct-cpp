@@ -31,6 +31,7 @@ namespace matlab {
 	gsl_vector* nonzeros(const gsl_matrix*);
 	gsl_matrix* ones(int);
 	gsl_matrix* ones(int, int);
+	gsl_vector* reverse(gsl_vector*);
 	gsl_matrix* sortrows(const gsl_matrix*, gsl_vector* = NULL);
 	double sum(const gsl_vector*);
 	gsl_vector* sum(const gsl_matrix*, int = 1);

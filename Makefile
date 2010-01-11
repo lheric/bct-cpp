@@ -25,6 +25,7 @@ objects = \
 	findwalks.o \
 	fve.o \
 	jdegree.o \
+	latmio_und_connected.o \
 	macaque.o \
 	make_motif34lib.o \
 	matching_ind.o \

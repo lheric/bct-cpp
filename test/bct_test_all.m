@@ -182,6 +182,16 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("jdegree_bl %s", mname{i}), (J_bl == jdegree_bl_cpp(J)))
 end
 
+% latmio_und_connected
+for i = 1:size(m)(2)
+	R = latmio_und_connected(m{i},2);
+	deg_latmio_und = degrees_und(R);
+	R_cpp = latmio_und_connected_cpp(m{i}, 2);
+	deg_latmio_und_cpp = degrees_und(R_cpp);
+	bct_test(sprintf("latmio_und_connected %s", mname{i}), all(abs(deg_latmio_und-deg_latmio_und_cpp) < 10)); %this is only an approximate test condition
+	clear R orig_deg deg_latmio_und R_cpp deg_latmio_und_cpp;
+end
+
 % matching_ind
 for i = 1:size(m)(2)
 	[Min Mout Mall] = matching_ind(m{i});

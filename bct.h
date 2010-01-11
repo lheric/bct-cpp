@@ -71,6 +71,9 @@ namespace bct {
 	gsl_matrix* motif4generate(gsl_vector_long* = NULL, gsl_vector* = NULL, gsl_vector* = NULL);
 
 	// Modularity and community structure
+	
+	//Graph randomization
+	gsl_matrix* latmio_und_connected(const gsl_matrix*, const int);
 
 	// Data sets
 	extern double cat_all[];

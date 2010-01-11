@@ -273,6 +273,8 @@ void matlab::ord_log_index_assign(gsl_matrix* m, const gsl_vector* rows, const g
 	}
 }
 
+//NOTE: If the result is NULL, the MATLAB equivalent will return a vector with a finite size (Ex: an empty 3-cell vector)
+//In C++, this can't be done. So, such a condition will need to be handled seperately after the function call.
 gsl_matrix* matlab::log_ord_index(const gsl_matrix* m, const gsl_vector* logical_rows, const gsl_vector* columns) {
 	int n_rows = nnz(logical_rows);
 	if (n_rows == 0) {
