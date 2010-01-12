@@ -188,16 +188,14 @@ for i = 1:size(m)(2)
 	deg_latmio_und = degrees_und(R);
 	R_cpp = latmio_und_connected_cpp(m{i}, 2);
 	deg_latmio_und_cpp = degrees_und(R_cpp);
-	bct_test(sprintf("latmio_und_connected %s", mname{i}), all(abs(deg_latmio_und-deg_latmio_und_cpp) < 10)); %this is only an approximate test condition
-	clear R orig_deg deg_latmio_und R_cpp deg_latmio_und_cpp;
+	%this is only an approximate test condition
+	bct_test(sprintf("latmio_und_connected %s", mname{i}), all(abs(deg_latmio_und-deg_latmio_und_cpp) < 10)); 
 end
 
 % matching_ind
 for i = 1:size(m)(2)
 	[Min Mout Mall] = matching_ind(m{i});
 	bct_test(sprintf("matching_ind %s", mname{i}), all(Mall == matching_ind_cpp(m{i})))
-	%bct_test(sprintf("matching_ind_in %s", mname{i}), all(Min == matching_ind_in_cpp(m{i})))
-	%bct_test(sprintf("matching_ind_out %s", mname{i}), all(Mout == matching_ind_out_cpp(m{i})))
 end	
 
 %reachdist
