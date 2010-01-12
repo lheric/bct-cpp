@@ -84,11 +84,11 @@ int matlab::compare_matrixps(const gsl_matrix** m1, const gsl_matrix** m2) {
 /*
  * Emulates (v op x), where op is a binary comparison operator.
  */
-gsl_vector* matlab::compare_elements(const gsl_vector* v, double_cmp_fn cmp_fn, double x) {
+gsl_vector* matlab::compare_elements(const gsl_vector* v, fp_cmp_fn compare, double x) {
 	gsl_vector* cmp_v = gsl_vector_alloc(v->size);
 	for (int i = 0; i < v->size; i++) {
 		double value = gsl_vector_get(v, i);
-		gsl_vector_set(cmp_v, i, (double)cmp_fn(value, x));
+		gsl_vector_set(cmp_v, i, (double)compare(value, x));
 	}
 	return cmp_v;
 }
@@ -96,7 +96,7 @@ gsl_vector* matlab::compare_elements(const gsl_vector* v, double_cmp_fn cmp_fn, 
 /*
  * Emulates (v1 op v2), where op is a binary comparison operator.
  */
-gsl_vector* matlab::compare_elements(const gsl_vector* v1, double_cmp_fn cmp_fn, const gsl_vector* v2) {
+gsl_vector* matlab::compare_elements(const gsl_vector* v1, fp_cmp_fn compare, const gsl_vector* v2) {
 	if (v1->size != v2->size) {
 		return NULL;
 	}
@@ -104,7 +104,7 @@ gsl_vector* matlab::compare_elements(const gsl_vector* v1, double_cmp_fn cmp_fn,
 	for (int i = 0; i < v1->size; i++) {
 		double value1 = gsl_vector_get(v1, i);
 		double value2 = gsl_vector_get(v2, i);
-		gsl_vector_set(cmp_v, i, (double)cmp_fn(value1, value2));
+		gsl_vector_set(cmp_v, i, (double)compare(value1, value2));
 	}
 	return cmp_v;
 }
@@ -112,12 +112,12 @@ gsl_vector* matlab::compare_elements(const gsl_vector* v1, double_cmp_fn cmp_fn,
 /*
  * Emulates (m op x), where op is a binary comparison operator.
  */
-gsl_matrix* matlab::compare_elements(const gsl_matrix* m, double_cmp_fn cmp_fn, double x) {
+gsl_matrix* matlab::compare_elements(const gsl_matrix* m, fp_cmp_fn compare, double x) {
 	gsl_matrix* cmp_m = gsl_matrix_alloc(m->size1, m->size2);
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {
 			double value = gsl_matrix_get(m, i, j);
-			gsl_matrix_set(cmp_m, i, j, (double)cmp_fn(value, x));
+			gsl_matrix_set(cmp_m, i, j, (double)compare(value, x));
 		}
 	}
 	return cmp_m;
@@ -126,7 +126,7 @@ gsl_matrix* matlab::compare_elements(const gsl_matrix* m, double_cmp_fn cmp_fn, 
 /*
  * Emulates (m1 op m2), where op is a binary comparison operator.
  */
-gsl_matrix* matlab::compare_elements(const gsl_matrix* m1, double_cmp_fn cmp_fn, const gsl_matrix* m2) {
+gsl_matrix* matlab::compare_elements(const gsl_matrix* m1, fp_cmp_fn compare, const gsl_matrix* m2) {
 	if (m1->size1 != m2->size1 || m1->size2 != m2->size2) {
 		return NULL;
 	}
@@ -135,7 +135,7 @@ gsl_matrix* matlab::compare_elements(const gsl_matrix* m1, double_cmp_fn cmp_fn,
 		for (int j = 0; j < m1->size2; j++) {
 			double value1 = gsl_matrix_get(m1, i, j);
 			double value2 = gsl_matrix_get(m2, i, j);
-			gsl_matrix_set(cmp_m, i, j, (double)cmp_fn(value1, value2));
+			gsl_matrix_set(cmp_m, i, j, (double)compare(value1, value2));
 		}
 	}
 	return cmp_m;

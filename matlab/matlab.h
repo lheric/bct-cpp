@@ -6,7 +6,8 @@
 #include <gsl/gsl_vector.h>
 
 namespace matlab {
-	typedef bool (*double_cmp_fn)(double, double);
+	typedef bool (*cmp_fn)(void*, void*);
+	typedef bool (*fp_cmp_fn)(double, double);
 	const double EPSILON = 1e-6;
 
 	// Functions
@@ -85,10 +86,10 @@ namespace matlab {
 	int compare_vectorps(const gsl_vector**, const gsl_vector**);
 	int compare_matrices(const gsl_matrix*, const gsl_matrix*);
 	int compare_matrixps(const gsl_matrix**, const gsl_matrix**);
-	gsl_vector* compare_elements(const gsl_vector*, double_cmp_fn, double);
-	gsl_vector* compare_elements(const gsl_vector*, double_cmp_fn, const gsl_vector*);
-	gsl_matrix* compare_elements(const gsl_matrix*, double_cmp_fn, double);
-	gsl_matrix* compare_elements(const gsl_matrix*, double_cmp_fn, const gsl_matrix*);
+	gsl_vector* compare_elements(const gsl_vector*, fp_cmp_fn, double);
+	gsl_vector* compare_elements(const gsl_vector*, fp_cmp_fn, const gsl_vector*);
+	gsl_matrix* compare_elements(const gsl_matrix*, fp_cmp_fn, double);
+	gsl_matrix* compare_elements(const gsl_matrix*, fp_cmp_fn, const gsl_matrix*);
 	bool cmp_equal(double, double);
 	bool cmp_not_equal(double, double);
 	bool cmp_greater(double, double);
@@ -148,7 +149,7 @@ namespace matlab {
 	gsl_matrix* to_row_matrix(const gsl_vector*);
 	
 	// Utility
-	//void quicksort(void*, size_t, size_t, 
+	void quicksort(void*, size_t, size_t, cmp_fn);
 };
 
 #endif
