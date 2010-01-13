@@ -30,6 +30,7 @@ filenames = \
 	jdegree_id_cpp \
 	jdegree_od_cpp \
 	jdegree_bl_cpp \
+	latmio_dir_connected_cpp \
 	latmio_und_connected_cpp \
 	matching_ind_cpp \
 	reachdist_cpp \
