@@ -269,7 +269,6 @@ gsl_vector* matlab::reverse(gsl_vector* v) {
 }
 
 // TODO: Implement the two-argument version?
-// TODO: Switch to stable sorting algorithm
 
 gsl_matrix* matlab::sortrows(const gsl_matrix* m, gsl_vector* ind) {
 	gsl_vector* rows[m->size1];
@@ -278,7 +277,7 @@ gsl_matrix* matlab::sortrows(const gsl_matrix* m, gsl_vector* ind) {
 		gsl_matrix_get_row(rows[i], m, i);
 	}
 	size_t indices[m->size1];
-	gsl_heapsort_index(indices, rows, m->size1, sizeof(gsl_vector*), (gsl_comparison_fn_t)compare_vectorps);
+	quicksort_index(indices, rows, m->size1, (cmp_fn)compare_vectorps);
 	for (int i = 0; i < m->size1; i++) {
 		gsl_vector_free(rows[i]);
 	}
