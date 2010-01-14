@@ -1,6 +1,5 @@
 #include <cmath>
 #include <cstring>
-#include <gsl/gsl_heapsort.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include "matlab.h"
@@ -175,33 +174,28 @@ double matlab::max(const gsl_vector* v) {
 }
 
 gsl_vector* matlab::max(const gsl_matrix* m) {
-	gsl_vector* max_v = gsl_vector_alloc(m->size2);
-	for (int i = 0; i < m->size2; i++) {
-		gsl_vector_const_view column = gsl_matrix_const_column(m, i);
-		double value = gsl_vector_max(&column.vector);
-		gsl_vector_set(max_v, i, value);
-	}
-	return max_v;
+	return max(m, 1);
 }
 
 gsl_vector* matlab::max(const gsl_matrix* m, int dim) {
-	if (dim == 1) { 
-		gsl_vector* v = gsl_vector_alloc(m->size1);
-		for(int i = 0; i < m->size2; i++) {
+	if (dim == 1) {
+		gsl_vector* max_v = gsl_vector_alloc(m->size2);
+		for (int i = 0; i < m->size2; i++) {
 			gsl_vector_const_view column = gsl_matrix_const_column(m, i);
-			double col_max = gsl_vector_max(&column.vector);
-			gsl_vector_set(v, i, col_max);
+			double value = gsl_vector_max(&column.vector);
+			gsl_vector_set(max_v, i, value);
 		}
-		return v;
-	}
-	if (dim == 2) {
-		gsl_vector* v = gsl_vector_alloc(m->size1);
-		for(int i = 0; i < m->size1; i++) {
+		return max_v;
+	} else if (dim == 2) {
+		gsl_vector* max_v = gsl_vector_alloc(m->size1);
+		for (int i = 0; i < m->size1; i++) {
 			gsl_vector_const_view row = gsl_matrix_const_row(m, i);
-			double row_max = gsl_vector_max(&row.vector);
-			gsl_vector_set(v, i, row_max);
+			double value = gsl_vector_max(&row.vector);
+			gsl_vector_set(max_v, i, value);
 		}
-		return v;
+		return max_v;
+	} else {
+		return NULL;
 	}
 }
 
@@ -210,33 +204,28 @@ double matlab::min(const gsl_vector* v) {
 }
 
 gsl_vector* matlab::min(const gsl_matrix* m) {
-	gsl_vector* min_v = gsl_vector_alloc(m->size2);
-	for (int i = 0; i < m->size2; i++) {
-		gsl_vector_const_view column = gsl_matrix_const_column(m, i);
-		double value = gsl_vector_min(&column.vector);
-		gsl_vector_set(min_v, i, value);
-	}
-	return min_v;
+	return min(m, 1);
 }
 
 gsl_vector* matlab::min(const gsl_matrix* m, int dim) {
-	if (dim == 1) { 
-		gsl_vector* v = gsl_vector_alloc(m->size1);
-		for(int i = 0; i < m->size2; i++) {
+	if (dim == 1) {
+		gsl_vector* min_v = gsl_vector_alloc(m->size2);
+		for (int i = 0; i < m->size2; i++) {
 			gsl_vector_const_view column = gsl_matrix_const_column(m, i);
-			double col_min = gsl_vector_min(&column.vector);
-			gsl_vector_set(v, i, col_min);
+			double value = gsl_vector_min(&column.vector);
+			gsl_vector_set(min_v, i, value);
 		}
-		return v;
-	}
-	if (dim == 2) {
-		gsl_vector* v = gsl_vector_alloc(m->size1);
-		for(int i = 0; i < m->size1; i++) {
+		return min_v;
+	} else if (dim == 2) {
+		gsl_vector* min_v = gsl_vector_alloc(m->size1);
+		for (int i = 0; i < m->size1; i++) {
 			gsl_vector_const_view row = gsl_matrix_const_row(m, i);
-			double row_min = gsl_vector_min(&row.vector);
-			gsl_vector_set(v, i, row_min);
+			double value = gsl_vector_min(&row.vector);
+			gsl_vector_set(min_v, i, value);
 		}
-		return v;
+		return min_v;
+	} else {
+		return NULL;
 	}
 }
 
