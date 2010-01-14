@@ -4,9 +4,9 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
+#include "quicksort.h"
 
 namespace matlab {
-	typedef bool (*cmp_fn)(void*, void*);
 	typedef bool (*fp_cmp_fn)(double, double);
 	const double EPSILON = 1e-6;
 
@@ -147,9 +147,6 @@ namespace matlab {
 	gsl_vector* to_vector(const gsl_matrix*);
 	gsl_matrix* to_column_matrix(const gsl_vector*);
 	gsl_matrix* to_row_matrix(const gsl_vector*);
-	
-	// Utility
-	void quicksort(void*, size_t, size_t, cmp_fn);
 };
 
 #endif

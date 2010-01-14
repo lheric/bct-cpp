@@ -57,6 +57,7 @@ install: libbct.a
 		mkdir /usr/local/include/bct/matlab; \
 	fi
 	cp matlab/matlab.h /usr/local/include/bct/matlab
+	cp matlab/quicksort.h /usr/local/include/bct/matlab
 	cp bct.h /usr/local/include/bct
 	cp libbct.a /usr/local/lib
 
