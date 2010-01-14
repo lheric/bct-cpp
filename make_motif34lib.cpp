@@ -2,7 +2,6 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_permutation.h>
 #include <gsl/gsl_permute_vector.h>
-#include <gsl/gsl_sort_vector.h>
 #include <gsl/gsl_vector.h>
 
 int compare_ints(int* x, int* y) { return *x - *y; }
