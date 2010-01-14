@@ -268,8 +268,6 @@ gsl_vector* matlab::reverse(gsl_vector* v) {
 	return rev_v;
 }
 
-// TODO: Implement the two-argument version?
-
 gsl_matrix* matlab::sortrows(const gsl_matrix* m, gsl_vector* ind) {
 	gsl_vector* rows[m->size1];
 	for (int i = 0; i < m->size1; i++) {
@@ -350,8 +348,6 @@ gsl_matrix* matlab::triu(const gsl_matrix* m, int k) {
 	}
 	return triu_m;
 }
-
-// TODO: Implement other "unique" variants?
 
 /*
  * Emulates (unique(m, "rows")).

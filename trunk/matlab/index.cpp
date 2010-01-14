@@ -6,9 +6,14 @@
  * Our indexing-with-assignment functions do not automatically resize vectors
  * and matrices as MATLAB's do.  Thus, while the MATLAB code
  * (A = [1 2 3]; A([4 5]) = 5) yields (A = [1 2 3 5 5]), the equivalent C++ code
- * would result in an error.  In general, it is the caller's responsibility to
+ * will result in an error.  In general, it is the caller's responsibility to
  * ensure that a call to one of these functions does not attempt to index past
  * the end of a vector or matrix.
+ *
+ * GSL does not support vectors of size 0 nor matrices with 0 rows or columns.
+ * Therefore, in situations where MATLAB code would return an empty structure
+ * (i.e., a vector/matrix having dimensions 0x0, 0xN, or Nx0), the equivalent
+ * C++ code will return NULL.
  */
 
 // Vector-by-vector indexing
@@ -273,8 +278,6 @@ void matlab::ord_log_index_assign(gsl_matrix* m, const gsl_vector* rows, const g
 	}
 }
 
-//NOTE: If the result is NULL, the MATLAB equivalent will return a vector with a finite size (Ex: an empty 3-cell vector)
-//In C++, this can't be done. So, such a condition will need to be handled seperately after the function call.
 gsl_matrix* matlab::log_ord_index(const gsl_matrix* m, const gsl_vector* logical_rows, const gsl_vector* columns) {
 	int n_rows = nnz(logical_rows);
 	if (n_rows == 0) {
