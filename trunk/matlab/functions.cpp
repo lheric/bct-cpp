@@ -170,8 +170,6 @@ gsl_matrix* matlab::find_ij(const gsl_matrix* m, int n, const char* direction) {
 	}
 }
 
-// TODO: Implement other "max" and "min" variants?
-
 double matlab::max(const gsl_vector* v) {
 	return gsl_vector_max(v);
 }
@@ -186,19 +184,19 @@ gsl_vector* matlab::max(const gsl_matrix* m) {
 	return max_v;
 }
 
-gsl_vector* matlab::max(const gsl_matrix* m, int dim) { //no default value for 'dim'
-	if(dim == 1) {
+gsl_vector* matlab::max(const gsl_matrix* m, int dim) {
+	if (dim == 1) { 
 		gsl_vector* v = gsl_vector_alloc(m->size1);
-		for(int i = 0;i < m->size2;i++) {
+		for(int i = 0; i < m->size2; i++) {
 			gsl_vector_const_view column = gsl_matrix_const_column(m, i);
 			double col_max = gsl_vector_max(&column.vector);
 			gsl_vector_set(v, i, col_max);
 		}
 		return v;
 	}
-	if(dim == 2) {
+	if (dim == 2) {
 		gsl_vector* v = gsl_vector_alloc(m->size1);
-		for(int i = 0;i < m->size1;i++) {
+		for(int i = 0; i < m->size1; i++) {
 			gsl_vector_const_view row = gsl_matrix_const_row(m, i);
 			double row_max = gsl_vector_max(&row.vector);
 			gsl_vector_set(v, i, row_max);
@@ -219,6 +217,27 @@ gsl_vector* matlab::min(const gsl_matrix* m) {
 		gsl_vector_set(min_v, i, value);
 	}
 	return min_v;
+}
+
+gsl_vector* matlab::min(const gsl_matrix* m, int dim) {
+	if (dim == 1) { 
+		gsl_vector* v = gsl_vector_alloc(m->size1);
+		for(int i = 0; i < m->size2; i++) {
+			gsl_vector_const_view column = gsl_matrix_const_column(m, i);
+			double col_min = gsl_vector_min(&column.vector);
+			gsl_vector_set(v, i, col_min);
+		}
+		return v;
+	}
+	if (dim == 2) {
+		gsl_vector* v = gsl_vector_alloc(m->size1);
+		for(int i = 0; i < m->size1; i++) {
+			gsl_vector_const_view row = gsl_matrix_const_row(m, i);
+			double row_min = gsl_vector_min(&row.vector);
+			gsl_vector_set(v, i, row_min);
+		}
+		return v;
+	}
 }
 
 int matlab::nnz(const gsl_vector* v) {

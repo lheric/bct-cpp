@@ -23,10 +23,11 @@ namespace matlab {
 	gsl_vector* find(const gsl_matrix*, int = GSL_POSINF, const char* = NULL);
 	gsl_matrix* find_ij(const gsl_matrix*, int = GSL_POSINF, const char* = NULL);
 	double max(const gsl_vector*);
-	gsl_vector* max(const gsl_matrix*, int);
 	gsl_vector* max(const gsl_matrix*);
+	gsl_vector* max(const gsl_matrix*, int);
 	double min(const gsl_vector*);
 	gsl_vector* min(const gsl_matrix*);
+	gsl_vector* min(const gsl_matrix*, int);
 	int nnz(const gsl_vector*);
 	int nnz(const gsl_matrix*);
 	gsl_vector* nonzeros(const gsl_matrix*);
