@@ -45,7 +45,7 @@ int matlab::compare_vectors(const gsl_vector* v1, const gsl_vector* v2) {
 }
 
 /*
- * For use with gsl_heapsort.
+ * Compares pointers to gsl_vector*.
  */
 int matlab::compare_vectorps(const gsl_vector** v1, const gsl_vector** v2) {
 	return compare_vectors(*v1, *v2);
@@ -75,7 +75,7 @@ int matlab::compare_matrices(const gsl_matrix* m1, const gsl_matrix* m2) {
 }
 
 /*
- * For use with gsl_heapsort.
+ * Compares pointers to gsl_matrix*.
  */
 int matlab::compare_matrixps(const gsl_matrix** m1, const gsl_matrix** m2) {
 	return compare_matrices(*m1, *m2);
