@@ -77,6 +77,7 @@ namespace bct {
 	gsl_matrix* latmio_dir_connected(const gsl_matrix*, const int);	
 	gsl_matrix* latmio_und_connected(const gsl_matrix*, const int);
 	gsl_matrix* latmio_und(const gsl_matrix*, const int);
+	gsl_matrix* randmio_und_connected(const gsl_matrix*, const int);
 
 	// Data sets
 	extern double cat_all[];
