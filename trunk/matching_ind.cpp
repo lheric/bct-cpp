@@ -48,8 +48,11 @@ gsl_matrix* bct::matching_ind(const gsl_matrix* m) {
 				matchindex *= 2.0;
 				gsl_matrix_set(Mall, i, j, matchindex);
 			}
+			gsl_vector_free(t1);
+			gsl_vector_free(t2);
 		}
 	}
+	gsl_vector_free(use);
 	return Mall;
 }
 
@@ -81,6 +84,7 @@ gsl_matrix* bct::matching_ind_in(const gsl_matrix* m) {
 			}
 		}
 	}
+	gsl_vector_free(use);
 	return Min;	
 }
 
@@ -112,6 +116,7 @@ gsl_matrix* bct::matching_ind_out(const gsl_matrix* m) {
 			}
 		}
 	}
+	gsl_vector_free(use);
 	return Mout;
 }
 		

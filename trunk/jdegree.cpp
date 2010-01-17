@@ -44,13 +44,22 @@ gsl_matrix* bct::jdegree(const gsl_matrix* m) {
 
 double bct::jdegree_id(gsl_matrix* J) {
 	double J_id;
-	J_id = sum(sum(tril(J,-1)));
+	gsl_matrix* tril_J = tril(J, -1);
+	gsl_vector* sum_tril_J = sum(tril_J);
+	J_id = sum(sum_tril_J);
+	gsl_matrix_free(tril_J);
+	gsl_vector_free(sum_tril_J);
 	return J_id;
 }
 
 double bct::jdegree_od(gsl_matrix* J) {
 	double J_od;
-	J_od = sum(sum(triu(J,1)));
+	gsl_matrix* triu_J = triu(J, 1);
+	gsl_vector* sum_triu_J = sum(triu_J);
+	J_od = sum(sum_triu_J);
+	gsl_matrix_free(triu_J);
+	gsl_vector_free(sum_triu_J);	
+	J_od = sum(sum_triu_J);
 	return J_od;
 }	
 
