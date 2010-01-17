@@ -189,7 +189,7 @@ for i = 1:size(m)(2)
 	R_cpp = latmio_dir_cpp(m{i}, 2);
 	deg_latmio_dir_cpp = degrees_dir(R_cpp);
 	%this is only an approximate test condition
-	bct_test(sprintf("latmio_und_connected %s", mname{i}), all(abs(deg_latmio_dir-deg_latmio_dir_cpp) == 0)); 
+	bct_test(sprintf("latmio_dir %s", mname{i}), all(abs(deg_latmio_dir-deg_latmio_dir_cpp) == 0)); 
 end
 
 % latmio_dir_connected
@@ -218,7 +218,7 @@ for i = 1:size(m)(2)
 	R_cpp = latmio_und_cpp(m{i}, 2);
 	deg_latmio_und_cpp = degrees_und(R_cpp);
 	%this is only an approximate test condition
-	bct_test(sprintf("latmio_und_connected %s", mname{i}), all(abs(deg_latmio_und-deg_latmio_und_cpp) < 10)); 
+	bct_test(sprintf("latmio_und %s", mname{i}), all(abs(deg_latmio_und-deg_latmio_und_cpp) < 10)); 
 end
 
 
