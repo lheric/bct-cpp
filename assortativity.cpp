@@ -13,7 +13,6 @@ double bct::assortativity_dir(const gsl_matrix* m) {
 	gsl_vector* deg = degrees_dir(m);
 	gsl_matrix* gt0_m = compare_elements(m, cmp_greater, 0.0);
 	gsl_matrix* ij = find_ij(gt0_m);
-	gsl_matrix_free(gt0_m);
 	gsl_vector* degi = gsl_vector_alloc(ij->size1);
 	gsl_vector* degj = gsl_vector_alloc(ij->size1);		
 	gsl_vector_view i = gsl_matrix_column(ij, 0);
@@ -24,7 +23,13 @@ double bct::assortativity_dir(const gsl_matrix* m) {
 		gsl_vector_set(degj, k, gsl_vector_get(deg, ((int)gsl_vector_get(&j.vector, k))));
 	}
 	
-	return assortativity(degi, degj, K);
+	double a = assortativity(degi, degj, K);
+	gsl_vector_free(deg);
+	gsl_matrix_free(gt0_m);
+	gsl_matrix_free(ij);	
+	gsl_vector_free(degi);
+	gsl_vector_free(degj);
+	return a;
 }
 
 double bct::assortativity_und(const gsl_matrix* m) {
@@ -33,8 +38,6 @@ double bct::assortativity_und(const gsl_matrix* m) {
 	gsl_matrix* triu_m = triu(m, 1);
 	gsl_matrix* gt0_triu_m = compare_elements(triu_m, cmp_greater, 0.0);
 	gsl_matrix* ij = find_ij(gt0_triu_m);
-	gsl_matrix_free(gt0_triu_m);
-	gsl_matrix_free(triu_m);
 	gsl_vector* degi = gsl_vector_alloc(ij->size1);
 	gsl_vector* degj = gsl_vector_alloc(ij->size1);	
 	gsl_vector_view i = gsl_matrix_column(ij, 0);
@@ -45,7 +48,14 @@ double bct::assortativity_und(const gsl_matrix* m) {
 		gsl_vector_set(degj, k, gsl_vector_get(deg, ((int)gsl_vector_get(&j.vector, k))));
 	}
 
-	return assortativity(degi, degj, K);
+	double a = assortativity(degi, degj, K);
+	gsl_vector_free(deg);
+	gsl_matrix_free(triu_m);
+	gsl_matrix_free(gt0_triu_m);
+	gsl_matrix_free(ij);	
+	gsl_vector_free(degi);
+	gsl_vector_free(degj);
+	return a;	
 }
 
 double bct::assortativity(const gsl_vector* degi, const gsl_vector* degj, int K) {
