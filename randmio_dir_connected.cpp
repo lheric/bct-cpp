@@ -7,23 +7,20 @@
 
 /*
  * Returns a 'randomized' graph R, with equivalent degree sequence to the original 
- * weighted undirected graph G, and with preserved connectedness 
+ * weighted directed graph G, and with preserved connectedness 
  * (hence the input graph must be connected).
  *
  * Each edge is rewired (on average) ITER times. The strength distributions 
  * are not preserved for weighted graphs.
  *
  * Rewiring algorithm: Maslov and Sneppen (2002) Science 296:910
- * Latticizing algorithm: Sporns and Zwi (2004); Neuroinformatics 2:145
  */
 
-gsl_matrix* bct::randmio_und_connected(const gsl_matrix* m, const int iters) {
-	//[i j]=find(tril(R));
+gsl_matrix* bct::randmio_dir_connected(const gsl_matrix* m, const int iters) {	
+	//[i j]=find(R);
 	gsl_matrix* R = copy(m);
 	int n = m->size1;
-	gsl_matrix* tril_R = tril(R);
-	gsl_matrix* R_ij = find_ij(tril_R); 
-	gsl_matrix_free(tril_R);
+	gsl_matrix* R_ij = find_ij(R); 
 	gsl_vector_view i = gsl_matrix_column(R_ij, 0); 
 	gsl_vector_view j = gsl_matrix_column(R_ij, 1); 
 	int K = R_ij->size1;
@@ -51,35 +48,38 @@ gsl_matrix* bct::randmio_und_connected(const gsl_matrix* m, const int iters) {
 					break;
 				}
 			}
-			double val = ((double)rand())/((double)RAND_MAX);
-			//flip edge c-d with 50% probability to explore all potential rewirings
-			if(val > 0.5) {
-	            gsl_vector_set(&i.vector, e2, d);
-	            gsl_vector_set(&j.vector, e2, c);
-	            c = gsl_vector_get(&i.vector, e2); 
-	            d = gsl_vector_get(&j.vector, e2);
-	        }
-	        
+        
 	        //if ~(R(a,d) || R(c,b))
 	        //rewiring condition
 	        if(!(gsl_matrix_get(R, a, d) || gsl_matrix_get(R, c, b))) {
-        		//if ~(R(a,c) || R(b,d))
-        		if(!(gsl_matrix_get(R, a, c) || gsl_matrix_get(R, b, d))) { //connectedness condition
-        			//P=R([a d],:);
+        		//if ~(any([R(a,c) R(d,b) R(d,c)]) && any([R(c,a) R(b,d) R(b,a)]))
+        		gsl_vector* condn1 = gsl_vector_alloc(3);
+        		gsl_vector_set(condn1, 0, gsl_matrix_get(R, a, c));
+        		gsl_vector_set(condn1, 1, gsl_matrix_get(R, d, b));
+        		gsl_vector_set(condn1, 2, gsl_matrix_get(R, d, c));
+        		gsl_vector* condn2 = gsl_vector_alloc(3);
+        		gsl_vector_set(condn2, 0, gsl_matrix_get(R, c, a));
+        		gsl_vector_set(condn2, 1, gsl_matrix_get(R, b, d));
+        		gsl_vector_set(condn2, 2, gsl_matrix_get(R, b, a));
+        		int any_condn1 = any(condn1);
+        		int any_condn2 = any(condn2);
+        		if(!(any_condn1 && any_condn2)) { //connectedness condition
+        			//P=R([a c],:);
         			gsl_vector* rows = gsl_vector_alloc(2);
         			gsl_vector_set(rows, 0, a);
-        			gsl_vector_set(rows, 1, d);
+        			gsl_vector_set(rows, 1, c);
         			gsl_vector* columns = sequence(0, n-1);
         			gsl_matrix* P = ordinal_index(m, rows, columns); 
-        			//P(1,b)=0; P(2,c)=0;
+        			//P(1,b)=0; P(1,d)=1;
         			gsl_matrix_set(P, 0, b, 0.0);
-        			gsl_matrix_set(P, 1, c, 0.0);
+        			gsl_matrix_set(P, 0, d, 1.0);
+        			//P(2,d)=0; P(2,b)=1;
+        			gsl_matrix_set(P, 1, d, 0.0);
+        			gsl_matrix_set(P, 1, b, 1.0);
         			gsl_matrix* PN = copy(P); 
-        			//PN(:,d)=1; PN(:,a)=1;
-        			gsl_vector_view dcol = gsl_matrix_column(PN, d);
-        			gsl_vector_view acol = gsl_matrix_column(PN, a);
-        			gsl_vector_set_all(&dcol.vector, 1.0);
-        			gsl_vector_set_all(&acol.vector, 1.0);
+        			//PN(1,a)=1; PN(2,c)=1;
+        			gsl_matrix_set(PN, 0, a, 1.0);
+        			gsl_matrix_set(PN, 1, c, 1.0);
         			
         			while(1) {
         				//P(1,:)=any(R(P(1,:)~=0,:),1);
@@ -119,6 +119,8 @@ gsl_matrix* bct::randmio_und_connected(const gsl_matrix* m, const int iters) {
         				//P=P.*(~PN);
         				gsl_matrix* not_PN = logical_not(PN); 
         				gsl_matrix_mul_elements(P, not_PN);
+        				//PN=PN+P;
+        				gsl_matrix_add(PN, P);
         				//if ~all(any(P,2))
         				gsl_vector* any_P = any(P, 2); 
         				int val = all(any_P);
@@ -126,22 +128,21 @@ gsl_matrix* bct::randmio_und_connected(const gsl_matrix* m, const int iters) {
         					rewire = 0;
         					break;
         				}
-						//elseif any(any(P(:,[b c])))	        					
 	    				else {
-	    					gsl_vector_free(rows);
-	    					gsl_vector_free(columns);
-	    					rows = sequence(0, 1); //P has only 2 rows
-	    					columns = gsl_vector_alloc(2);
-	    					gsl_vector_set(columns, 0, b);
-	    					gsl_vector_set(columns, 1, c);
-	    					gsl_matrix* P_indxd = ordinal_index(P, rows, columns); 
-	    					gsl_vector* P_any = any(P_indxd);
-	    					val = any(P_any);
-	    					if(val) {
+							//elseif any(PN(1,[b c])) && any(PN(2,[d a]))
+							gsl_vector_free(condn1);
+							gsl_vector_free(condn2);
+							condn1 = gsl_vector_alloc(2);
+							condn2 = gsl_vector_alloc(2);
+							gsl_vector_set(condn1, 0, gsl_matrix_get(PN, 0, b));
+							gsl_vector_set(condn1, 1, gsl_matrix_get(PN, 0, c));
+							gsl_vector_set(condn2, 0, gsl_matrix_get(PN, 1, d));
+							gsl_vector_set(condn2, 1, gsl_matrix_get(PN, 1, a));
+							any_condn1 = any(condn1);
+							any_condn2 = any(condn2);
+	    					if(any_condn1 && any_condn2 ) {
 	    						break;
 	    					}
-	    					gsl_vector_free(P_any);
-	    					gsl_matrix_free(P_indxd);
 	    				}
 	    				gsl_matrix_add(PN, P);
 	    				gsl_vector_free(row_ind);
@@ -161,19 +162,15 @@ gsl_matrix* bct::randmio_und_connected(const gsl_matrix* m, const int iters) {
 	    			//R(a,d)=R(a,b); R(a,b)=0;
 	    			gsl_matrix_set(R, a, d, gsl_matrix_get(R, a, b));
 	    			gsl_matrix_set(R, a, b, 0.0);
-		    		//R(d,a)=R(b,a); R(b,a)=0;
-		    		gsl_matrix_set(R, d, a, gsl_matrix_get(R, b, a));
-	    			gsl_matrix_set(R, b, a, 0.0);
                 	//R(c,b)=R(c,d); R(c,d)=0;
                 	gsl_matrix_set(R, c, b, gsl_matrix_get(R, c, d));
 	    			gsl_matrix_set(R, c, d, 0.0);
-                	//R(b,c)=R(d,c); R(d,c)=0;
-                	gsl_matrix_set(R, b, c, gsl_matrix_get(R, d, c));
-	    			gsl_matrix_set(R, d, c, 0.0);
 	    			gsl_vector_set(&j.vector, e1, d);
 	    			gsl_vector_set(&j.vector, e2, b);
 	    			break;
 	    		}
+	    		gsl_vector_free(condn1);
+	    		gsl_vector_free(condn2);
 			}
 		}	 
 	}
@@ -219,6 +216,7 @@ gsl_matrix* bct::randmio_und_connected(const gsl_matrix* m, const int iters) {
 		
 	
 				
+
 
 
 

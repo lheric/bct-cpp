@@ -29,7 +29,10 @@ objects = \
 	latmio_dir_connected.o \
 	latmio_und_connected.o \
 	latmio_und.o \
+	randmio_dir.o \
+	randmio_dir_connected.o \
 	randmio_und_connected.o \
+	randmio_und.o \
 	macaque.o \
 	make_motif34lib.o \
 	matching_ind.o \
