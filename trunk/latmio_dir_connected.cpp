@@ -53,10 +53,8 @@ gsl_matrix* bct::latmio_dir_connected(const gsl_matrix* m, const int iters) {
 	}
 	gsl_vector_free(u);
 	
-	//[i j]=find(tril(R));
-	gsl_matrix* tril_R = tril(R);
-	gsl_matrix* R_ij = find_ij(tril_R); 
-	gsl_matrix_free(tril_R);
+	//[i j]=find(R);
+	gsl_matrix* R_ij = find_ij(R); 
 	gsl_vector_view i = gsl_matrix_column(R_ij, 0); 
 	gsl_vector_view j = gsl_matrix_column(R_ij, 1); 
 	int K = R_ij->size1;
