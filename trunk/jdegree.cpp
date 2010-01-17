@@ -59,7 +59,6 @@ double bct::jdegree_od(gsl_matrix* J) {
 	J_od = sum(sum_triu_J);
 	gsl_matrix_free(triu_J);
 	gsl_vector_free(sum_triu_J);	
-	J_od = sum(sum_triu_J);
 	return J_od;
 }	
 
