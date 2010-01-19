@@ -117,7 +117,7 @@ gsl_vector* matlab::find(const gsl_vector* v, int n, const char* direction) {
 		return NULL;
 	}
 	gsl_vector* find_v = gsl_vector_alloc((n < n_find) ? n : n_find);
-	if (direction == NULL || std::strcmp(direction, "first") == 0) {
+	if (std::strcmp(direction, "first") == 0) {
 		int position = 0;
 		for (int i = 0; i < v->size && position < find_v->size; i++) {
 			if (fp_nonzero(gsl_vector_get(v, i))) {
@@ -173,10 +173,6 @@ double matlab::max(const gsl_vector* v) {
 	return gsl_vector_max(v);
 }
 
-gsl_vector* matlab::max(const gsl_matrix* m) {
-	return max(m, 1);
-}
-
 gsl_vector* matlab::max(const gsl_matrix* m, int dim) {
 	if (dim == 1) {
 		gsl_vector* max_v = gsl_vector_alloc(m->size2);
@@ -201,10 +197,6 @@ gsl_vector* matlab::max(const gsl_matrix* m, int dim) {
 
 double matlab::min(const gsl_vector* v) {
 	return gsl_vector_min(v);
-}
-
-gsl_vector* matlab::min(const gsl_matrix* m) {
-	return min(m, 1);
 }
 
 gsl_vector* matlab::min(const gsl_matrix* m, int dim) {
