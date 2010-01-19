@@ -11,7 +11,7 @@
 
 double bct::charpath_lambda(const gsl_matrix* D) {
 	//lambda = sum(sum(D(D~=Inf)))/length(nonzeros(D~=Inf));
-	gsl_matrix* D_not_inf = compare_elements(D, cmp_not_equal, GSL_POSINF);
+	gsl_matrix* D_not_inf = compare_elements(D, fp_not_equal, GSL_POSINF);
 	gsl_vector* D_indxd = logical_index(D, D_not_inf);
 	double total_dist = sum(D_indxd);
 	double num_connected = nnz(D_not_inf);
@@ -23,7 +23,7 @@ double bct::charpath_lambda(const gsl_matrix* D) {
 
 gsl_vector* bct::charpath_ecc(const gsl_matrix* D, double *radius, double *diameter) {
 	//ecc = max(D.*(D~=Inf),[],2);	
-	gsl_matrix* D_not_inf = compare_elements(D, cmp_not_equal, GSL_POSINF);
+	gsl_matrix* D_not_inf = compare_elements(D, fp_not_equal, GSL_POSINF);
 	gsl_vector* D_indxd = logical_index(D, D_not_inf);
 	gsl_matrix* D_inf_nullified = zeros(D->size1, D->size2);
 	logical_index_assign(D_inf_nullified, D_not_inf, D_indxd);

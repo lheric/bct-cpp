@@ -11,7 +11,7 @@
 double bct::assortativity_dir(const gsl_matrix* m) {
 	int K;
 	gsl_vector* deg = degrees_dir(m);
-	gsl_matrix* gt0_m = compare_elements(m, cmp_greater, 0.0);
+	gsl_matrix* gt0_m = compare_elements(m, fp_greater, 0.0);
 	gsl_matrix* ij = find_ij(gt0_m);
 	gsl_vector* degi = gsl_vector_alloc(ij->size1);
 	gsl_vector* degj = gsl_vector_alloc(ij->size1);		
@@ -36,7 +36,7 @@ double bct::assortativity_und(const gsl_matrix* m) {
 	int K;
 	gsl_vector* deg = degrees_und(m);
 	gsl_matrix* triu_m = triu(m, 1);
-	gsl_matrix* gt0_triu_m = compare_elements(triu_m, cmp_greater, 0.0);
+	gsl_matrix* gt0_triu_m = compare_elements(triu_m, fp_greater, 0.0);
 	gsl_matrix* ij = find_ij(gt0_triu_m);
 	gsl_vector* degi = gsl_vector_alloc(ij->size1);
 	gsl_vector* degj = gsl_vector_alloc(ij->size1);	

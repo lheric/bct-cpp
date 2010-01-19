@@ -75,7 +75,7 @@ gsl_matrix* bct::distance_wei(const gsl_matrix* m) {
 			 }
 			 // V=find(D(u,:)==minD);
 			 gsl_vector_view D_row_u = gsl_matrix_row(D, u);
-			 gsl_vector* D_minD_ind = compare_elements(&D_row_u.vector, cmp_equal, minD);
+			 gsl_vector* D_minD_ind = compare_elements(&D_row_u.vector, fp_equal, minD);
 			 gsl_vector_free(V);
 			 V = find(D_minD_ind);
 			 gsl_vector_free(row_index);

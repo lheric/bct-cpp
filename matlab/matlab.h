@@ -75,12 +75,16 @@ namespace matlab {
 	
 	// Floating-point comparison
 	int fp_compare(double, double);
-	bool fp_equal(double, double);
-	bool fp_not_equal(double, double);
 	bool fp_zero(double);
 	bool fp_nonzero(double);
 	bool fp_positive(double);
 	bool fp_negative(double);
+	bool fp_equal(double, double);
+	bool fp_not_equal(double, double);
+	bool fp_less(double, double);
+	bool fp_less_or_equal(double, double);
+	bool fp_greater(double, double);
+	bool fp_greater_or_equal(double, double);
 	
 	// Vector/matrix comparison
 	int compare_vectors(const gsl_vector*, const gsl_vector*);
@@ -91,12 +95,6 @@ namespace matlab {
 	gsl_vector* compare_elements(const gsl_vector*, fp_cmp_fn, const gsl_vector*);
 	gsl_matrix* compare_elements(const gsl_matrix*, fp_cmp_fn, double);
 	gsl_matrix* compare_elements(const gsl_matrix*, fp_cmp_fn, const gsl_matrix*);
-	bool cmp_equal(double, double);
-	bool cmp_not_equal(double, double);
-	bool cmp_greater(double, double);
-	bool cmp_greater_or_equal(double, double);
-	bool cmp_less(double, double);
-	bool cmp_less_or_equal(double, double);
 	
 	// Vector-by-vector indexing
 	gsl_vector* ordinal_index(const gsl_vector*, const gsl_vector*);

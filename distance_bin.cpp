@@ -12,7 +12,7 @@ gsl_matrix* bct::distance_bin(const gsl_matrix* m) {
 	gsl_matrix* D = eye(m->size1);
 	int n = 1;
 	gsl_matrix* npath = copy(m);
-	gsl_matrix* L = compare_elements(npath, cmp_not_equal, 0.0);
+	gsl_matrix* L = compare_elements(npath, fp_not_equal, 0.0);
 	gsl_vector* L_non_zero;
 	while((L_non_zero = find(L, 1)) != NULL) {
 		gsl_vector_free(L_non_zero);
@@ -23,8 +23,8 @@ gsl_matrix* bct::distance_bin(const gsl_matrix* m) {
 		gsl_matrix* npath_temp = mul(npath, m);
 		gsl_matrix_free(npath);
 		npath = npath_temp;
-		gsl_matrix* npath_ne_zero = compare_elements(npath, cmp_not_equal, 0.0);
-		gsl_matrix* D_eq_zero = compare_elements(D, cmp_equal, 0.0);
+		gsl_matrix* npath_ne_zero = compare_elements(npath, fp_not_equal, 0.0);
+		gsl_matrix* D_eq_zero = compare_elements(D, fp_equal, 0.0);
 		gsl_matrix_mul_elements(npath_ne_zero, D_eq_zero);
 		gsl_matrix_free(L);
 		L = npath_ne_zero;

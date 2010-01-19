@@ -162,7 +162,7 @@ void bct::node_and_edge_betweenness_wei(const gsl_matrix* m, gsl_vector* node_be
 				if (gsl_isinf(min_d)) {
 					
 					// Q(1:q)=find(isinf(D)); break
-					gsl_vector* isinf_d = compare_elements(d, cmp_equal, GSL_POSINF);
+					gsl_vector* isinf_d = compare_elements(d, fp_equal, GSL_POSINF);
 					gsl_vector* isinf_d_indices = find(isinf_d);
 					gsl_vector_view Q_upto_q = gsl_vector_subvector(Q, 0, q + 1);
 					gsl_vector_memcpy(&Q_upto_q.vector, isinf_d_indices);
@@ -173,7 +173,7 @@ void bct::node_and_edge_betweenness_wei(const gsl_matrix* m, gsl_vector* node_be
 				
 				// V=find(D==minD);
 				gsl_vector_free(V);
-				gsl_vector* d_equal_min_d = compare_elements(d, cmp_equal, min_d);
+				gsl_vector* d_equal_min_d = compare_elements(d, fp_equal, min_d);
 				V = find(d_equal_min_d);
 				gsl_vector_free(d_equal_min_d);
 			}
