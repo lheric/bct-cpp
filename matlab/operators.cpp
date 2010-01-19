@@ -7,7 +7,7 @@
 /*
  * Emulates ([v x]) for a row vector or ([v ; x]) for a column vector.
  */
-gsl_vector* matlab::concatenate(const gsl_vector* v, const double x) {
+gsl_vector* matlab::concatenate(const gsl_vector* v, double x) {
 	if (v == NULL) {
 		gsl_vector* cat_v = gsl_vector_alloc(1);
 		gsl_vector_set(cat_v, 0, x);
@@ -23,7 +23,7 @@ gsl_vector* matlab::concatenate(const gsl_vector* v, const double x) {
 /*
  * Emulates ([x v]) for a row vector or ([x ; v]) for a column vector.
  */
-gsl_vector* matlab::concatenate(const double x, const gsl_vector* v) {
+gsl_vector* matlab::concatenate(double x, const gsl_vector* v) {
 	if (v == NULL) {
 		gsl_vector* cat_v = gsl_vector_alloc(1);
 		gsl_vector_set(cat_v, 0, x);

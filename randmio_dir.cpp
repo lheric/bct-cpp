@@ -16,7 +16,7 @@
  * Rewiring algorithm: Maslov and Sneppen (2002) Science 296:910
  */
 
-gsl_matrix* bct::randmio_dir(const gsl_matrix* m, const int iters) {
+gsl_matrix* bct::randmio_dir(const gsl_matrix* m, int iters) {
 	//[i j]=find(R);
 	gsl_matrix* R = copy(m);
 	int n = m->size1;	

@@ -73,14 +73,14 @@ namespace bct {
 	// Modularity and community structure
 	
 	//Graph randomization
-	gsl_matrix* latmio_dir(const gsl_matrix*, const int);
-	gsl_matrix* latmio_dir_connected(const gsl_matrix*, const int);	
-	gsl_matrix* latmio_und_connected(const gsl_matrix*, const int);
-	gsl_matrix* latmio_und(const gsl_matrix*, const int);
-	gsl_matrix* randmio_dir(const gsl_matrix*, const int);
-	gsl_matrix* randmio_dir_connected(const gsl_matrix*, const int);
-	gsl_matrix* randmio_und_connected(const gsl_matrix*, const int);
-	gsl_matrix* randmio_und(const gsl_matrix*, const int);
+	gsl_matrix* latmio_dir(const gsl_matrix*, int);
+	gsl_matrix* latmio_dir_connected(const gsl_matrix*, int);	
+	gsl_matrix* latmio_und_connected(const gsl_matrix*, int);
+	gsl_matrix* latmio_und(const gsl_matrix*, int);
+	gsl_matrix* randmio_dir(const gsl_matrix*, int);
+	gsl_matrix* randmio_dir_connected(const gsl_matrix*, int);
+	gsl_matrix* randmio_und_connected(const gsl_matrix*, int);
+	gsl_matrix* randmio_und(const gsl_matrix*, int);
 
 	// Data sets
 	extern double cat_all[];

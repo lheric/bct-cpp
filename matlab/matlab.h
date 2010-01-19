@@ -43,8 +43,8 @@ namespace matlab {
 	gsl_matrix* zeros(int, int);
 	
 	// Operators
-	gsl_vector* concatenate(const gsl_vector*, const double);
-	gsl_vector* concatenate(const double, const gsl_vector*);
+	gsl_vector* concatenate(const gsl_vector*, double);
+	gsl_vector* concatenate(double, const gsl_vector*);
 	gsl_vector* concatenate(const gsl_vector*, const gsl_vector*);
 	gsl_matrix* concatenate_columns(const gsl_vector*, const gsl_vector*);
 	gsl_matrix* concatenate_columns(const gsl_matrix*, const gsl_vector*);

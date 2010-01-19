@@ -17,7 +17,7 @@
  * Latticizing algorithm: Sporns and Zwi (2004); Neuroinformatics 2:145
  */
 
-gsl_matrix* bct::latmio_dir_connected(const gsl_matrix* m, const int iters) {
+gsl_matrix* bct::latmio_dir_connected(const gsl_matrix* m, int iters) {
 	//It seems D could also be loaded from a file. How to consider that?
 	gsl_matrix* R = copy(m);
 	int n = m->size1;
