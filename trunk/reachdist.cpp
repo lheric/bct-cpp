@@ -29,9 +29,9 @@ gsl_matrix* bct::reachdist(gsl_matrix *m, gsl_matrix* ret_R) {
 	
 	gsl_vector* id = sum(m, 1);
 	gsl_vector* od = sum(m, 2);
-	gsl_vector* id_0_ind = compare_elements(id, cmp_equal, 0.0);
+	gsl_vector* id_0_ind = compare_elements(id, fp_equal, 0.0);
 	gsl_vector* id_0 = find(id_0_ind);
-	gsl_vector* od_0_ind = compare_elements(od, cmp_equal, 0.0);
+	gsl_vector* od_0_ind = compare_elements(od, fp_equal, 0.0);
 	gsl_vector* od_0 = find(od_0_ind);
 	
 	gsl_vector* row = find(id);
@@ -53,7 +53,7 @@ gsl_matrix* bct::reachdist(gsl_matrix *m, gsl_matrix* ret_R) {
 
 		//if ((powr<=N)&&(~isempty(nonzeros(R(row,col)==0)))) 
 		gsl_matrix* R_indxd = ordinal_index(R, row, col);
-		gsl_matrix* zeros_in_Rindxd = compare_elements(R_indxd, cmp_equal, 0.0);
+		gsl_matrix* zeros_in_Rindxd = compare_elements(R_indxd, fp_equal, 0.0);
 		int nnz_value = nnz(zeros_in_Rindxd);
 		gsl_matrix_free(R_indxd);
 		gsl_matrix_free(zeros_in_Rindxd);
@@ -67,7 +67,7 @@ gsl_matrix* bct::reachdist(gsl_matrix *m, gsl_matrix* ret_R) {
 	
 	gsl_matrix_scale(D, -1.0);
 	gsl_matrix_add_constant(D, (powr+1));
-	gsl_matrix* D_ind = compare_elements(D, cmp_equal, (double)(N+2));
+	gsl_matrix* D_ind = compare_elements(D, fp_equal, (double)(N+2));
 	logical_index_assign(D, D_ind, GSL_POSINF); //assigns the value 'inf', meaning positive infinity
 	if(id_0 != NULL) {
 		gsl_vector* all_rows = sequence(0, N-1);

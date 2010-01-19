@@ -22,7 +22,7 @@ gsl_matrix* bct::erange(const gsl_matrix* m, double* eta, gsl_matrix* eshort, do
 	gsl_matrix* erange = gsl_matrix_calloc(m->size1, m->size2);
 	
 	// [i,j] = find(CIJ==1);
-	gsl_matrix* m_equal_1 = compare_elements(m, cmp_equal, 1.0);
+	gsl_matrix* m_equal_1 = compare_elements(m, fp_equal, 1.0);
 	gsl_matrix* m_equal_1_indices = find_ij(m_equal_1);
 	gsl_matrix_free(m_equal_1);	
 	
@@ -50,8 +50,8 @@ gsl_matrix* bct::erange(const gsl_matrix* m, double* eta, gsl_matrix* eshort, do
 	
 	// eta = sum(Erange((Erange>0)&(Erange<Inf)))/length(Erange((Erange>0)&(Erange<Inf)));
 	if (eta != NULL) {
-		gsl_matrix* erange_positive = compare_elements(erange, cmp_greater, 0.0);
-		gsl_matrix* erange_finite = compare_elements(erange, cmp_less, GSL_POSINF);
+		gsl_matrix* erange_positive = compare_elements(erange, fp_greater, 0.0);
+		gsl_matrix* erange_finite = compare_elements(erange, fp_less, GSL_POSINF);
 		gsl_matrix* erange_positive_finite = logical_and(erange_positive, erange_finite);
 		gsl_vector* erange_indexed = logical_index(erange, erange_positive_finite);
 		*eta = sum(erange_indexed) / (double)erange_indexed->size;
@@ -66,7 +66,7 @@ gsl_matrix* bct::erange(const gsl_matrix* m, double* eta, gsl_matrix* eshort, do
 		if (eshort != NULL) {
 			gsl_matrix_free(eshort);
 		}
-		eshort = compare_elements(erange, cmp_greater, 2.0);
+		eshort = compare_elements(erange, fp_greater, 2.0);
 	}
 	
 	// fs = length(nonzeros(Eshort))/K;

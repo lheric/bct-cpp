@@ -59,14 +59,14 @@ gsl_matrix* bct::distance_inv(gsl_matrix* g) {
 		gsl_matrix_free(npath);
 		npath = npath_temp;
 		gsl_matrix* L_temp = to_binary(npath);
-		gsl_matrix* D_zero_ind = compare_elements(D, cmp_equal, 0.0);
+		gsl_matrix* D_zero_ind = compare_elements(D, fp_equal, 0.0);
 		gsl_matrix_mul_elements(L_temp, D_zero_ind);
 		gsl_matrix_free(L);
 		L = L_temp;
 		gsl_matrix_free(D_zero_ind);
 	}
 
-	gsl_matrix* notD_ind = compare_elements(D, cmp_equal, 0.0);
+	gsl_matrix* notD_ind = compare_elements(D, fp_equal, 0.0);
 	logical_index_assign(D, notD_ind, GSL_POSINF);
 
 	//invert D. This is not the same as inverse of a matrix

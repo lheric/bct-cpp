@@ -147,12 +147,12 @@ gsl_matrix* bct::findpaths(const gsl_matrix* m, const gsl_vector* sources_input,
 		for(int i = 0;i < end_nodes->size;i++) {
 			int end_node = gsl_vector_get(end_nodes, i);
 			gsl_vector_view end_nodes_row = gsl_matrix_row(paths, path_len-1);
-			gsl_vector* end_nodes_ind = compare_elements(&end_nodes_row.vector, cmp_equal, end_node);
+			gsl_vector* end_nodes_ind = compare_elements(&end_nodes_row.vector, fp_equal, end_node);
 			gsl_vector* end_nodes_col = find(end_nodes_ind);
 			
 			//find the nodes connected directly to the end node
 			gsl_vector_view next_node_row = gsl_matrix_row(CIJ, end_node);
-			gsl_vector* next_node_ind = compare_elements(&next_node_row.vector, cmp_equal, 1.0);
+			gsl_vector* next_node_ind = compare_elements(&next_node_row.vector, fp_equal, 1.0);
 			gsl_vector* next_node_col = find(next_node_ind);
 			
 			if(next_node_col != NULL) { //'find' method returns NULL if nothing was found
@@ -164,9 +164,9 @@ gsl_matrix* bct::findpaths(const gsl_matrix* m, const gsl_vector* sources_input,
 					gsl_matrix* paths_term_at_endnode_all = ordinal_index(paths, row_indices, end_nodes_col);
 					gsl_matrix_view paths_term_at_endnode = gsl_matrix_submatrix(paths_term_at_endnode_all, 1, 0, path_len-1,\
 																				 paths_term_at_endnode_all->size2);
-					gsl_matrix* temp1 = compare_elements(&paths_term_at_endnode.matrix, cmp_equal, next_node);
+					gsl_matrix* temp1 = compare_elements(&paths_term_at_endnode.matrix, fp_equal, next_node);
 					gsl_vector* temp2 = sum(temp1, 1);
-					gsl_vector* no_prev_visits_ind = compare_elements(temp2, cmp_equal, 0.0);
+					gsl_vector* no_prev_visits_ind = compare_elements(temp2, fp_equal, 0.0);
 					gsl_vector* no_prev_visits_col = find(no_prev_visits_ind);
 					
 					if(no_prev_visits_col != NULL) {

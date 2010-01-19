@@ -18,10 +18,10 @@ gsl_matrix* bct::breadthdist(const gsl_matrix* m, gsl_matrix* ret_reachability) 
 		gsl_vector_free(D_ret);
 	}
 	
-	gsl_matrix* D_ind = compare_elements(D, cmp_equal, 0.0);
+	gsl_matrix* D_ind = compare_elements(D, fp_equal, 0.0);
 	logical_index_assign(D, D_ind, GSL_POSINF);
 	
-	gsl_matrix* R = compare_elements(D, cmp_not_equal, GSL_POSINF);
+	gsl_matrix* R = compare_elements(D, fp_not_equal, GSL_POSINF);
 	
 	if(ret_reachability != NULL) {
 		ret_reachability = gsl_matrix_alloc(R->size1, R->size2);

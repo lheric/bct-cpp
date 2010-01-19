@@ -17,7 +17,7 @@ gsl_matrix* bct::remove_loops(const gsl_matrix* m) {
  * Returns a binary copy of the given matrix.
  */
 gsl_matrix* bct::to_binary(const gsl_matrix* m) {
-	return compare_elements(m, cmp_not_equal, 0.0);
+	return compare_elements(m, fp_not_equal, 0.0);
 }
 
 /*

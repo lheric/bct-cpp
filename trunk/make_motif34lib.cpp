@@ -211,7 +211,7 @@ gsl_matrix* bct::motif4generate(gsl_vector_long* Mn, gsl_vector* ID, gsl_vector*
 		for (int j = 1; j <= 2; j++) {
 			
 			// v=any(Gs(v~=0,:),1)+v;
-			gsl_vector* v_nonzero = compare_elements(v, cmp_not_equal, 0.0);
+			gsl_vector* v_nonzero = compare_elements(v, fp_not_equal, 0.0);
 			gsl_vector* column_indices = sequence(0, 3);
 			gsl_matrix* Gs_indexed = log_ord_index(Gs, v_nonzero, column_indices);
 			if (Gs_indexed != NULL) {
@@ -232,7 +232,7 @@ gsl_matrix* bct::motif4generate(gsl_vector_long* Mn, gsl_vector* ID, gsl_vector*
 			
 			// G2=(G*G)~=0;
 			gsl_matrix* temp = mul(G, G);
-			gsl_matrix* G2 = compare_elements(temp, cmp_not_equal, 0.0);
+			gsl_matrix* G2 = compare_elements(temp, fp_not_equal, 0.0);
 			gsl_matrix_free(temp);
 			
 			// Ko=sum(G,2);

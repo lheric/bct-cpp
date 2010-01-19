@@ -16,12 +16,16 @@ int matlab::fp_compare(double x, double y) {
 	}
 }
 
-bool matlab::fp_equal(double x, double y) { return fp_compare(x, y) == 0; }
-bool matlab::fp_not_equal(double x, double y) { return fp_compare(x, y) != 0; }
 bool matlab::fp_zero(double x) { return std::abs(x) < EPSILON; }
 bool matlab::fp_nonzero(double x) { return std::abs(x) > EPSILON; }
 bool matlab::fp_positive(double x) { return x > EPSILON; }
 bool matlab::fp_negative(double x) { return x < -EPSILON; }
+bool matlab::fp_equal(double x, double y) { return fp_compare(x, y) == 0; }
+bool matlab::fp_not_equal(double x, double y) { return fp_compare(x, y) != 0; }
+bool matlab::fp_less(double x, double y) { return fp_compare(x, y) == -1; }
+bool matlab::fp_less_or_equal(double x, double y) { return fp_compare(x, y) <= 0; }
+bool matlab::fp_greater(double x, double y) { return fp_compare(x, y) == 1; }
+bool matlab::fp_greater_or_equal(double x, double y) { return fp_compare(x, y) >= 0; }
 
 /*
  * Compares two vectors lexicographically, returning -1, 0, or 1 if the first
@@ -140,10 +144,3 @@ gsl_matrix* matlab::compare_elements(const gsl_matrix* m1, fp_cmp_fn compare, co
 	}
 	return cmp_m;
 }
-
-bool matlab::cmp_equal(double x, double y) { return fp_equal(x, y); }
-bool matlab::cmp_not_equal(double x, double y) { return fp_not_equal(x, y); }
-bool matlab::cmp_greater(double x, double y) { return fp_compare(x, y) == 1; }
-bool matlab::cmp_greater_or_equal(double x, double y) { return fp_compare(x, y) == 1 || fp_equal(x, y); }
-bool matlab::cmp_less(double x, double y) { return fp_compare(x, y) == -1; }
-bool matlab::cmp_less_or_equal(double x, double y) { return fp_compare(x, y) == -1 || fp_equal(x, y); }

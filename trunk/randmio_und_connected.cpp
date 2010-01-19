@@ -84,7 +84,7 @@ gsl_matrix* bct::randmio_und_connected(const gsl_matrix* m, const int iters) {
         			while(1) {
         				//P(1,:)=any(R(P(1,:)~=0,:),1);
         				gsl_vector_view row = gsl_matrix_row(P, 0); 
-        				gsl_vector* row_ind = compare_elements(&row.vector, cmp_not_equal, 0.0);  
+        				gsl_vector* row_ind = compare_elements(&row.vector, fp_not_equal, 0.0);  
         				gsl_vector_free(columns);
         				columns = sequence(0, n-1); 
         				gsl_matrix* R_indxd = log_ord_index(R, row_ind, columns); 
@@ -105,7 +105,7 @@ gsl_matrix* bct::randmio_und_connected(const gsl_matrix* m, const int iters) {
         				gsl_vector_free(any_row);
         				//P(2,:)=any(R(P(2,:)~=0,:),1);	        				
         				row = gsl_matrix_row(P, 1);
-        				row_ind = compare_elements(&row.vector, cmp_not_equal, 0.0); 
+        				row_ind = compare_elements(&row.vector, fp_not_equal, 0.0); 
         				R_indxd = log_ord_index(R, row_ind, columns); 
         				if(R_indxd == NULL) { //Refer comments above the defintion of log_ord_index
         					gsl_matrix* any_row_mat = zeros(1, columns->size);
