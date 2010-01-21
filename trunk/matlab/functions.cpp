@@ -275,7 +275,7 @@ gsl_matrix* matlab::sortrows(const gsl_matrix* m, gsl_vector* ind) {
 		gsl_matrix_get_row(rows[i], m, i);
 	}
 	size_t indices[m->size1];
-	quicksort_index(indices, rows, m->size1, (cmp_fn)compare_vectorps);
+	stable_sort_index(indices, rows, m->size1, order_vectors);
 	for (int i = 0; i < m->size1; i++) {
 		gsl_vector_free(rows[i]);
 	}

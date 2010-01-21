@@ -1,3 +1,6 @@
+#ifndef SORT_H
+#define SORT_H
+
 #include <algorithm>
 #include <vector>
 
@@ -62,3 +65,5 @@ template<class T> void matlab::stable_sort_index(size_t* indices, const T* array
 		indices[i] = v[i].second;
 	}
 }
+
+#endif
