@@ -49,10 +49,11 @@ int matlab::compare_vectors(const gsl_vector* v1, const gsl_vector* v2) {
 }
 
 /*
- * Compares pointers to gsl_vector*.
+ * Returns whether the first vector comes before the second vector in a strict
+ * weak ordering.
  */
-int matlab::compare_vectorps(const gsl_vector** v1, const gsl_vector** v2) {
-	return compare_vectors(*v1, *v2);
+bool matlab::order_vectors(gsl_vector* v1, gsl_vector* v2) {
+	return compare_vectors(v1, v2) == -1;
 }
 
 /*
@@ -79,10 +80,11 @@ int matlab::compare_matrices(const gsl_matrix* m1, const gsl_matrix* m2) {
 }
 
 /*
- * Compares pointers to gsl_matrix*.
+ * Returns whether the first matrix comes before the second matrix in a strict
+ * weak ordering.
  */
-int matlab::compare_matrixps(const gsl_matrix** m1, const gsl_matrix** m2) {
-	return compare_matrices(*m1, *m2);
+bool matlab::order_matrices(gsl_matrix* m1, gsl_matrix* m2) {
+	return compare_matrices(m1, m2) == -1;
 }
 
 /*

@@ -4,8 +4,6 @@
 #include <gsl/gsl_permute_vector.h>
 #include <gsl/gsl_vector.h>
 
-int compare_ints(int* x, int* y) { return *x - *y; }
-
 /*
  * Returns the three-node motif library.
  */
@@ -116,7 +114,7 @@ gsl_matrix* bct::motif3generate(gsl_vector_long* Mn, gsl_vector* ID, gsl_vector*
 		ID_array[i] = (int)gsl_vector_get(temp_ID, i);
 	}
 	size_t indices[54];
-	quicksort_index(indices, ID_array, 54, (cmp_fn)compare_ints);
+	stable_sort_index(indices, ID_array, 54);
 	gsl_permutation* ind = gsl_permutation_alloc(54);
 	for (int i = 0; i < 54; i++) {
 		ind->data[i] = indices[i];
@@ -292,7 +290,7 @@ gsl_matrix* bct::motif4generate(gsl_vector_long* Mn, gsl_vector* ID, gsl_vector*
 		ID_array[i] = (int)gsl_vector_get(temp_ID, i);
 	}
 	size_t indices[3834];
-	quicksort_index(indices, ID_array, 3834, (cmp_fn)compare_ints);
+	stable_sort_index(indices, ID_array, 3834);
 	gsl_permutation* ind = gsl_permutation_alloc(3834);
 	for (int i = 0; i < 3834; i++) {
 		ind->data[i] = indices[i];

@@ -4,7 +4,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
-#include "quicksort.h"
+#include "sort.h"
 
 namespace matlab {
 	typedef bool (*fp_cmp_fn)(double, double);
@@ -86,9 +86,9 @@ namespace matlab {
 	
 	// Vector/matrix comparison
 	int compare_vectors(const gsl_vector*, const gsl_vector*);
-	int compare_vectorps(const gsl_vector**, const gsl_vector**);
+	bool order_vectors(gsl_vector*, gsl_vector*);
 	int compare_matrices(const gsl_matrix*, const gsl_matrix*);
-	int compare_matrixps(const gsl_matrix**, const gsl_matrix**);
+	bool order_matrices(gsl_matrix*, gsl_matrix*);
 	gsl_vector* compare_elements(const gsl_vector*, fp_cmp_fn, double);
 	gsl_vector* compare_elements(const gsl_vector*, fp_cmp_fn, const gsl_vector*);
 	gsl_matrix* compare_elements(const gsl_matrix*, fp_cmp_fn, double);
