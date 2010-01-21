@@ -15,6 +15,9 @@ template <class T1, class T2> struct transparent_pair {
 	operator T1() const { return first; }
 };
 
+/*
+ * Performs an in-place stable sort.
+ */
 template<class T> void matlab::stable_sort(T* array, size_t count) {
 	std::vector<T> v;
 	v.assign(array, array + count);
@@ -22,6 +25,9 @@ template<class T> void matlab::stable_sort(T* array, size_t count) {
 	std::copy(v.begin(), v.end(), array);
 }
 
+/*
+ * Performs an in-place stable sort using a custom comparison function.
+ */
 template<class T> void matlab::stable_sort(T* array, size_t count, bool (*compare)(T, T)) {
 	std::vector<T> v;
 	v.assign(array, array + count);
@@ -29,6 +35,9 @@ template<class T> void matlab::stable_sort(T* array, size_t count, bool (*compar
 	std::copy(v.begin(), v.end(), array);
 }
 
+/*
+ * Performs an indirect stable sort.
+ */
 template<class T> void matlab::stable_sort_index(size_t* indices, const T* array, size_t count) {
 	std::vector<transparent_pair<T, size_t> > v;
 	for (size_t i = 0; i < count; i++) {
@@ -40,6 +49,9 @@ template<class T> void matlab::stable_sort_index(size_t* indices, const T* array
 	}
 }
 
+/*
+ * Performs an indirect stable sort using a custom comparison function.
+ */
 template<class T> void matlab::stable_sort_index(size_t* indices, const T* array, size_t count, bool (*compare)(T, T)) {
 	std::vector<transparent_pair<T, size_t> > v;
 	for (size_t i = 0; i < count; i++) {
