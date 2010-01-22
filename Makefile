@@ -41,6 +41,7 @@ objects = \
 	matlab/functions.o \
 	matlab/index.o \
 	matlab/operators.o \
+	matlab/utility.o \
 	norm_avr_shortest_path_length_bu.o \
 	reachdist.o \
 	status.o \
