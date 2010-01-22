@@ -145,6 +145,10 @@ namespace matlab {
 	gsl_vector* to_vector(const gsl_matrix*);
 	gsl_matrix* to_column_matrix(const gsl_vector*);
 	gsl_matrix* to_row_matrix(const gsl_vector*);
+	
+	// Utility
+	gsl_matrix* permute_columns(const gsl_permutation*, const gsl_matrix*);
+	gsl_matrix* permute_rows(const gsl_permutation*, const gsl_matrix*);
 };
 
 #endif

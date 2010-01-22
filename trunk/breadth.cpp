@@ -25,7 +25,8 @@ gsl_vector* bct::breadth(const gsl_matrix* CIJ, int source, gsl_vector* ret_bran
 	
 	int N = m->size1;
 	gsl_matrix* color_m = zeros(1, N);
-	gsl_matrix* distance_m = yens(1, N, GSL_POSINF);
+	gsl_matrix* distance_m = gsl_matrix_alloc(1, N);
+	gsl_matrix_set_all(distance_m, GSL_POSINF);
 	gsl_matrix* branch_m = zeros(1, N);
 	
 	//Convert to vectors for comfy computation

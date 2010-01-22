@@ -175,7 +175,8 @@ gsl_matrix* bct::findpaths(const gsl_matrix* m, const gsl_vector* sources_input,
 						row_indices = sequence(0, path_len-1);
 						gsl_matrix* paths_sub = ordinal_index(paths_term_at_endnode_all, row_indices, no_prev_visits_col);
 					
-						gsl_matrix* new_node_matrix = yens(1, no_prev_visits_col->size, (double)next_node);
+						gsl_matrix* new_node_matrix = gsl_matrix_alloc(1, no_prev_visits_col->size);
+						gsl_matrix_set_all(new_node_matrix, (double)next_node);
 						gsl_matrix* new_paths = concatenate_columns(paths_sub, new_node_matrix);
 						if(npathscnt + no_prev_visits_col->size >= len_npaths) {
 							len_npaths += (no_prev_visits_col->size * 4);
@@ -231,8 +232,9 @@ gsl_matrix* bct::findpaths(const gsl_matrix* m, const gsl_vector* sources_input,
 		
 	    //all_paths is updated from npaths here
 	    if (savepaths==1) {
-		    gsl_matrix* yens_row = yens(1, all_paths->size2, -1.0);
-	    	gsl_matrix* concat_all_paths = concatenate_columns(all_paths, yens_row);
+			gsl_matrix* neg1_row = gsl_matrix_alloc(1, all_paths->size2);
+			gsl_matrix_set_all(neg1_row, -1.0);
+	    	gsl_matrix* concat_all_paths = concatenate_columns(all_paths, neg1_row);
 	    	gsl_matrix_view npaths_sub = gsl_matrix_submatrix(npaths, 0, 0, path_len+1, npathscnt);
 	    	gsl_matrix* concat_all_paths_npths = concatenate_rows(concat_all_paths, &npaths_sub.matrix);
 	    	all_paths = concat_all_paths_npths;	  
