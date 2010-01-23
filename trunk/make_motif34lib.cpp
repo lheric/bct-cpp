@@ -85,8 +85,8 @@ gsl_matrix* bct::motif3generate(gsl_vector_long* Mn, gsl_vector* ID, gsl_vector*
 	}
 	
 	// [u1 u2 ID]=unique(CL,'rows');
-	gsl_vector* temp_ID = gsl_vector_alloc(54);
-	gsl_matrix* u1 = unique_rows(CL, "last", NULL, temp_ID);
+	gsl_vector* temp_ID;
+	gsl_matrix* u1 = unique_rows(CL, "last", NULL, &temp_ID);
 	gsl_vector_add_constant(temp_ID, 1.0);
 	gsl_matrix_free(u1);
 	gsl_vector_free(cl);
@@ -277,8 +277,8 @@ gsl_matrix* bct::motif4generate(gsl_vector_long* Mn, gsl_vector* ID, gsl_vector*
 	}
 	
 	// [u1 u2 ID]=unique(CL,'rows');
-	gsl_vector* temp_ID = gsl_vector_alloc(3834);
-	gsl_matrix* u1 = unique_rows(CL, "last", NULL, temp_ID);
+	gsl_vector* temp_ID;
+	gsl_matrix* u1 = unique_rows(CL, "last", NULL, &temp_ID);
 	gsl_vector_add_constant(temp_ID, 1.0);
 	gsl_matrix_free(u1);
 	gsl_vector_free(cl);
