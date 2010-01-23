@@ -33,13 +33,13 @@ namespace matlab {
 	gsl_matrix* ones(int);
 	gsl_matrix* ones(int, int);
 	gsl_vector* reverse(gsl_vector*);
-	gsl_matrix* sortrows(const gsl_matrix*, gsl_permutation* = NULL);
+	gsl_matrix* sortrows(const gsl_matrix*, gsl_permutation** = NULL);
 	double sum(const gsl_vector*);
 	gsl_vector* sum(const gsl_matrix*, int = 1);
 	gsl_matrix* tril(const gsl_matrix*, int = 0);
 	gsl_matrix* triu(const gsl_matrix*, int = 0);
-	gsl_matrix* unique_rows(const gsl_matrix*, gsl_vector* = NULL, gsl_vector* = NULL);
-	gsl_matrix* unique_rows(const gsl_matrix*, const char*, gsl_vector* = NULL, gsl_vector* = NULL);
+	gsl_matrix* unique_rows(const gsl_matrix*, gsl_vector** = NULL, gsl_vector** = NULL);
+	gsl_matrix* unique_rows(const gsl_matrix*, const char*, gsl_vector** = NULL, gsl_vector** = NULL);
 	gsl_matrix* zeros(int);
 	gsl_matrix* zeros(int, int);
 	
