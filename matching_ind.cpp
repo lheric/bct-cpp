@@ -118,7 +118,13 @@ double matching_ind(const gsl_vector* c1, const gsl_vector* c2, int i, int j, in
 	// ncon = sum(c1(use))+sum(c2(use));
 	gsl_vector* c1_use = logical_index(c1, use);
 	gsl_vector* c2_use = logical_index(c2, use);
-	double ncon = sum(c1_use) + sum(c2_use);
+	double ncon = 0.0;
+	if (c1_use != NULL) {
+		ncon += sum(c1_use);
+	}
+	if (c2_use != NULL) {
+		ncon += sum(c2_use);
+	}
 	
 	// if (ncon==0)
 	double ret;
@@ -129,13 +135,17 @@ double matching_ind(const gsl_vector* c1, const gsl_vector* c2, int i, int j, in
 	} else {
 		
 		// Mall(i,j) = 2*(sum(c1(use)&c2(use))/ncon);
-		gsl_vector* temp = logical_and(c1_use, c2_use);
-		ret = 2.0 * sum(temp) / ncon;
-		gsl_vector_free(temp);
+		if (c1_use == NULL || c2_use == NULL) {
+			ret = 0.0;
+		} else {
+			gsl_vector* log_and = logical_and(c1_use, c2_use);
+			ret = 2.0 * sum(log_and) / ncon;
+			gsl_vector_free(log_and);
+		}
 	}
 	
 	gsl_vector_free(use);
-	gsl_vector_free(c1_use);
-	gsl_vector_free(c2_use);
+	if (c1_use != NULL) gsl_vector_free(c1_use);
+	if (c2_use != NULL) gsl_vector_free(c2_use);
 	return ret;
 }

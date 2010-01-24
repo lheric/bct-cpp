@@ -227,7 +227,15 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("matching_ind %s", mname{i}), all(Mall == matching_ind_cpp(m{i})))
 	bct_test(sprintf("matching_ind_in %s", mname{i}), all(Min == matching_ind_in_cpp(m{i})))
 	bct_test(sprintf("matching_ind_out %s", mname{i}), all(Mout == matching_ind_out_cpp(m{i})))
-end	
+end
+
+% motifxgenerate
+make_motif34lib
+load motif34lib
+[M ID N] = motif3generate_cpp;
+bct_test("motif3generate", all(all([M3 ID3 N3] == [M ID' N'])))
+[M ID N] = motif4generate_cpp;
+bct_test("motif4generate", all(all([M4 ID4 N4] == [M ID' N'])))
 
 % randmio_dir_connected
 for i = 1:size(m)(2)
