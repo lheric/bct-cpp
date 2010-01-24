@@ -117,7 +117,7 @@ gsl_vector* matlab::find(const gsl_vector* v, int n, const char* direction) {
 	if (n_find == 0 || n < 1) {
 		return NULL;
 	}
-	gsl_vector* find_v = gsl_vector_alloc((n < n_find) ? n : n_find);
+	gsl_vector* find_v = gsl_vector_alloc(n < n_find ? n : n_find);
 	if (std::strcmp(direction, "first") == 0) {
 		int position = 0;
 		for (int i = 0; i < v->size && position < find_v->size; i++) {
@@ -168,6 +168,10 @@ gsl_matrix* matlab::find_ij(const gsl_matrix* m, int n, const char* direction) {
 		gsl_vector_free(find_v);
 		return find_m;
 	}
+}
+
+int matlab::length(const gsl_matrix* m) {
+	return m->size1 > m->size2 ? m->size1 : m->size2;
 }
 
 double matlab::max(const gsl_vector* v) {
@@ -436,4 +440,11 @@ gsl_matrix* matlab::zeros(int size) {
 
 gsl_matrix* matlab::zeros(int size1, int size2) {
 	return gsl_matrix_calloc(size1, size2);
+}
+
+/*
+ * Emulates (zeros(size, 1)) or (zeros(1, size)).
+ */
+gsl_vector* matlab::zeros_vector(int size) {
+	return gsl_vector_calloc(size);
 }

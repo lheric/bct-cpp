@@ -23,6 +23,7 @@ namespace matlab {
 	gsl_vector* find(const gsl_vector*, int = GSL_POSINF, const char* = "first");
 	gsl_vector* find(const gsl_matrix*, int = GSL_POSINF, const char* = "first");
 	gsl_matrix* find_ij(const gsl_matrix*, int = GSL_POSINF, const char* = "first");
+	int length(const gsl_matrix*);
 	double max(const gsl_vector*);
 	gsl_vector* max(const gsl_matrix*, int = 1);
 	double min(const gsl_vector*);
@@ -42,6 +43,7 @@ namespace matlab {
 	gsl_matrix* unique_rows(const gsl_matrix*, const char* = "last", gsl_vector** = NULL, gsl_vector** = NULL);
 	gsl_matrix* zeros(int);
 	gsl_matrix* zeros(int, int);
+	gsl_vector* zeros_vector(int);
 	
 	// Operators
 	gsl_vector* concatenate(const gsl_vector*, double);
