@@ -24,7 +24,9 @@ namespace bct_test {
 		Matrix m = args(0).matrix_value(); \
 		if (!error_state) { \
 			gsl_matrix* gslm = bct_test::to_gsl(m); \
-			return octave_value(bct::function_name(gslm)); \
+			octave_value ret = octave_value(bct::function_name(gslm)); \
+			gsl_matrix_free(gslm); \
+			return ret; \
 		} else { \
 			return octave_value_list(); \
 		} \
@@ -38,7 +40,9 @@ namespace bct_test {
 		Matrix m = args(0).matrix_value(); \
 		if (!error_state) { \
 			gsl_matrix* gslm = bct_test::to_gsl(m); \
-			return octave_value(bct_test::from_gsl(bct::function_name(gslm))); \
+			octave_value ret = bct_test::from_gsl(bct::function_name(gslm)); \
+			gsl_matrix_free(gslm); \
+			return ret; \
 		} else { \
 			return octave_value_list(); \
 		} \

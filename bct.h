@@ -67,8 +67,11 @@ namespace bct {
 	// Motifs
 	gsl_matrix* motif3generate(gsl_vector** = NULL, gsl_vector** = NULL);
 	gsl_matrix* motif4generate(gsl_vector** = NULL, gsl_vector** = NULL);
+	gsl_vector* motif3struct_bin(const gsl_matrix*, gsl_matrix** = NULL);
 
 	// Modularity and community structure
+	
+	// Synthetic connection networks
 	
 	// Graph randomization
 	gsl_matrix* latmio_dir_connected(const gsl_matrix*, int);	

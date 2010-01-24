@@ -25,7 +25,7 @@ gsl_matrix* bct::motif3generate(gsl_vector** ID, gsl_vector** N) {
 	gsl_matrix* CL = zeros(54, 6);
 	
 	// cl=zeros(1,6,'uint8');
-	gsl_vector* cl = gsl_vector_calloc(6);
+	gsl_vector* cl = zeros_vector(6);
 	
 	double i_nondiagonal[] = { 1, 2, 3, 5, 6, 7 };
 	gsl_vector_view i_nondiagonal_vv = gsl_vector_view_array(i_nondiagonal, 6);
@@ -158,7 +158,7 @@ gsl_matrix* bct::motif4generate(gsl_vector** ID, gsl_vector** N) {
 	gsl_matrix* CL = zeros(3834, 16);
 	
 	// cl=zeros(1,16,'uint8');
-	gsl_vector* cl = gsl_vector_calloc(16);
+	gsl_vector* cl = zeros_vector(16);
 	
 	double i_nondiagonal[] = { 1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 13, 14 };
 	gsl_vector_view i_nondiagonal_vv = gsl_vector_view_array(i_nondiagonal, 12);

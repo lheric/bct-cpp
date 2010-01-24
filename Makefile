@@ -38,6 +38,7 @@ objects = \
 	matlab/index.o \
 	matlab/operators.o \
 	matlab/utility.o \
+	motif3struct_bin.o \
 	norm_avr_shortest_path_length_bu.o \
 	randmio_dir.o \
 	randmio_dir_connected.o \
