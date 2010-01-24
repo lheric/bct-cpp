@@ -7,7 +7,7 @@
 /*
  * Our implementation of the BCT motif library does not include Mn ("M as a
  * single number") because a C++ long is generally not large enough to contain
- * such values.
+ * the 12-digit numbers required for the four-node motif library.
  */
 
 /*

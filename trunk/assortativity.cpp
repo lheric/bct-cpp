@@ -8,14 +8,14 @@ double assortativity(const gsl_vector*, const gsl_matrix*);
  * Computes assortativity for a directed matrix.  Connection weights are
  * ignored.
  */
-double bct::assortativity_dir(const gsl_matrix* m) {
-	if (safe_mode) check_status(m, DIRECTED, "assortativity_dir");
+double bct::assortativity_dir(const gsl_matrix* CIJ) {
+	if (safe_mode) check_status(CIJ, DIRECTED, "assortativity_dir");
 	
 	// [id,od,deg] = degrees_dir(CIJ);
-	gsl_vector* deg = degrees_dir(m);
+	gsl_vector* deg = degrees_dir(CIJ);
 	
 	// [i,j] = find(CIJ>0);
-	gsl_matrix* m_gt_0 = compare_elements(m, fp_greater, 0.0);
+	gsl_matrix* m_gt_0 = compare_elements(CIJ, fp_greater, 0.0);
 	gsl_matrix* ij = find_ij(m_gt_0);
 	gsl_matrix_free(m_gt_0);
 	
@@ -29,14 +29,14 @@ double bct::assortativity_dir(const gsl_matrix* m) {
  * Computes assortativity for an undirected matrix.  Connection weights are
  * ignored.
  */
-double bct::assortativity_und(const gsl_matrix* m) {
-	if (safe_mode) check_status(m, UNDIRECTED, "assortativity_und");
+double bct::assortativity_und(const gsl_matrix* CIJ) {
+	if (safe_mode) check_status(CIJ, UNDIRECTED, "assortativity_und");
 	
 	// [deg] = degrees_und(m);
-	gsl_vector* deg = degrees_und(m);
+	gsl_vector* deg = degrees_und(CIJ);
 	
 	// [i,j] = find(triu(CIJ,1)>0);
-	gsl_matrix* triu_m = triu(m, 1);
+	gsl_matrix* triu_m = triu(CIJ, 1);
 	gsl_matrix* triu_m_gt_0 = compare_elements(triu_m, fp_greater, 0.0);
 	gsl_matrix_free(triu_m);
 	gsl_matrix* ij = find_ij(triu_m_gt_0);
