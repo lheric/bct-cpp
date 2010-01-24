@@ -3,16 +3,17 @@
 #include <gsl/gsl_vector.h>
 
 /*
- * Computes the degree for each node in an undirected binary matrix.  Weights
- * are discarded.  Results are returned in a vector where each element is the
- * degree of the corresponding node.
+ * Computes the degree for each node in an undirected matrix.
  */
 gsl_vector* bct::degrees_und(const gsl_matrix* m) {
 	if (safe_mode) check_status(m, UNDIRECTED, "degrees_und");
-	gsl_vector* degrees = gsl_vector_alloc(m->size2);
+	
+	// CIJ = double(CIJ~=0);
+	// deg = sum(CIJ);
+	gsl_vector* deg = gsl_vector_alloc(m->size2);
 	for (int i = 0; i < m->size2; i++) {
 		gsl_vector_const_view column = gsl_matrix_const_column(m, i);
-		gsl_vector_set(degrees, i, nnz(&column.vector));
+		gsl_vector_set(deg, i, nnz(&column.vector));
 	}
-	return degrees;
+	return deg;
 }

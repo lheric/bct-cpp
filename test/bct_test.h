@@ -12,7 +12,7 @@ namespace bct_test {
 	gsl_matrix** to_gsl(const NDArray);
 	Matrix from_gsl(const gsl_vector*);
 	Matrix from_gsl(const gsl_matrix*);
-	NDArray from_gsl(const gsl_matrix**, int);
+	NDArray from_gsl(const gsl_matrix* const*, int);
 };
 
 #include "bct_test.cpp"

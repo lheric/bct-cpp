@@ -3,53 +3,32 @@
 #include <gsl/gsl_vector.h>
 
 /*
- * Computes the degree for each node in a directed binary matrix.  Weights are
- * discarded.  Results are returned in a vector where each element is the degree
- * of the corresponding node.  In- and out-degree may be obtained by passing
- * pointers to appropriately sized vectors for the last two arguments.
+ * Computes the degree for each node in a directed matrix.
  */
-gsl_vector* bct::degrees_dir(const gsl_matrix* m, gsl_vector* in_degrees, gsl_vector* out_degrees) {
+gsl_vector* bct::degrees_dir(const gsl_matrix* m, gsl_vector** id, gsl_vector** od) {
 	if (safe_mode) check_status(m, DIRECTED, "degrees_dir");
-	if (m->size1 != m->size2) {
-		throw size_exception();
-	}
+	if (m->size1 != m->size2) throw size_exception();
 	
-	// Allocate storage for in- and out-degree vectors if necessary
-	bool free_in_degrees = false;
-	bool free_out_degrees = false;
-	if (in_degrees == NULL) {
-		free_in_degrees = true;
-		in_degrees = gsl_vector_alloc(m->size2);
-	}
-	if (out_degrees == NULL) {
-		free_out_degrees = true;
-		out_degrees = gsl_vector_alloc(m->size1);
-	}
-	
-	// Calculate in-degree
+	// CIJ = double(CIJ~=0);
+	// id = sum(CIJ,1);
+	gsl_vector* _id = gsl_vector_alloc(m->size2);
 	for (int i = 0; i < m->size2; i++) {
 		gsl_vector_const_view column = gsl_matrix_const_column(m, i);
-		gsl_vector_set(in_degrees, i, nnz(&column.vector));
+		gsl_vector_set(_id, i, nnz(&column.vector));
 	}
 	
-	// Calculate out-degree
+	// od = sum(CIJ,2);
+	gsl_vector* _od = gsl_vector_alloc(m->size1);
 	for (int i = 0; i < m->size1; i++) {
 		gsl_vector_const_view row = gsl_matrix_const_row(m, i);
-		gsl_vector_set(out_degrees, i, nnz(&row.vector));
+		gsl_vector_set(_od, i, nnz(&row.vector));
 	}
 	
-	// Sum in- and out-degree to get total degree
-	gsl_vector* degrees = gsl_vector_calloc(m->size1);
-	gsl_vector_add(degrees, in_degrees);
-	gsl_vector_add(degrees, out_degrees);
+	// deg = id+od;
+	gsl_vector* deg = copy(_id);
+	gsl_vector_add(deg, _od);
 	
-	// Free in- and out-degree vectors if necessary
-	if (free_in_degrees) {
-		gsl_vector_free(in_degrees);
-	}
-	if (free_out_degrees) {
-		gsl_vector_free(out_degrees);
-	}
-	
-	return degrees;
+	if (id != NULL) *id = _id; else gsl_vector_free(_id);
+	if (od != NULL) *od = _od; else gsl_vector_free(_od);
+	return deg;
 }

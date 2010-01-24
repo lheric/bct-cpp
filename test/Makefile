@@ -19,29 +19,31 @@ filenames = \
 	density_und_cpp \
 	distance_bin_cpp \
 	distance_wei_cpp \
-	efficiency_local_cpp \
 	efficiency_global_cpp \
+	efficiency_local_cpp \
 	edge_betweenness_bin_cpp \
 	edge_betweenness_wei_cpp \
 	erange_cpp \
 	findpaths_cpp \
 	findwalks_cpp \
 	jdegree_cpp \
+	jdegree_bl_cpp \
 	jdegree_id_cpp \
 	jdegree_od_cpp \
-	jdegree_bl_cpp \
-	latmio_dir_cpp \
 	latmio_dir_connected_cpp \
+	latmio_dir_cpp \
 	latmio_und_connected_cpp \
 	latmio_und_cpp \
+	matching_ind_cpp \
+	matching_ind_in_cpp \
+	matching_ind_out_cpp \
 	randmio_dir_connected_cpp \
 	randmio_dir_cpp \
 	randmio_und_connected_cpp \
 	randmio_und_cpp \
-	matching_ind_cpp \
 	reachdist_cpp \
-	strengths_und_cpp \
-	strengths_dir_cpp
+	strengths_dir_cpp \
+	strengths_und_cpp
 
 objects := $(foreach f, $(filenames), $(f).o)
 oct_files := $(foreach f, $(filenames), $(f).oct)
