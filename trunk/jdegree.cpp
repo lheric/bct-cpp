@@ -2,74 +2,87 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 
-/* Computes the joint degree distribution of the matrix m. The outputs are
- * in the structure jdegree_outputs, as follows:
- * J = matrix in which the value of each element (u,v) corresponds to the 
- * number of nodes that have u outgoing connections and v incoming connections.
- * J_od = number of vertices with od>id.
- * J_id = number of vertices with id>od.
- * J_bl = number of vertices with id=od.
+/*
+ * Computes the joint degree distribution, a matrix in which the value of each
+ * element (u, v) is the number of nodes with u outgoing connections and v
+ * incoming connections.
  */
- 
 gsl_matrix* bct::jdegree(const gsl_matrix* m) {
-	gsl_matrix* bin_m;
-	gsl_matrix* J;
-	gsl_vector* id;
-	gsl_vector* od;
-	int N, max_degree;
-	int J_od, J_id, J_bl;
-	double max_id, max_od;
-
-	bin_m = to_binary(m);
-	N = m->size1;
-	id = sum(bin_m,1);
-	od = sum(bin_m,2);
-	max_id = gsl_vector_max(id);
-	max_od = gsl_vector_max(od);
-	if(max_id > max_od)
-		max_degree = (int)max_id;
-	else
-		max_degree = (int)max_od;
-	//calloc initializes the matrix to zeros
-	J = gsl_matrix_calloc(max_degree+1, max_degree+1);
-	for(int i = 0;i < N;i++) {
-		int x = (int)gsl_vector_get(id, i);
-		int y = (int)gsl_vector_get(od, i);
-		//In jdegree.m, x and y are incremented by 1 because matlab matrices'
-		//indices start from 1 and not 0		
-		gsl_matrix_set(J, x, y, (int)gsl_matrix_get(J, x, y)+1); 
+	if (m->size1 != m->size2) throw size_exception();
+	
+	// CIJ = double(CIJ~=0);
+	gsl_matrix* bin_m = compare_elements(m, fp_not_equal, 0.0);
+	
+	// N = size(CIJ,1);
+	int N = m->size1;
+	
+	// id = sum(CIJ,1);
+	gsl_vector* id = sum(bin_m, 1);
+	
+	// od = sum(CIJ,2)';
+	gsl_vector* od = sum(bin_m, 2);
+	gsl_matrix_free(bin_m);
+	
+	// szJ = max(max(id,od))+1;
+	double max_id = gsl_vector_max(id);
+	double max_od = gsl_vector_max(od);
+	int szJ = (int)(max_id > max_od ? max_id : max_od) + 1;
+	
+	// J = zeros(szJ);
+	gsl_matrix* J = zeros(szJ);
+	
+	// for i=1:N
+	for (int i = 0; i < N; i++) {
+		
+		// J(id(i)+1,od(i)+1) = J(id(i)+1,od(i)+1) + 1;
+		int u = (int)gsl_vector_get(id, i);
+		int v = (int)gsl_vector_get(od, i);
+		gsl_matrix_set(J, u, v, gsl_matrix_get(J, u, v) + 1.0);
 	}
+	
+	gsl_vector_free(id);
+	gsl_vector_free(od);
 	return J;
 }
 
-double bct::jdegree_id(gsl_matrix* J) {
-	double J_id;
+/*
+ * Given a joint degree distribution matrix, returns the number of nodes with
+ * in-degree = out-degree.
+ */
+int bct::jdegree_bl(const gsl_matrix* J) {
+	
+	// J_bl = sum(diag(J));
+	gsl_vector_const_view diagonal = gsl_matrix_const_diagonal(J);
+	int J_bl = (int)sum(&diagonal.vector);
+	return J_bl;
+}
+
+/*
+ * Given a joint degree distribution matrix, returns the number of nodes with
+ * in-degree > out-degree.
+ */
+int bct::jdegree_id(const gsl_matrix* J) {
+	
+	// J_id = sum(sum(tril(J,-1)));
 	gsl_matrix* tril_J = tril(J, -1);
 	gsl_vector* sum_tril_J = sum(tril_J);
-	J_id = sum(sum_tril_J);
+	int J_id = (int)sum(sum_tril_J);
 	gsl_matrix_free(tril_J);
 	gsl_vector_free(sum_tril_J);
 	return J_id;
 }
 
-double bct::jdegree_od(gsl_matrix* J) {
-	double J_od;
+/*
+ * Given a joint degree distribution matrix, returns the number of nodes with
+ * out-degree > in-degree.
+ */
+int bct::jdegree_od(const gsl_matrix* J) {
+	
+	// J_od = sum(sum(triu(J,1)));
 	gsl_matrix* triu_J = triu(J, 1);
 	gsl_vector* sum_triu_J = sum(triu_J);
-	J_od = sum(sum_triu_J);
+	int J_od = (int)sum(sum_triu_J);
 	gsl_matrix_free(triu_J);
 	gsl_vector_free(sum_triu_J);	
 	return J_od;
-}	
-
-double bct::jdegree_bl(gsl_matrix* J) {
-	double J_bl;
-	gsl_vector_view diagonal = gsl_matrix_diagonal(J);
-	J_bl = sum(&diagonal.vector);
-	return J_bl;
 }
-
-
-	
-	
-	

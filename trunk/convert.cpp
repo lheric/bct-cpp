@@ -7,10 +7,10 @@
  * Returns a copy of the given matrix with no loops.
  */
 gsl_matrix* bct::remove_loops(const gsl_matrix* m) {
-	gsl_matrix* no_loops_m = copy(m);
-	gsl_vector_view diagonal = gsl_matrix_diagonal(no_loops_m);
+	gsl_matrix* nl_m = copy(m);
+	gsl_vector_view diagonal = gsl_matrix_diagonal(nl_m);
 	gsl_vector_set_zero(&diagonal.vector);
-	return no_loops_m;
+	return nl_m;
 }
 
 /*
@@ -24,13 +24,13 @@ gsl_matrix* bct::to_binary(const gsl_matrix* m) {
  * Returns a positive copy of the given matrix.
  */
 gsl_matrix* bct::to_positive(const gsl_matrix* m) {
-	gsl_matrix* positive_m = gsl_matrix_alloc(m->size1, m->size2);
+	gsl_matrix* pos_m = gsl_matrix_alloc(m->size1, m->size2);
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {
-			gsl_matrix_set(positive_m, i, j, std::abs(gsl_matrix_get(m, i, j)));
+			gsl_matrix_set(pos_m, i, j, std::abs(gsl_matrix_get(m, i, j)));
 		}
 	}
-	return positive_m;
+	return pos_m;
 }
 
 /*
@@ -45,21 +45,21 @@ gsl_matrix* bct::to_undirected(const gsl_matrix* m) {
 	if (m->size1 != m->size2) {
 		throw size_exception();
 	}
-	gsl_matrix* undirected_m = copy(m);
+	gsl_matrix* und_m = copy(m);
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = i; j < m->size2; j++) {
 			double value_ij = gsl_matrix_get(m, i, j);
 			double value_ji = gsl_matrix_get(m, j, i);
 			if (fp_zero(value_ij) && fp_nonzero(value_ji)) {
-				gsl_matrix_set(undirected_m, i, j, value_ji);
+				gsl_matrix_set(und_m, i, j, value_ji);
 			} else if (fp_nonzero(value_ij) && fp_zero(value_ji)) {
-				gsl_matrix_set(undirected_m, j, i, value_ij);
+				gsl_matrix_set(und_m, j, i, value_ij);
 			} else if (fp_not_equal(value_ij, value_ji)) {
 				double average = (value_ij + value_ji) / 2.0;
-				gsl_matrix_set(undirected_m, i, j, average);
-				gsl_matrix_set(undirected_m, j, i, average);
+				gsl_matrix_set(und_m, i, j, average);
+				gsl_matrix_set(und_m, j, i, average);
 			}
 		}
 	}
-	return undirected_m;
+	return und_m;
 }

@@ -2,126 +2,140 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 
-/* 
-/* input:
- *           CIJ  = connection/adjacency matrix
- * output:
- *           Min  = matching index for incoming connections
- *           Mout = matching index for outgoing connections
- *           Mall = matching index for all connections
- *
- * Does not use self- or cross connections for comparison.
- * Does not use connections that are not present in BOTH i and j.
- * All output matrices are calculated for upper triangular only (symmetrical).
- */
+double matching_ind(const gsl_vector*, const gsl_vector*, int, int, int);
 
-//Compare all (incoming+outgoing) connections
+/*
+ * Computes the matching index for all connections.
+ */
 gsl_matrix* bct::matching_ind(const gsl_matrix* m) {
-	int N, ncon;
-	double matchindex;
-	gsl_matrix* Mall;
-	gsl_vector* use;
 	
-	N = m->size1;
-	Mall = gsl_matrix_calloc(N, N);
-	for(int i = 0;i < (N-1);i++) {
-		for(int j = (i+1);j < N;j++) {
-			//c1 and r1 can be moved outside the inner 'for' loop
-			gsl_vector_const_view c1 = gsl_matrix_const_column(m, i);
-			gsl_vector_const_view c2 = gsl_matrix_const_column(m, j);
-			gsl_vector_const_view r1 = gsl_matrix_const_row(m, i);
-			gsl_vector_const_view r2 = gsl_matrix_const_row(m, j);
-			gsl_vector* t1 = concatenate(&c1.vector, &r1.vector);
-			gsl_vector* t2 = concatenate(&c2.vector, &r2.vector);
-			use = logical_or(t1, t2);
-			gsl_vector_set(use, i, 0);
-			gsl_vector_set(use, j, 0);
-			gsl_vector_set(use, i+N, 0);
-			gsl_vector_set(use, j+N, 0);			
-			ncon = sum(logical_index(t1, use)) + sum(logical_index(t2, use));
-			if(ncon == 0)
-				gsl_matrix_set(Mall, i, j, 0.0);
-			else
-			{
-				//Improve this by storing the logical_index results, also calculated above?
-				matchindex = ((double)sum(logical_and(logical_index(t1, use), logical_index(t2, use))))/ncon;
-				matchindex *= 2.0;
-				gsl_matrix_set(Mall, i, j, matchindex);
-			}
-			gsl_vector_free(t1);
-			gsl_vector_free(t2);
+	// N = size(CIJ,1);
+	int N = m->size1;
+	
+	// Mall = zeros(N,N);
+	gsl_matrix* Mall = zeros(N);
+	
+	// for i=1:N-1
+	for (int i = 0; i < N - 1; i++) {
+		
+		// c1 = [CIJ(:,i)' CIJ(i,:)];
+		gsl_vector_const_view col_i = gsl_matrix_const_column(m, i);
+		gsl_vector_const_view row_i = gsl_matrix_const_row(m, i);
+		gsl_vector* c1 = concatenate(&col_i.vector, &row_i.vector);
+		
+		// for j=i+1:N
+		for (int j = i + 1; j < N; j++) {
+			
+			// c2 = [CIJ(:,j)' CIJ(j,:)];
+			gsl_vector_const_view col_j = gsl_matrix_const_column(m, j);
+			gsl_vector_const_view row_j = gsl_matrix_const_row(m, j);
+			gsl_vector* c2 = concatenate(&col_j.vector, &row_j.vector);
+			
+			gsl_matrix_set(Mall, i, j, matching_ind(c1, c2, i, j, N));
+			gsl_vector_free(c2);
 		}
+		
+		gsl_vector_free(c1);
 	}
-	gsl_vector_free(use);
+	
 	return Mall;
 }
 
-//Compare the incoming connections only
+/*
+ * Computes the matching index for incoming connections.
+ */
 gsl_matrix* bct::matching_ind_in(const gsl_matrix* m) {
-	int N, ncon;
-	double matchindex;
-	gsl_matrix* Min;
-	gsl_vector* use;
 	
-	N = m->size1;
-	Min = gsl_matrix_calloc(N, N);
-	for(int i = 0;i < (N-1);i++) {
-		for(int j = (i+1);j < N;j++) {
-			gsl_vector_const_view c1 = gsl_matrix_const_column(m, i);
+	// N = size(CIJ,1);
+	int N = m->size1;
+	
+	// Min = zeros(N,N);
+	gsl_matrix* Min = zeros(N);
+	
+	// for i=1:N-1
+	for (int i = 0; i < N - 1; i++) {
+		
+		// c1 = CIJ(:,i);
+		gsl_vector_const_view c1 = gsl_matrix_const_column(m, i);
+		
+		// for j=i+1:N
+		for (int j = i + 1; j < N; j++) {
+			
+			// c2 = CIJ(:,j);
 			gsl_vector_const_view c2 = gsl_matrix_const_column(m, j);
-			use = logical_not(logical_and(logical_not(&c1.vector), logical_not(&c2.vector)));
-			gsl_vector_set(use, i, 0);
-			gsl_vector_set(use, j, 0);
-			ncon = sum(logical_index(&c1.vector, use)) + sum(logical_index(&c2.vector, use));
-			if(ncon == 0)
-				gsl_matrix_set(Min, i, j, 0.0);
-			else
-			{
-				//Improve this by storing the logical_index results, also calculated above?
-				matchindex = ((double)sum(logical_and(logical_index(&c1.vector, use), logical_index(&c2.vector, use))))/ncon;
-				matchindex *= 2.0;
-				gsl_matrix_set(Min, i, j, matchindex);
-			}
+			
+			gsl_matrix_set(Min, i, j, matching_ind(&c1.vector, &c2.vector, i, j, 0));
 		}
 	}
-	gsl_vector_free(use);
-	return Min;	
+	
+	return Min;
 }
 
-//Compare the outgoing connections only
+/*
+ * Computes the matching index for outgoing connections.
+ */
 gsl_matrix* bct::matching_ind_out(const gsl_matrix* m) {
-	int N, ncon;
-	double matchindex;
-	gsl_matrix* Mout;
-	gsl_vector* use;
 	
-	N = m->size1;
-	Mout = gsl_matrix_calloc(N, N);
-	for(int i = 0;i < (N-1);i++) {
-		for(int j = (i+1);j < N;j++) {
-			gsl_vector_const_view r1 = gsl_matrix_const_row(m, i);
-			gsl_vector_const_view r2 = gsl_matrix_const_row(m, j);
-			use = logical_not(logical_and(logical_not(&r1.vector), logical_not(&r2.vector)));
-			gsl_vector_set(use, i, 0);
-			gsl_vector_set(use, j, 0);
-			ncon = sum(logical_index(&r1.vector, use)) + sum(logical_index(&r2.vector, use));
-			if(ncon == 0)
-				gsl_matrix_set(Mout, i, j, 0.0);
-			else
-			{
-				//Improve this by storing the logical_index results, also calculated above?
-				matchindex = ((double)sum(logical_and(logical_index(&r1.vector, use), logical_index(&r2.vector, use))))/ncon;
-				matchindex *= 2.0;
-				gsl_matrix_set(Mout, i, j, matchindex);
-			}
+	// N = size(CIJ,1);
+	int N = m->size1;
+	
+	// Mout = zeros(N,N);
+	gsl_matrix* Mout = zeros(N);
+	
+	// for i=1:N-1
+	for (int i = 0; i < N - 1; i++) {
+		
+		// c1 = CIJ(:,i);
+		gsl_vector_const_view c1 = gsl_matrix_const_row(m, i);
+		
+		// for j=i+1:N
+		for (int j = i + 1; j < N; j++) {
+			
+			// c2 = CIJ(:,j);
+			gsl_vector_const_view c2 = gsl_matrix_const_row(m, j);
+			
+			gsl_matrix_set(Mout, i, j, matching_ind(&c1.vector, &c2.vector, i, j, 0));
 		}
 	}
-	gsl_vector_free(use);
+	
 	return Mout;
 }
-		
-	
 
-		
-		
+double matching_ind(const gsl_vector* c1, const gsl_vector* c2, int i, int j, int N) {
+	using namespace bct;
 	
+	// use = ~(~c1&~c2);
+	gsl_vector* use = logical_or(c1, c2);
+	
+	// use(i) = 0;  use(i+N) = 0;
+	gsl_vector_set(use, i, 0.0);
+	gsl_vector_set(use, i + N, 0.0);
+	
+	// use(j) = 0;  use(j+N) = 0;
+	gsl_vector_set(use, j, 0.0);
+	gsl_vector_set(use, j + N, 0.0);
+	
+	// ncon = sum(c1(use))+sum(c2(use));
+	gsl_vector* c1_use = logical_index(c1, use);
+	gsl_vector* c2_use = logical_index(c2, use);
+	double ncon = sum(c1_use) + sum(c2_use);
+	
+	// if (ncon==0)
+	double ret;
+	if (fp_zero(ncon)) {
+		
+		// Mall(i,j) = 0;
+		ret = 0.0;
+	} else {
+		
+		// Mall(i,j) = 2*(sum(c1(use)&c2(use))/ncon);
+		gsl_vector* temp = logical_and(c1_use, c2_use);
+		ret = 2.0 * sum(temp) / ncon;
+		gsl_vector_free(temp);
+	}
+	
+	gsl_vector_free(use);
+	gsl_vector_free(c1_use);
+	gsl_vector_free(c2_use);
+	return ret;
+}

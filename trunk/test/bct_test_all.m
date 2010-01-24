@@ -22,8 +22,8 @@ failures = 0;
 
 % assortativity
 for i = 1:size(m)(2)
-	bct_test(sprintf("assortativity_und %s", mname{i}), assortativity(m{i}, 0) == assortativity_und_cpp(m{i}))
 	bct_test(sprintf("assortativity_dir %s", mname{i}), assortativity(m{i}, 1) == assortativity_dir_cpp(m{i}))
+	bct_test(sprintf("assortativity_und %s", mname{i}), assortativity(m{i}, 0) == assortativity_und_cpp(m{i}))
 end
 
 % betweenness_bin
@@ -177,9 +177,9 @@ end
 for i = 1:size(m)(2)
 	[J J_od J_id J_bl] = jdegree(m{i});
 	bct_test(sprintf("jdegree %s", mname{i}), all(J == jdegree_cpp(m{i})))
+	bct_test(sprintf("jdegree_bl %s", mname{i}), (J_bl == jdegree_bl_cpp(J)))
 	bct_test(sprintf("jdegree_id %s", mname{i}), (J_id == jdegree_id_cpp(J)))
 	bct_test(sprintf("jdegree_od %s", mname{i}), (J_od == jdegree_od_cpp(J)))
-	bct_test(sprintf("jdegree_bl %s", mname{i}), (J_bl == jdegree_bl_cpp(J)))
 end
 
 % latmio_dir
@@ -221,6 +221,14 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("latmio_und %s", mname{i}), all(abs(deg_latmio_und-deg_latmio_und_cpp) < 10)); 
 end
 
+% matching_ind
+for i = 1:size(m)(2)
+	[Min Mout Mall] = matching_ind(m{i});
+	bct_test(sprintf("matching_ind %s", mname{i}), all(Mall == matching_ind_cpp(m{i})))
+	bct_test(sprintf("matching_ind_in %s", mname{i}), all(Min == matching_ind_in_cpp(m{i})))
+	bct_test(sprintf("matching_ind_out %s", mname{i}), all(Mout == matching_ind_out_cpp(m{i})))
+end	
+
 % randmio_dir_connected
 for i = 1:size(m)(2)
 	R = randmio_dir_connected(m{i},2);
@@ -261,12 +269,6 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("randmio_und %s", mname{i}), all(abs(deg_randmio_und-deg_randmio_und_cpp) < 10)); 
 end
 
-% matching_ind
-for i = 1:size(m)(2)
-	[Min Mout Mall] = matching_ind(m{i});
-	bct_test(sprintf("matching_ind %s", mname{i}), all(Mall == matching_ind_cpp(m{i})))
-end	
-
 %reachdist
 for i = 1:size(m)(2)
 	[R,D] = reachdist(m{i});
@@ -283,15 +285,15 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("charpath diameter %s", mname{i}), diameter == diameter_cpp);	
 end
 
-% strengths_und
-for i = 1:size(m)(2)
-	bct_test(sprintf("strengths_und %s", mname{i}), all(strengths_und(m{i}) == strengths_und_cpp(m{i})))
-end
-
 % strengths_dir
 for i = 1:size(m)(2)
 	[is os str] = strengths_dir(m{i});
 	bct_test(sprintf("strengths_dir %s", mname{i}), all(str == strengths_dir_cpp(m{i})))
+end
+
+% strengths_und
+for i = 1:size(m)(2)
+	bct_test(sprintf("strengths_und %s", mname{i}), all(strengths_und(m{i}) == strengths_und_cpp(m{i})))
 end
 
 printf("Failures: %d\n", failures)

@@ -37,10 +37,9 @@ gsl_matrix* bct_test::to_gsl(const Matrix m) {
  * Converts an Octave 3D matrix to a GSL 3D matrix.
  */
 gsl_matrix** bct_test::to_gsl(const NDArray a) {
-	dim_vector dims = a.dims();
-	int n_rows = dims(0);
-	int n_columns = dims(1);
-	int depth = dims(2);
+	int n_rows = a.dims()(0);
+	int n_columns = a.dims()(1);
+	int depth = a.dims()(2);
 	gsl_matrix** gslm = new gsl_matrix*[depth];
 	for (int k = 0; k < depth; k++) {
 		gslm[k] = gsl_matrix_alloc(n_rows, n_columns);
@@ -79,12 +78,13 @@ Matrix bct_test::from_gsl(const gsl_matrix* gslm) {
 /*
  * Converts a GSL 3D matrix to an Octave 3D matrix.
  */
-NDArray bct_test::from_gsl(const gsl_matrix** gslm, int depth) {
-	dim_vector dims(3);
-	dims(0) = gslm[0]->size1;
-	dims(1) = gslm[0]->size2;
-	dims(2) = depth;
-	NDArray m(dims);
+NDArray bct_test::from_gsl(const gsl_matrix* const* gslm, int depth) {
+	dim_vector dim_v(3);
+	dim_v.resize(3);
+	dim_v(0) = gslm[0]->size1;
+	dim_v(1) = gslm[0]->size2;
+	dim_v(2) = depth;
+	NDArray m(dim_v);
 	for (int k = 0; k < depth; k++) {
 		for (int i = 0; i < gslm[0]->size1; i++) {
 			for (int j = 0; j < gslm[0]->size2; j++) {

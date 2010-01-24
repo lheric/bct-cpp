@@ -2,17 +2,20 @@
 #include <gsl/gsl_matrix.h>
 
 /*
- * Computes the connection density of the undirected graph whose
- * adjaceny matrix is m. The total number of possible connections 
- * is given by the form N(N-1)/2. N is the number of nodes.
+ * Computes the connection density of an undirected matrix.  Connection weights
+ * are ignored.
  */
 double bct::density_und(const gsl_matrix* m) {
-	int N,K;
-	double kden;
-	N = m->size1;
+	if (safe_mode) check_status(m, UNDIRECTED, "density_und");
+	
+	// N = size(CIJ,1);
+	int N = m->size1;
+	
+	// K = nnz(triu(CIJ));
 	gsl_matrix* triu_m = triu(m);
-	K = nnz(triu_m);
-	kden = (double)K/((double)(N*N-N)/2.0);
-	return kden;
+	int K = nnz(triu_m);
+	gsl_matrix_free(triu_m);
+	
+	// kden = K/((N^2-N)/2);
+	return (double)K / ((double)(N * N - N) / 2.0);
 }
-

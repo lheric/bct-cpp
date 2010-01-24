@@ -110,9 +110,6 @@ bool bct::has_loops(const gsl_matrix* m) {
  * Returns whether the given matrix has no loops.
  */
 bool bct::has_no_loops(const gsl_matrix* m) {
-	if (m->size1 != m->size2) {
-		throw size_exception();
-	}
 	gsl_vector_const_view diagonal = gsl_matrix_const_diagonal(m);
 	return gsl_vector_isnull(&diagonal.vector) == 1;
 }

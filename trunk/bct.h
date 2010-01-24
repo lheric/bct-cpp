@@ -1,7 +1,6 @@
 #ifndef BCT_H
 #define BCT_H
 
-#include <gsl/gsl_errno.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_permutation.h>
 #include <gsl/gsl_vector.h>
@@ -18,19 +17,18 @@ namespace bct {
 	// Density, degree, and assortativity
 	double assortativity_dir(const gsl_matrix*);
 	double assortativity_und(const gsl_matrix*);
-	double assortativity(const gsl_vector*, const gsl_vector*, int);
-	gsl_vector* degrees_dir(const gsl_matrix*, gsl_vector* = NULL, gsl_vector* = NULL);
+	gsl_vector* degrees_dir(const gsl_matrix*, gsl_vector** = NULL, gsl_vector** = NULL);
 	gsl_vector* degrees_und(const gsl_matrix*);
 	double density_dir(const gsl_matrix*);
 	double density_und(const gsl_matrix*);
-	gsl_matrix* jdegree(const gsl_matrix*); //returns the Joint distribution matrix
-	double jdegree_id(gsl_matrix*); //returns other metrices from the Joint dstrbn matrix
-	double jdegree_od(gsl_matrix*);
-	double jdegree_bl(gsl_matrix*);
-	gsl_matrix* matching_ind(const gsl_matrix*); //returns all indices
+	gsl_matrix* jdegree(const gsl_matrix*);
+	int jdegree_bl(const gsl_matrix*);
+	int jdegree_id(const gsl_matrix*);
+	int jdegree_od(const gsl_matrix*);
+	gsl_matrix* matching_ind(const gsl_matrix*);
 	gsl_matrix* matching_ind_in(const gsl_matrix*);
 	gsl_matrix* matching_ind_out(const gsl_matrix*);
-	gsl_vector* strengths_dir(const gsl_matrix*, gsl_vector* = NULL, gsl_vector* = NULL);
+	gsl_vector* strengths_dir(const gsl_matrix*, gsl_vector** = NULL, gsl_vector** = NULL);
 	gsl_vector* strengths_und(const gsl_matrix*);
 
 	// Clustering
@@ -49,8 +47,8 @@ namespace bct {
 	gsl_matrix* distance_bin(const gsl_matrix*);
 	gsl_matrix* distance_inv(gsl_matrix*); //called by efficiency_*		
 	gsl_matrix* distance_wei(const gsl_matrix*); 
-	gsl_matrix* efficiency_local(const gsl_matrix*);
 	gsl_matrix* efficiency_global(const gsl_matrix*);
+	gsl_matrix* efficiency_local(const gsl_matrix*);
 	gsl_matrix* findpaths(const gsl_matrix*, const gsl_vector*, int, int, \
 						  gsl_matrix** = NULL, long int* = NULL , gsl_vector* = NULL, int* = NULL, gsl_matrix* = NULL);
 	gsl_vector* findwalks(const gsl_matrix*, gsl_matrix** = NULL, double* = NULL);
@@ -72,13 +70,13 @@ namespace bct {
 
 	// Modularity and community structure
 	
-	//Graph randomization
-	gsl_matrix* latmio_dir(const gsl_matrix*, int);
+	// Graph randomization
 	gsl_matrix* latmio_dir_connected(const gsl_matrix*, int);	
+	gsl_matrix* latmio_dir(const gsl_matrix*, int);
 	gsl_matrix* latmio_und_connected(const gsl_matrix*, int);
 	gsl_matrix* latmio_und(const gsl_matrix*, int);
-	gsl_matrix* randmio_dir(const gsl_matrix*, int);
 	gsl_matrix* randmio_dir_connected(const gsl_matrix*, int);
+	gsl_matrix* randmio_dir(const gsl_matrix*, int);
 	gsl_matrix* randmio_und_connected(const gsl_matrix*, int);
 	gsl_matrix* randmio_und(const gsl_matrix*, int);
 
