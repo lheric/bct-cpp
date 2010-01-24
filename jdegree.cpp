@@ -7,14 +7,14 @@
  * element (u, v) is the number of nodes with u outgoing connections and v
  * incoming connections.
  */
-gsl_matrix* bct::jdegree(const gsl_matrix* m) {
-	if (m->size1 != m->size2) throw size_exception();
+gsl_matrix* bct::jdegree(const gsl_matrix* CIJ) {
+	if (CIJ->size1 != CIJ->size2) throw size_exception();
 	
 	// CIJ = double(CIJ~=0);
-	gsl_matrix* bin_m = compare_elements(m, fp_not_equal, 0.0);
+	gsl_matrix* bin_m = compare_elements(CIJ, fp_not_equal, 0.0);
 	
 	// N = size(CIJ,1);
-	int N = m->size1;
+	int N = CIJ->size1;
 	
 	// id = sum(CIJ,1);
 	gsl_vector* id = sum(bin_m, 1);

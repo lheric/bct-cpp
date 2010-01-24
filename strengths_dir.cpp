@@ -5,15 +5,15 @@
 /*
  * Computes the strength for each node in a directed matrix.
  */
-gsl_vector* bct::strengths_dir(const gsl_matrix* m, gsl_vector** is, gsl_vector** os) {
-	if (safe_mode) check_status(m, DIRECTED, "strengths_dir");
-	if (m->size1 != m->size2) throw size_exception();
+gsl_vector* bct::strengths_dir(const gsl_matrix* CIJ, gsl_vector** is, gsl_vector** os) {
+	if (safe_mode) check_status(CIJ, DIRECTED, "strengths_dir");
+	if (CIJ->size1 != CIJ->size2) throw size_exception();
 	
 	// is = sum(CIJ,1);
-	gsl_vector* _is = sum(m, 1);
+	gsl_vector* _is = sum(CIJ, 1);
 	
 	// os = sum(CIJ,2);
-	gsl_vector* _os = sum(m, 2);
+	gsl_vector* _os = sum(CIJ, 2);
 	
 	// str = is+os;
 	gsl_vector* str = copy(_is);

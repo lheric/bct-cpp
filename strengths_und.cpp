@@ -5,9 +5,9 @@
 /*
  * Computes the strength for each node in an undirected matrix.
  */
-gsl_vector* bct::strengths_und(const gsl_matrix* m) {
-	if (safe_mode) check_status(m, UNDIRECTED, "strengths_und");
+gsl_vector* bct::strengths_und(const gsl_matrix* CIJ) {
+	if (safe_mode) check_status(CIJ, UNDIRECTED, "strengths_und");
 	
 	// str = sum(CIJ);
-	return sum(m);
+	return sum(CIJ);
 }

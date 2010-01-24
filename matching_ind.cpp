@@ -7,10 +7,10 @@ double matching_ind(const gsl_vector*, const gsl_vector*, int, int, int);
 /*
  * Computes the matching index for all connections.
  */
-gsl_matrix* bct::matching_ind(const gsl_matrix* m) {
+gsl_matrix* bct::matching_ind(const gsl_matrix* CIJ) {
 	
 	// N = size(CIJ,1);
-	int N = m->size1;
+	int N = CIJ->size1;
 	
 	// Mall = zeros(N,N);
 	gsl_matrix* Mall = zeros(N);
@@ -19,16 +19,16 @@ gsl_matrix* bct::matching_ind(const gsl_matrix* m) {
 	for (int i = 0; i < N - 1; i++) {
 		
 		// c1 = [CIJ(:,i)' CIJ(i,:)];
-		gsl_vector_const_view col_i = gsl_matrix_const_column(m, i);
-		gsl_vector_const_view row_i = gsl_matrix_const_row(m, i);
+		gsl_vector_const_view col_i = gsl_matrix_const_column(CIJ, i);
+		gsl_vector_const_view row_i = gsl_matrix_const_row(CIJ, i);
 		gsl_vector* c1 = concatenate(&col_i.vector, &row_i.vector);
 		
 		// for j=i+1:N
 		for (int j = i + 1; j < N; j++) {
 			
 			// c2 = [CIJ(:,j)' CIJ(j,:)];
-			gsl_vector_const_view col_j = gsl_matrix_const_column(m, j);
-			gsl_vector_const_view row_j = gsl_matrix_const_row(m, j);
+			gsl_vector_const_view col_j = gsl_matrix_const_column(CIJ, j);
+			gsl_vector_const_view row_j = gsl_matrix_const_row(CIJ, j);
 			gsl_vector* c2 = concatenate(&col_j.vector, &row_j.vector);
 			
 			gsl_matrix_set(Mall, i, j, matching_ind(c1, c2, i, j, N));
@@ -44,10 +44,10 @@ gsl_matrix* bct::matching_ind(const gsl_matrix* m) {
 /*
  * Computes the matching index for incoming connections.
  */
-gsl_matrix* bct::matching_ind_in(const gsl_matrix* m) {
+gsl_matrix* bct::matching_ind_in(const gsl_matrix* CIJ) {
 	
 	// N = size(CIJ,1);
-	int N = m->size1;
+	int N = CIJ->size1;
 	
 	// Min = zeros(N,N);
 	gsl_matrix* Min = zeros(N);
@@ -56,13 +56,13 @@ gsl_matrix* bct::matching_ind_in(const gsl_matrix* m) {
 	for (int i = 0; i < N - 1; i++) {
 		
 		// c1 = CIJ(:,i);
-		gsl_vector_const_view c1 = gsl_matrix_const_column(m, i);
+		gsl_vector_const_view c1 = gsl_matrix_const_column(CIJ, i);
 		
 		// for j=i+1:N
 		for (int j = i + 1; j < N; j++) {
 			
 			// c2 = CIJ(:,j);
-			gsl_vector_const_view c2 = gsl_matrix_const_column(m, j);
+			gsl_vector_const_view c2 = gsl_matrix_const_column(CIJ, j);
 			
 			gsl_matrix_set(Min, i, j, matching_ind(&c1.vector, &c2.vector, i, j, 0));
 		}
@@ -74,10 +74,10 @@ gsl_matrix* bct::matching_ind_in(const gsl_matrix* m) {
 /*
  * Computes the matching index for outgoing connections.
  */
-gsl_matrix* bct::matching_ind_out(const gsl_matrix* m) {
+gsl_matrix* bct::matching_ind_out(const gsl_matrix* CIJ) {
 	
 	// N = size(CIJ,1);
-	int N = m->size1;
+	int N = CIJ->size1;
 	
 	// Mout = zeros(N,N);
 	gsl_matrix* Mout = zeros(N);
@@ -86,13 +86,13 @@ gsl_matrix* bct::matching_ind_out(const gsl_matrix* m) {
 	for (int i = 0; i < N - 1; i++) {
 		
 		// c1 = CIJ(:,i);
-		gsl_vector_const_view c1 = gsl_matrix_const_row(m, i);
+		gsl_vector_const_view c1 = gsl_matrix_const_row(CIJ, i);
 		
 		// for j=i+1:N
 		for (int j = i + 1; j < N; j++) {
 			
 			// c2 = CIJ(:,j);
-			gsl_vector_const_view c2 = gsl_matrix_const_row(m, j);
+			gsl_vector_const_view c2 = gsl_matrix_const_row(CIJ, j);
 			
 			gsl_matrix_set(Mout, i, j, matching_ind(&c1.vector, &c2.vector, i, j, 0));
 		}
