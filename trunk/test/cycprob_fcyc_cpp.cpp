@@ -1,3 +1,4 @@
+#include <bct/bct.h>
 #include "bct_test.h"
 
 DEFUN_DLD(cycprob_fcyc_cpp, args, , "Wrapper for C++ function.") {
