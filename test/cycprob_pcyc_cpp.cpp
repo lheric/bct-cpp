@@ -1,5 +1,4 @@
 #include "bct_test.h"
-#include "bct_test.cpp"
 
 DEFUN_DLD(cycprob_pcyc_cpp, args, , "Wrapper for C++ function.") {
 	if (args.length() == 0) {

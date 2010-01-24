@@ -1,4 +1,4 @@
-#include "bct_test.cpp"
+#include "bct_test.h"
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include <octave/oct.h>
@@ -16,7 +16,7 @@ DEFUN_DLD(findpaths_cpp, args, , "Wrapper for C++ function.") {
 		gsl_matrix** ret_pq = new gsl_matrix* [path_len_max];
         long int* ret_tpath = NULL;
         gsl_vector* ret_plq = NULL;
-        int* ret_qstop = new int;        
+        int* ret_qstop = new int;
         gsl_matrix* ret_util = NULL;
 		if (!error_state) {
 			gsl_matrix* gslm = bct_test::to_gsl(m);

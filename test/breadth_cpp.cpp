@@ -1,4 +1,4 @@
-#include "bct_test.cpp"
+#include "bct_test.h"
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include <octave/oct.h>

@@ -1,5 +1,4 @@
 #include "bct_test.h"
-#include "bct_test.cpp"
 
 DEFUN_DLD(charpath_ecc_cpp, args, , "Wrapper for C++ function.") {
 	if (args.length() == 0) {

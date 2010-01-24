@@ -7,13 +7,15 @@
 #include <octave/oct.h>
 
 namespace bct_test {
-	gsl_matrix* to_gsl(const Matrix);
 	gsl_vector* to_gsl(const Array<int>);
-	Matrix from_gsl(const gsl_matrix*);
-	Matrix from_gsl(const gsl_vector*);
-	NDArray from_gsl(gsl_matrix**, int);
+	gsl_matrix* to_gsl(const Matrix);
 	gsl_matrix** to_gsl(const NDArray);
+	Matrix from_gsl(const gsl_vector*);
+	Matrix from_gsl(const gsl_matrix*);
+	NDArray from_gsl(const gsl_matrix**, int);
 };
+
+#include "bct_test.cpp"
 
 #define MATRIX_TO_SCALAR_FUNCTION(function_name) \
 	DEFUN_DLD(function_name##_cpp, args, , "Wrapper for C++ function.") { \
