@@ -30,17 +30,19 @@ filenames = \
 	jdegree_bl_cpp \
 	jdegree_id_cpp \
 	jdegree_od_cpp \
-	latmio_dir_connected_cpp \
 	latmio_dir_cpp \
-	latmio_und_connected_cpp \
+	latmio_dir_connected_cpp \
 	latmio_und_cpp \
+	latmio_und_connected_cpp \
 	matching_ind_cpp \
 	matching_ind_in_cpp \
 	matching_ind_out_cpp \
-	randmio_dir_connected_cpp \
+	motif3generate_cpp \
+	motif4generate_cpp \
 	randmio_dir_cpp \
-	randmio_und_connected_cpp \
+	randmio_dir_connected_cpp \
 	randmio_und_cpp \
+	randmio_und_connected_cpp \
 	reachdist_cpp \
 	strengths_dir_cpp \
 	strengths_und_cpp

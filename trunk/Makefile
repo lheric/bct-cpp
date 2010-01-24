@@ -27,12 +27,8 @@ objects = \
 	jdegree.o \
 	latmio_dir.o \
 	latmio_dir_connected.o \
-	latmio_und_connected.o \
 	latmio_und.o \
-	randmio_dir.o \
-	randmio_dir_connected.o \
-	randmio_und_connected.o \
-	randmio_und.o \
+	latmio_und_connected.o \
 	macaque.o \
 	make_motif34lib.o \
 	matching_ind.o \
@@ -43,6 +39,10 @@ objects = \
 	matlab/operators.o \
 	matlab/utility.o \
 	norm_avr_shortest_path_length_bu.o \
+	randmio_dir.o \
+	randmio_dir_connected.o \
+	randmio_und.o \
+	randmio_und_connected.o \
 	reachdist.o \
 	status.o \
 	strengths_dir.o \

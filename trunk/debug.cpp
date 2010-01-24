@@ -1,6 +1,7 @@
 #include "bct.h"
 #include <cstdio>
 #include <gsl/gsl_matrix.h>
+#include <gsl/gsl_permutation.h>
 #include <gsl/gsl_vector.h>
 
 /*
@@ -27,4 +28,17 @@ void bct::printf(const gsl_matrix* m, const char* format) {
 		}
 		std::printf("\n");
 	}
+}
+
+/*
+ * Prints a permutation using the given format for each element.  This is only
+ * provided for debugging purposes.  In other cases, use
+ * gsl_permutation_fprintf.
+ */
+void bct::printf(const gsl_permutation* p, const char* format) {
+	for (int i = 0; i < p->size; i++) {
+		std::printf(format, gsl_permutation_get(p, i));
+		std::printf(" ");
+	}
+	std::printf("\n");
 }

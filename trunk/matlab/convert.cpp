@@ -3,6 +3,15 @@
 #include "matlab.h"
 
 /*
+ * Converts a vector to an array.
+ */
+void matlab::to_array(const gsl_vector* v, double* array) {
+	for (int i = 0; i < v->size; i++) {
+		array[i] = gsl_vector_get(v, i);
+	}
+}
+
+/*
  * Converts a vector to a boolean: true if all elements are nonzero, false
  * otherwise.
  */

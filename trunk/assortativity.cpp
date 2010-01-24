@@ -73,31 +73,28 @@ double assortativity(const gsl_vector* deg, const gsl_matrix* ij) {
 	
 	// r = (sum(degi.*degj)/K - (sum(0.5*(degi+degj))/K)^2)/(sum(0.5*(degi.^2+degj.^2))/K - (sum(0.5*(degi+degj))/K)^2);
 	
-	gsl_vector* temp1 = copy(degi);
-	gsl_vector_memcpy(temp1, degi);
-	gsl_vector_mul(temp1, degj);
-	double r1 = sum(temp1) / (double)K;
+	gsl_vector* product = copy(degi);
+	gsl_vector_mul(product, degj);
+	double r1 = sum(product) / (double)K;
+	gsl_vector_free(product);
 	
-	gsl_vector_memcpy(temp1, degi);
-	gsl_vector_add(temp1, degj);
-	gsl_vector_scale(temp1, 0.5);
-	double r2 = sum(temp1) / (double)K;
+	gsl_vector* sum_scaled = copy(degi);
+	gsl_vector_add(sum_scaled, degj);
+	gsl_vector_scale(sum_scaled, 0.5);
+	double r2 = sum(sum_scaled) / (double)K;
+	gsl_vector_free(sum_scaled);
 	r2 *= r2;
 	
-	gsl_vector_free(temp1);
-	temp1 = pow_elements(degi, 2);
-	gsl_vector* temp2 = pow_elements(degj, 2);
-	gsl_vector_add(temp1, temp2);
-	gsl_vector_scale(temp1, 0.5);
-	double r3 = sum(temp1) / (double)K;
+	gsl_vector* sumsq_scaled = pow_elements(degi, 2);
+	gsl_vector* degjsq = pow_elements(degj, 2);
+	gsl_vector_add(sumsq_scaled, degjsq);
+	gsl_vector_free(degjsq);
+	gsl_vector_scale(sumsq_scaled, 0.5);
+	double r3 = sum(sumsq_scaled) / (double)K;
+	gsl_vector_free(sumsq_scaled);
 	
-	gsl_vector_memcpy(temp1, degi);
-	gsl_vector_add(temp1, degj);
-	gsl_vector_scale(temp1, 0.5);
-	double r4 = sum(temp1) / (double)K;
-	r4 *= r4;
+	gsl_vector_free(degi);
+	gsl_vector_free(degj);
 	
-	gsl_vector_free(temp1);
-	gsl_vector_free(temp2);
-	return (r1 - r2) / (r3 - r4);
+	return (r1 - r2) / (r3 - r2);
 }
