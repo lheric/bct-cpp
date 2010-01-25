@@ -3,7 +3,7 @@
 #include <gsl/gsl_vector.h>
 
 /*
- * Counts occurrences of three-node structural motifs.
+ * Counts occurrences of three-node structural motifs in a binary matrix.
  */
 gsl_vector* bct::motif3struct_bin(const gsl_matrix* A, gsl_matrix** F) {
 	if (safe_mode) check_status(A, BINARY, "motif3struct_bin");

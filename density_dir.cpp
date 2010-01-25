@@ -2,8 +2,7 @@
 #include <gsl/gsl_matrix.h>
 
 /*
- * Computes the connection density of a directed matrix.  Connection weights are
- * ignored.
+ * Computes density for a directed matrix.  Connection weights are ignored.
  */
 double bct::density_dir(const gsl_matrix* m) {
 	if (safe_mode) check_status(m, DIRECTED, "density_dir");
