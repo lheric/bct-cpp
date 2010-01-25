@@ -3,7 +3,7 @@
 #include <gsl/gsl_vector.h>
 
 /*
- * Computes the strength for each node in an undirected matrix.
+ * Computes strength for an undirected matrix.
  */
 gsl_vector* bct::strengths_und(const gsl_matrix* CIJ) {
 	if (safe_mode) check_status(CIJ, UNDIRECTED, "strengths_und");

@@ -5,7 +5,7 @@
 double matching_ind(const gsl_vector*, const gsl_vector*, int, int, int);
 
 /*
- * Computes the matching index for all connections.
+ * Computes matching index for all connections.
  */
 gsl_matrix* bct::matching_ind(const gsl_matrix* CIJ) {
 	
@@ -42,7 +42,7 @@ gsl_matrix* bct::matching_ind(const gsl_matrix* CIJ) {
 }
 
 /*
- * Computes the matching index for incoming connections.
+ * Computes matching index for incoming connections.
  */
 gsl_matrix* bct::matching_ind_in(const gsl_matrix* CIJ) {
 	
@@ -72,7 +72,7 @@ gsl_matrix* bct::matching_ind_in(const gsl_matrix* CIJ) {
 }
 
 /*
- * Computes the matching index for outgoing connections.
+ * Computes matching index for outgoing connections.
  */
 gsl_matrix* bct::matching_ind_out(const gsl_matrix* CIJ) {
 	

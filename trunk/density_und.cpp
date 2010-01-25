@@ -2,8 +2,7 @@
 #include <gsl/gsl_matrix.h>
 
 /*
- * Computes the connection density of an undirected matrix.  Connection weights
- * are ignored.
+ * Computes density for an undirected matrix.  Connection weights are ignored.
  */
 double bct::density_und(const gsl_matrix* m) {
 	if (safe_mode) check_status(m, UNDIRECTED, "density_und");

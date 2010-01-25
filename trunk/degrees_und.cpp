@@ -3,7 +3,7 @@
 #include <gsl/gsl_vector.h>
 
 /*
- * Computes the degree for each node in an undirected matrix.
+ * Computes degree for an undirected matrix.  Connection weights are ignored.
  */
 gsl_vector* bct::degrees_und(const gsl_matrix* CIJ) {
 	if (safe_mode) check_status(CIJ, UNDIRECTED, "degrees_und");
