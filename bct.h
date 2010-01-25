@@ -67,7 +67,7 @@ namespace bct {
 	// Motifs
 	gsl_matrix* motif3generate(gsl_vector** = NULL, gsl_vector** = NULL);
 	gsl_matrix* motif4generate(gsl_vector** = NULL, gsl_vector** = NULL);
-	gsl_vector* motif3struct_bin(const gsl_matrix*, gsl_matrix** = NULL);
+	gsl_matrix* motif3struct_bin(const gsl_matrix*, gsl_vector** = NULL);
 
 	// Modularity and community structure
 	

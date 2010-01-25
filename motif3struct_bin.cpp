@@ -5,7 +5,7 @@
 /*
  * Counts occurrences of three-node structural motifs in a binary matrix.
  */
-gsl_vector* bct::motif3struct_bin(const gsl_matrix* A, gsl_matrix** F) {
+gsl_matrix* bct::motif3struct_bin(const gsl_matrix* A, gsl_vector** f) {
 	if (safe_mode) check_status(A, BINARY, "motif3struct_bin");
 	if (A->size1 != A->size2) throw size_exception();
 	
@@ -17,12 +17,12 @@ gsl_vector* bct::motif3struct_bin(const gsl_matrix* A, gsl_matrix** F) {
 	int n = length(A);
 	
 	// F=zeros(13,n);
-	if (F != NULL) {
-		*F = zeros(13, n);
-	}
+	gsl_matrix* F = zeros(13, n);
 	
 	// f=zeros(13,1);
-	gsl_vector* f = zeros_vector(13);
+	if (f != NULL) {
+		*f = zeros_vector(13);
+	}
 	
 	// As=A|A.';
 	gsl_matrix* A_transpose = gsl_matrix_alloc(A->size1, A->size2);
@@ -95,14 +95,14 @@ gsl_vector* bct::motif3struct_bin(const gsl_matrix* A, gsl_matrix** F) {
 							int ind = (int)gsl_vector_get(ID3, ind_M3) - 1;
 							
 							// if nargout==2; F(ind,[u v1 v2])=F(ind,[u v1 v2])+1; end
-							if (F != NULL) {
-								gsl_matrix_set(*F, ind, u, gsl_matrix_get(*F, ind, u) + 1.0);
-								gsl_matrix_set(*F, ind, v1, gsl_matrix_get(*F, ind, v1) + 1.0);
-								gsl_matrix_set(*F, ind, v2, gsl_matrix_get(*F, ind, v2) + 1.0);
-							}
+							gsl_matrix_set(F, ind, u, gsl_matrix_get(F, ind, u) + 1.0);
+							gsl_matrix_set(F, ind, v1, gsl_matrix_get(F, ind, v1) + 1.0);
+							gsl_matrix_set(F, ind, v2, gsl_matrix_get(F, ind, v2) + 1.0);
 							
 							// f(ind)=f(ind)+1;
-							gsl_vector_set(f, ind, gsl_vector_get(f, ind) + 1.0);
+							if (f != NULL) {
+								gsl_vector_set(*f, ind, gsl_vector_get(*f, ind) + 1.0);
+							}
 						}
 					}
 					
@@ -121,5 +121,5 @@ gsl_vector* bct::motif3struct_bin(const gsl_matrix* A, gsl_matrix** F) {
 	gsl_vector_free(ID3);
 	gsl_matrix_free(M3);
 	gsl_matrix_free(As);
-	return f;
+	return F;
 }

@@ -11,8 +11,8 @@ DEFUN_DLD(motif3struct_bin_cpp, args, , "Wrapper for C++ function.") {
 	Matrix m = args(0).matrix_value();
 	if (!error_state) {
 		gsl_matrix* gslm = bct_test::to_gsl(m);
-		gsl_matrix* F;
-		gsl_vector* f = bct::motif3struct_bin(gslm, &F);
+		gsl_vector* f;
+		gsl_matrix* F = bct::motif3struct_bin(gslm, &f);
 		octave_value_list ret;
 		ret(0) = octave_value(bct_test::from_gsl(f));
 		ret(1) = octave_value(bct_test::from_gsl(F));
