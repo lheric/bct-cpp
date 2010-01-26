@@ -33,6 +33,8 @@ namespace matlab {
 	gsl_vector* nonzeros(const gsl_matrix*);
 	gsl_matrix* ones(int);
 	gsl_matrix* ones(int, int);
+	double prod(const gsl_vector*);
+	gsl_vector* prod(const gsl_matrix*, int = 1);
 	gsl_vector* reverse(gsl_vector*);
 	gsl_vector* sortrows(const gsl_vector*, gsl_permutation** = NULL);
 	gsl_matrix* sortrows(const gsl_matrix*, gsl_permutation** = NULL);

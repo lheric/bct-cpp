@@ -26,7 +26,7 @@ end
 
 % erange
 for i = 1:size(m)(2)
-%	bct_test(sprintf("erange %s", mname{i}), erange(m{i}) == erange_cpp(m{i}))
+	bct_test(sprintf("erange %s", mname{i}), erange(m{i}) == erange_cpp(m{i}))
 end
 
 if ~exist("subtest", "var") || ~subtest
