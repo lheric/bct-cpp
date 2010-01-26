@@ -3,7 +3,7 @@
 #include <gsl/gsl_vector.h>
 
 /*
- * Computes strength, in-strength, and out-strength for a directed matrix.
+ * Computes strength, in-strength, and out-strength for a directed graph.
  */
 gsl_vector* bct::strengths_dir(const gsl_matrix* CIJ, gsl_vector** is, gsl_vector** os) {
 	if (safe_mode) check_status(CIJ, DIRECTED, "strengths_dir");

@@ -3,7 +3,7 @@
 #include <gsl/gsl_vector.h>
 
 /*
- * Computes degree, in-degree, and out-degree for a directed matrix.  Connection
+ * Computes degree, in-degree, and out-degree for a directed graph.  Connection
  * weights are ignored.
  */
 gsl_vector* bct::degrees_dir(const gsl_matrix* CIJ, gsl_vector** id, gsl_vector** od) {
