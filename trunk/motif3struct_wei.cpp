@@ -36,7 +36,7 @@ gsl_matrix* bct::motif3struct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matri
 	gsl_matrix* A = compare_elements(W, fp_not_equal, 0.0);
 	
 	// As=A|A.';
-	gsl_matrix* A_transpose = gsl_matrix_alloc(A->size1, A->size2);
+	gsl_matrix* A_transpose = gsl_matrix_alloc(A->size2, A->size1);
 	gsl_matrix_transpose_memcpy(A_transpose, A);
 	gsl_matrix* As = logical_or(A, A_transpose);
 	gsl_matrix_free(A_transpose);
