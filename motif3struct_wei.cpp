@@ -4,8 +4,8 @@
 #include <gsl/gsl_vector.h>
 
 /*
- * Counts occurrences of three-node structural motifs in a weighted matrix.
- * Computes intensity and coherence.
+ * Counts occurrences of three-node structural motifs in a weighted graph.
+ * Optionally returns intensity and coherence.
  */
 gsl_matrix* bct::motif3struct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matrix** Q) {
 	if (safe_mode) check_status(W, WEIGHTED, "motif3struct_wei");

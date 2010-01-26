@@ -5,8 +5,7 @@
 double assortativity(const gsl_vector*, const gsl_matrix*);
 
 /*
- * Computes assortativity for a directed matrix.  Connection weights are
- * ignored.
+ * Computes assortativity for a directed graph.  Connection weights are ignored.
  */
 double bct::assortativity_dir(const gsl_matrix* CIJ) {
 	if (safe_mode) check_status(CIJ, DIRECTED, "assortativity_dir");
@@ -26,7 +25,7 @@ double bct::assortativity_dir(const gsl_matrix* CIJ) {
 }
 
 /*
- * Computes assortativity for an undirected matrix.  Connection weights are
+ * Computes assortativity for an undirected graph.  Connection weights are
  * ignored.
  */
 double bct::assortativity_und(const gsl_matrix* CIJ) {
