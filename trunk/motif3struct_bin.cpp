@@ -43,8 +43,8 @@ gsl_matrix* bct::motif3struct_bin(const gsl_matrix* A, gsl_vector** f) {
 		// for v1=find(V1)
 		gsl_vector* find_V1 = find(V1);
 		if (find_V1 != NULL) {
-			for (int i = 0; i < find_V1->size; i++) {
-				int v1 = (int)gsl_vector_get(find_V1, i);
+			for (int i_find_V1 = 0; i_find_V1 < find_V1->size; i_find_V1++) {
+				int v1 = (int)gsl_vector_get(find_V1, i_find_V1);
 				
 				// V2=[false(1,u) As(v1,u+1:n)];
 				gsl_vector* V2 = gsl_vector_alloc(n);
@@ -70,34 +70,34 @@ gsl_matrix* bct::motif3struct_bin(const gsl_matrix* A, gsl_vector** f) {
 				// for v2=find(V2)
 				gsl_vector* find_V2 = find(V2);
 				if (find_V2 != NULL) {
-					for (int j = 0; j < find_V2->size; j++) {
-						int v2 = (int)gsl_vector_get(find_V2, j);
+					for (int i_find_V2 = 0; i_find_V2 < find_V2->size; i_find_V2++) {
+						int v2 = (int)gsl_vector_get(find_V2, i_find_V2);
 						
 						// s=uint32(sum(10.^(5:-1:0).*[A(v1,u) A(v2,u) A(u,v1) A(v2,v1) A(u,v2) A(v1,v2)]));
+						int A_rows[] = { v1, v2, u, v2, u, v1 };
+						int A_columns[] = { u, u, v1, v1, v2, v2 };
 						gsl_vector* s = gsl_vector_alloc(6);
-						gsl_vector_set(s, 0, gsl_matrix_get(A, v1, u));
-						gsl_vector_set(s, 1, gsl_matrix_get(A, v2, u));
-						gsl_vector_set(s, 2, gsl_matrix_get(A, u, v1));
-						gsl_vector_set(s, 3, gsl_matrix_get(A, v2, v1));
-						gsl_vector_set(s, 4, gsl_matrix_get(A, u, v2));
-						gsl_vector_set(s, 5, gsl_matrix_get(A, v1, v2));
+						for (int i = 0; i < 6; i++) {
+							gsl_vector_set(s, i, gsl_matrix_get(A, A_rows[i], A_columns[i]));
+						}
 						
 						// ind=ID3(s==M3n);
-						int ind_M3 = 0;
-						for ( ; ind_M3 < M3->size1; ind_M3++) {
-							gsl_vector_view row = gsl_matrix_row(M3, ind_M3);
+						int i_M3 = 0;
+						for ( ; i_M3 < M3->size1; i_M3++) {
+							gsl_vector_view row = gsl_matrix_row(M3, i_M3);
 							if (compare_vectors(s, &row.vector) == 0) {
 								break;
 							}
 						}
 						gsl_vector_free(s);
-						if (ind_M3 < M3->size1) {
-							int ind = (int)gsl_vector_get(ID3, ind_M3) - 1;
+						if (i_M3 < M3->size1) {
+							int ind = (int)gsl_vector_get(ID3, i_M3) - 1;
 							
 							// if nargout==2; F(ind,[u v1 v2])=F(ind,[u v1 v2])+1; end
-							gsl_matrix_set(F, ind, u, gsl_matrix_get(F, ind, u) + 1.0);
-							gsl_matrix_set(F, ind, v1, gsl_matrix_get(F, ind, v1) + 1.0);
-							gsl_matrix_set(F, ind, v2, gsl_matrix_get(F, ind, v2) + 1.0);
+							int F_columns[] = { u, v1, v2 };
+							for (int i = 0; i < 3; i++) {
+								gsl_matrix_set(F, ind, F_columns[i], gsl_matrix_get(F, ind, F_columns[i]) + 1.0);
+							}
 							
 							// f(ind)=f(ind)+1;
 							if (f != NULL) {

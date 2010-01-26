@@ -17,6 +17,15 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("motif3struct_bin %s F", mname{i}), F == F_cpp);
 end
 
+% motif3struct_wei
+for i = 1:size(m)(2)
+	[I Q F] = motif3struct_wei(m{i});
+	[I_cpp Q_cpp F_cpp] = motif3struct_wei_cpp(m{i});
+	bct_test(sprintf("motif3struct_wei %s I", mname{i}), I == I_cpp);
+	bct_test(sprintf("motif3struct_wei %s Q", mname{i}), Q == Q_cpp);
+	bct_test(sprintf("motif3struct_wei %s F", mname{i}), F == F_cpp);
+end
+
 if ~exist("subtest", "var") || ~subtest
 	printf("Failures: %d\n", failures)
 	clear;

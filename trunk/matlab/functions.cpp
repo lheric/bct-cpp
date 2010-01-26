@@ -265,6 +265,36 @@ gsl_matrix* matlab::ones(int size1, int size2) {
 	return ones_m;
 }
 
+double matlab::prod(const gsl_vector* v) {
+	double prod = 1.0;
+	for (int i = 0; i < v->size; i++) {
+		prod *= gsl_vector_get(v, i);
+	}
+	return prod;
+}
+
+gsl_vector* matlab::prod(const gsl_matrix* m, int dim) {
+	if (dim == 1) {
+		gsl_vector* prod_v = gsl_vector_alloc(m->size2);
+		gsl_vector_set_all(prod_v, 1.0);
+		for (int i = 0; i < m->size1; i++) {
+			gsl_vector_const_view row = gsl_matrix_const_row(m, i);
+			gsl_vector_mul(prod_v, &row.vector);
+		}
+		return prod_v;
+	} else if (dim == 2) {
+		gsl_vector* prod_v = gsl_vector_alloc(m->size1);
+		gsl_vector_set_all(prod_v, 1.0);
+		for (int i = 0; i < m->size2; i++) {
+			gsl_vector_const_view column = gsl_matrix_const_column(m, i);
+			gsl_vector_mul(prod_v, &column.vector);
+		}
+		return prod_v;
+	} else {
+		return NULL;
+	}
+}
+
 gsl_vector* matlab::reverse(gsl_vector* v) {
 	gsl_vector* rev_v = gsl_vector_alloc(v->size);
 	for(int i = (v->size-1),j = 0;i >= 0;i--,j++) {
@@ -322,11 +352,11 @@ gsl_matrix* matlab::sortrows(const gsl_matrix* m, gsl_permutation** ind) {
 }
 
 double matlab::sum(const gsl_vector* v) {
-	double total = 0.0;
+	double sum = 0.0;
 	for (int i = 0; i < v->size; i++) {
-		total += gsl_vector_get(v, i);
+		sum += gsl_vector_get(v, i);
 	}
-	return total;
+	return sum;
 }
 
 gsl_vector* matlab::sum(const gsl_matrix* m, int dim) {

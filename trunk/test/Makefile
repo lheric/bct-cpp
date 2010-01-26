@@ -40,6 +40,7 @@ filenames = \
 	motif3generate_cpp \
 	motif4generate_cpp \
 	motif3struct_bin_cpp \
+	motif3struct_wei_cpp \
 	randmio_dir_cpp \
 	randmio_dir_connected_cpp \
 	randmio_und_cpp \
