@@ -1,4 +1,24 @@
 #include <bct/bct.h>
 #include "bct_test.h"
+#include <gsl/gsl_matrix.h>
+#include <octave/oct.h>
 
-MATRIX_TO_MATRIX_FUNCTION(breadthdist)
+DEFUN_DLD(breadthdist_cpp, args, , "Wrapper for C++ function.") {
+	if (args.length() != 1) {
+		return octave_value_list();
+	}
+	Matrix m = args(0).matrix_value();
+	if (!error_state) {
+		gsl_matrix* gslm = bct_test::to_gsl(m);
+		gsl_matrix* D;
+		gsl_matrix* R = bct::breadthdist(gslm, &D);
+		octave_value_list ret;
+		ret(0) = octave_value(bct_test::from_gsl(R));
+		ret(1) = octave_value(bct_test::from_gsl(D));
+		gsl_matrix_free(D);
+		gsl_matrix_free(R);
+		return ret;
+	} else {
+		return octave_value_list();
+	}
+}

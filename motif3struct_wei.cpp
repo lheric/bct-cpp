@@ -86,23 +86,23 @@ gsl_matrix* bct::motif3struct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matri
 						
 						// w=[W(v1,u) W(v2,u) W(u,v1) W(v2,v1) W(u,v2) W(v1,v2)];
 						int WA_rows[] = { v1, v2, u, v2, u, v1 };
-						int WA_columns[] = { u, u, v1, v1, v2, v2 };
+						int WA_cols[] = { u, u, v1, v1, v2, v2 };
 						gsl_vector* w = gsl_vector_alloc(6);
 						for (int i = 0; i < 6; i++) {
-							gsl_vector_set(w, i, gsl_matrix_get(W, WA_rows[i], WA_columns[i]));
+							gsl_vector_set(w, i, gsl_matrix_get(W, WA_rows[i], WA_cols[i]));
 						}
 						
 						// s=uint32(sum(10.^(5:-1:0).*[A(v1,u) A(v2,u) A(u,v1) A(v2,v1) A(u,v2) A(v1,v2)]));
 						gsl_vector* s = gsl_vector_alloc(6);
 						for (int i = 0; i < 6; i++) {
-							gsl_vector_set(s, i, gsl_matrix_get(A, WA_rows[i], WA_columns[i]));
+							gsl_vector_set(s, i, gsl_matrix_get(A, WA_rows[i], WA_cols[i]));
 						}
 						
 						// ind=(s==M3n);
 						int ind = 0;
 						for ( ; ind < M3->size1; ind++) {
-							gsl_vector_view row = gsl_matrix_row(M3, ind);
-							if (compare_vectors(s, &row.vector) == 0) {
+							gsl_vector_view M3_row_ind = gsl_matrix_row(M3, ind);
+							if (compare_vectors(s, &M3_row_ind.vector) == 0) {
 								break;
 							}
 						}
@@ -138,15 +138,15 @@ gsl_matrix* bct::motif3struct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matri
 							// I(id,[u v1 v2])=I(id,[u v1 v2])+[i i i];
 							// Q(id,[u v1 v2])=Q(id,[u v1 v2])+[q q q];
 							// F(id,[u v1 v2])=F(id,[u v1 v2])+[1 1 1];
-							int IQF_columns[] = { u, v1, v2 };
+							int IQF_cols[] = { u, v1, v2 };
 							for (int j = 0; j < 3; j++) {
 								if (I != NULL) {
-									gsl_matrix_set(*I, id, IQF_columns[j], gsl_matrix_get(*I, id, IQF_columns[j]) + i);
+									gsl_matrix_set(*I, id, IQF_cols[j], gsl_matrix_get(*I, id, IQF_cols[j]) + i);
 								}
 								if (Q != NULL) {
-									gsl_matrix_set(*Q, id, IQF_columns[j], gsl_matrix_get(*Q, id, IQF_columns[j]) + q);
+									gsl_matrix_set(*Q, id, IQF_cols[j], gsl_matrix_get(*Q, id, IQF_cols[j]) + q);
 								}
-								gsl_matrix_set(F, id, IQF_columns[j], gsl_matrix_get(F, id, IQF_columns[j]) + 1.0);
+								gsl_matrix_set(F, id, IQF_cols[j], gsl_matrix_get(F, id, IQF_cols[j]) + 1.0);
 							}
 						}
 						

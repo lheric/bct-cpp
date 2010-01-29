@@ -5,9 +5,13 @@ end
 % motif34generate
 load motif34lib
 [M ID N] = motif3generate_cpp;
-bct_test("motif3generate", [M3 ID3 N3] == [M ID' N'])
+bct_test("motif3generate M3", M3 == M);
+bct_test("motif3generate ID3", ID3 == ID');
+bct_test("motif3generate N3", N3 == N');
 [M ID N] = motif4generate_cpp;
-bct_test("motif4generate", [M4 ID4 N4] == [M ID' N'])
+bct_test("motif4generate M4", M4 == M);
+bct_test("motif4generate ID4", ID4 == ID');
+bct_test("motif4generate N4", N4 == N');
 
 % motif3struct_bin
 for i = 1:size(m)(2)

@@ -4,17 +4,19 @@ end
 
 % breadth
 for i = 1:size(m)(2)
-	source = floor(5*rand())+1;  %a random source node in the range (1,5)
-	[distance, branch] = breadth(m{i}, source);
-	distance_cpp = breadth_cpp(m{i}, source);
-	bct_test(sprintf("breadth %s", mname{i}), distance == distance_cpp);
+	source = floor(length(m{i}) * rand()) + 1;
+	[distance branch] = breadth(m{i}, source);
+	[distance_cpp branch_cpp] = breadth_cpp(m{i}, source);
+	bct_test(sprintf("breadth %s distance", mname{i}), distance == distance_cpp);
+	bct_test(sprintf("breadth %s branch", mname{i}), branch == branch_cpp);
 end
 
 % breadthdist
 for i = 1:size(m)(2)
-	[R, D] = breadthdist(m{i});
-	distance_cpp = breadthdist_cpp(m{i});
-	bct_test(sprintf("breadthdist %s", mname{i}), D == distance_cpp);
+	[R D] = breadthdist(m{i});
+	[R_cpp D_cpp] = breadthdist_cpp(m{i});
+	bct_test(sprintf("breadthdist %s R", mname{i}), R == R_cpp);
+	bct_test(sprintf("breadthdist %s D", mname{i}), D == D_cpp);
 end
 
 % distance_bin

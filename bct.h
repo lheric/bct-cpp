@@ -38,8 +38,8 @@ namespace bct {
 	gsl_vector* clustering_coef_wu(const gsl_matrix*);
 
 	// Paths, distances, and cycles
-	gsl_vector* breadth(const gsl_matrix*, int, gsl_vector* = NULL);
-	gsl_matrix* breadthdist(const gsl_matrix*, gsl_matrix* = NULL);
+	gsl_vector* breadth(const gsl_matrix*, int, gsl_vector** = NULL);
+	gsl_matrix* breadthdist(const gsl_matrix*, gsl_matrix** = NULL);
 	double charpath_lambda(const gsl_matrix*);
 	gsl_vector* charpath_ecc(const gsl_matrix*, double * = NULL, double * = NULL);
 	gsl_vector* cycprob_fcyc(gsl_matrix**, int);

@@ -205,15 +205,15 @@ gsl_matrix* bct::motif4generate(gsl_vector** ID, gsl_vector** N) {
 			
 			// v=any(Gs(v~=0,:),1)+v;
 			gsl_vector* v_neq_0 = compare_elements(v, fp_not_equal, 0.0);
-			gsl_vector* Gs_columns = sequence(0, Gs->size2 - 1);
-			gsl_matrix* Gs_indexed = log_ord_index(Gs, v_neq_0, Gs_columns);
+			gsl_vector* Gs_cols = sequence(0, Gs->size2 - 1);
+			gsl_matrix* Gs_idx = log_ord_index(Gs, v_neq_0, Gs_cols);
 			gsl_vector_free(v_neq_0);
-			gsl_vector_free(Gs_columns);
-			if (Gs_indexed != NULL) {
-				gsl_vector* any_Gs_indexed = any(Gs_indexed, 1);
-				gsl_vector_add(v, any_Gs_indexed);
-				gsl_matrix_free(Gs_indexed);
-				gsl_vector_free(any_Gs_indexed);
+			gsl_vector_free(Gs_cols);
+			if (Gs_idx != NULL) {
+				gsl_vector* any_Gs_idx = any(Gs_idx, 1);
+				gsl_vector_add(v, any_Gs_idx);
+				gsl_matrix_free(Gs_idx);
+				gsl_vector_free(any_Gs_idx);
 			}
 		}
 		

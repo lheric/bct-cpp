@@ -75,17 +75,17 @@ gsl_matrix* bct::motif3struct_bin(const gsl_matrix* A, gsl_vector** f) {
 						
 						// s=uint32(sum(10.^(5:-1:0).*[A(v1,u) A(v2,u) A(u,v1) A(v2,v1) A(u,v2) A(v1,v2)]));
 						int A_rows[] = { v1, v2, u, v2, u, v1 };
-						int A_columns[] = { u, u, v1, v1, v2, v2 };
+						int A_cols[] = { u, u, v1, v1, v2, v2 };
 						gsl_vector* s = gsl_vector_alloc(6);
 						for (int i = 0; i < 6; i++) {
-							gsl_vector_set(s, i, gsl_matrix_get(A, A_rows[i], A_columns[i]));
+							gsl_vector_set(s, i, gsl_matrix_get(A, A_rows[i], A_cols[i]));
 						}
 						
 						// ind=ID3(s==M3n);
 						int i_M3 = 0;
 						for ( ; i_M3 < M3->size1; i_M3++) {
-							gsl_vector_view row = gsl_matrix_row(M3, i_M3);
-							if (compare_vectors(s, &row.vector) == 0) {
+							gsl_vector_view M3_row_i_M3 = gsl_matrix_row(M3, i_M3);
+							if (compare_vectors(s, &M3_row_i_M3.vector) == 0) {
 								break;
 							}
 						}
@@ -94,9 +94,9 @@ gsl_matrix* bct::motif3struct_bin(const gsl_matrix* A, gsl_vector** f) {
 							int ind = (int)gsl_vector_get(ID3, i_M3) - 1;
 							
 							// if nargout==2; F(ind,[u v1 v2])=F(ind,[u v1 v2])+1; end
-							int F_columns[] = { u, v1, v2 };
+							int F_cols[] = { u, v1, v2 };
 							for (int i = 0; i < 3; i++) {
-								gsl_matrix_set(F, ind, F_columns[i], gsl_matrix_get(F, ind, F_columns[i]) + 1.0);
+								gsl_matrix_set(F, ind, F_cols[i], gsl_matrix_get(F, ind, F_cols[i]) + 1.0);
 							}
 							
 							// f(ind)=f(ind)+1;
