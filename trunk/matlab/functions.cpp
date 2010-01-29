@@ -170,6 +170,10 @@ gsl_matrix* matlab::find_ij(const gsl_matrix* m, int n, const char* direction) {
 	}
 }
 
+int matlab::length(const gsl_vector* v) {
+	return v->size;
+}
+
 int matlab::length(const gsl_matrix* m) {
 	return m->size1 > m->size2 ? m->size1 : m->size2;
 }

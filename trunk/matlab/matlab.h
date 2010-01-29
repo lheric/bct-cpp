@@ -23,6 +23,7 @@ namespace matlab {
 	gsl_vector* find(const gsl_vector*, int = GSL_POSINF, const char* = "first");
 	gsl_vector* find(const gsl_matrix*, int = GSL_POSINF, const char* = "first");
 	gsl_matrix* find_ij(const gsl_matrix*, int = GSL_POSINF, const char* = "first");
+	int length(const gsl_vector*);
 	int length(const gsl_matrix*);
 	double max(const gsl_vector*);
 	gsl_vector* max(const gsl_matrix*, int = 1);

@@ -11,17 +11,17 @@ gsl_matrix* bct::jdegree(const gsl_matrix* CIJ) {
 	if (CIJ->size1 != CIJ->size2) throw size_exception();
 	
 	// CIJ = double(CIJ~=0);
-	gsl_matrix* bin_m = compare_elements(CIJ, fp_not_equal, 0.0);
+	gsl_matrix* _CIJ = compare_elements(CIJ, fp_not_equal, 0.0);
 	
 	// N = size(CIJ,1);
-	int N = CIJ->size1;
+	int N = _CIJ->size1;
 	
 	// id = sum(CIJ,1);
-	gsl_vector* id = sum(bin_m, 1);
+	gsl_vector* id = sum(_CIJ, 1);
 	
 	// od = sum(CIJ,2)';
-	gsl_vector* od = sum(bin_m, 2);
-	gsl_matrix_free(bin_m);
+	gsl_vector* od = sum(_CIJ, 2);
+	gsl_matrix_free(_CIJ);
 	
 	// szJ = max(max(id,od))+1;
 	double max_id = gsl_vector_max(id);
@@ -35,9 +35,9 @@ gsl_matrix* bct::jdegree(const gsl_matrix* CIJ) {
 	for (int i = 0; i < N; i++) {
 		
 		// J(id(i)+1,od(i)+1) = J(id(i)+1,od(i)+1) + 1;
-		int u = (int)gsl_vector_get(id, i);
-		int v = (int)gsl_vector_get(od, i);
-		gsl_matrix_set(J, u, v, gsl_matrix_get(J, u, v) + 1.0);
+		int id_i = (int)gsl_vector_get(id, i);
+		int od_i = (int)gsl_vector_get(od, i);
+		gsl_matrix_set(J, id_i, od_i, gsl_matrix_get(J, id_i, od_i) + 1.0);
 	}
 	
 	gsl_vector_free(id);
@@ -53,8 +53,7 @@ int bct::jdegree_bl(const gsl_matrix* J) {
 	
 	// J_bl = sum(diag(J));
 	gsl_vector_const_view diagonal = gsl_matrix_const_diagonal(J);
-	int J_bl = (int)sum(&diagonal.vector);
-	return J_bl;
+	return (int)sum(&diagonal.vector);
 }
 
 /*
