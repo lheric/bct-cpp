@@ -65,6 +65,10 @@ namespace bct {
 	void node_and_edge_betweenness_wei(const gsl_matrix*, gsl_vector* = NULL, gsl_matrix* = NULL);
 
 	// Motifs
+	enum motif_convention { MILO, SPORNS };
+	extern motif_convention _motif_convention;
+	motif_convention get_motif_convention();
+	void set_motif_convention(motif_convention);
 	gsl_matrix* motif3generate(gsl_vector** = NULL, gsl_vector** = NULL);
 	gsl_matrix* motif4generate(gsl_vector** = NULL, gsl_vector** = NULL);
 	gsl_matrix* motif3struct_bin(const gsl_matrix*, gsl_vector** = NULL);
