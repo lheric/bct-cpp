@@ -5,6 +5,7 @@
 #include <octave/oct.h>
 
 DEFUN_DLD(motif3struct_bin_cpp, args, , "Wrapper for C++ function.") {
+	bct::set_motif_convention(bct::SPORNS);
 	if (args.length() == 0) {
 		return octave_value_list();
 	}

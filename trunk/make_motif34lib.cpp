@@ -10,6 +10,11 @@
  * the 12-digit numbers required for the four-node motif library.
  */
 
+bct::motif_convention bct::_motif_convention = MILO;
+
+bct::motif_convention bct::get_motif_convention() { return _motif_convention; }
+void bct::set_motif_convention(motif_convention _motif_convention) { bct::_motif_convention = _motif_convention; }
+
 /*
  * Constructs the three-node motif library.
  */
@@ -107,11 +112,13 @@ gsl_matrix* bct::motif3generate(gsl_vector** ID, gsl_vector** N) {
 	int id_olaf[] = { 3, 6, 1, 11, 4, 7, 8};
 	
 	// %convert IDs into Sporns & Kotter classification
-	for (int i = 0; i < _ID->size; i++) {
-		for (int j = 0; j < 7; j++) {
-			if ((int)gsl_vector_get(_ID, i) == id_mika[j]) {
-				gsl_vector_set(_ID, i, id_olaf[j]);
-				break;
+	if (_motif_convention == SPORNS) {
+		for (int i = 0; i < _ID->size; i++) {
+			for (int j = 0; j < 7; j++) {
+				if ((int)gsl_vector_get(_ID, i) == id_mika[j]) {
+					gsl_vector_set(_ID, i, id_olaf[j]);
+					break;
+				}
 			}
 		}
 	}
