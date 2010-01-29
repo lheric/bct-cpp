@@ -52,8 +52,8 @@ gsl_matrix* bct::jdegree(const gsl_matrix* CIJ) {
 int bct::jdegree_bl(const gsl_matrix* J) {
 	
 	// J_bl = sum(diag(J));
-	gsl_vector_const_view diagonal = gsl_matrix_const_diagonal(J);
-	return (int)sum(&diagonal.vector);
+	gsl_vector_const_view diag_J = gsl_matrix_const_diagonal(J);
+	return (int)sum(&diag_J.vector);
 }
 
 /*

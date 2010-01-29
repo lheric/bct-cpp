@@ -12,8 +12,8 @@ gsl_vector* bct::degrees_und(const gsl_matrix* CIJ) {
 	// deg = sum(CIJ);
 	gsl_vector* deg = gsl_vector_alloc(CIJ->size2);
 	for (int i = 0; i < CIJ->size2; i++) {
-		gsl_vector_const_view column = gsl_matrix_const_column(CIJ, i);
-		gsl_vector_set(deg, i, nnz(&column.vector));
+		gsl_vector_const_view CIJ_col_i = gsl_matrix_const_column(CIJ, i);
+		gsl_vector_set(deg, i, nnz(&CIJ_col_i.vector));
 	}
 	return deg;
 }

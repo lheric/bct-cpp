@@ -421,13 +421,13 @@ gsl_vector* matlab::sequence(int start, int end) {
  * Emulates (start:step:end).
  */
 gsl_vector* matlab::sequence(int start, int step, int end) {
-	int n_sequence = (end - start) / step + 1;
-	if (n_sequence <= 0) {
+	int n_seq = (end - start) / step + 1;
+	if (n_seq <= 0) {
 		return NULL;
 	}
-	gsl_vector* sequence_v = gsl_vector_alloc(n_sequence);
-	for (int i = 0, value = start; i < n_sequence; i++, value += step) {
-		gsl_vector_set(sequence_v, i, value);
+	gsl_vector* seq_v = gsl_vector_alloc(n_seq);
+	for (int i = 0, value = start; i < n_seq; i++, value += step) {
+		gsl_vector_set(seq_v, i, value);
 	}
-	return sequence_v;
+	return seq_v;
 }

@@ -8,8 +8,8 @@
  */
 gsl_matrix* bct::remove_loops(const gsl_matrix* m) {
 	gsl_matrix* nl_m = copy(m);
-	gsl_vector_view diagonal = gsl_matrix_diagonal(nl_m);
-	gsl_vector_set_zero(&diagonal.vector);
+	gsl_vector_view diag_nl_m = gsl_matrix_diagonal(nl_m);
+	gsl_vector_set_zero(&diag_nl_m.vector);
 	return nl_m;
 }
 
@@ -42,9 +42,7 @@ gsl_matrix* bct::to_positive(const gsl_matrix* m) {
  *   the average of these values.
  */
 gsl_matrix* bct::to_undirected(const gsl_matrix* m) {
-	if (m->size1 != m->size2) {
-		throw size_exception();
-	}
+	if (m->size1 != m->size2) throw size_exception();
 	gsl_matrix* und_m = copy(m);
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = i; j < m->size2; j++) {

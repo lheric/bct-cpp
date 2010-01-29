@@ -40,14 +40,10 @@ bool bct::is_undirected(const gsl_matrix* m) {
  * Returns whether the given matrix is directed.
  */
 bool bct::is_directed(const gsl_matrix* m) {
-	if (m->size1 != m->size2) {
-		throw size_exception();
-	}
+	if (m->size1 != m->size2) throw size_exception();
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {
-			double value_ij = gsl_matrix_get(m, i, j);
-			double value_ji = gsl_matrix_get(m, j, i);
-			if (fp_not_equal(value_ij, value_ji)) {
+			if (fp_not_equal(gsl_matrix_get(m, i, j), gsl_matrix_get(m, j, i))) {
 				return true;
 			}
 		}
@@ -90,8 +86,7 @@ bool bct::is_positive(const gsl_matrix* m) {
 bool bct::is_signed(const gsl_matrix* m) {
 	for (int i = 0; i < m->size1; i++) {
 		for (int j = 0; j < m->size2; j++) {
-			double value = gsl_matrix_get(m, i, j);
-			if (fp_negative(value)) {
+			if (fp_negative(gsl_matrix_get(m, i, j))) {
 				return true;
 			}
 		}
@@ -110,6 +105,6 @@ bool bct::has_loops(const gsl_matrix* m) {
  * Returns whether the given matrix has no loops.
  */
 bool bct::has_no_loops(const gsl_matrix* m) {
-	gsl_vector_const_view diagonal = gsl_matrix_const_diagonal(m);
-	return gsl_vector_isnull(&diagonal.vector) == 1;
+	gsl_vector_const_view diag_m = gsl_matrix_const_diagonal(m);
+	return gsl_vector_isnull(&diag_m.vector) == 1;
 }

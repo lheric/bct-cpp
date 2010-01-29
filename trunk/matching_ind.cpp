@@ -19,17 +19,17 @@ gsl_matrix* bct::matching_ind(const gsl_matrix* CIJ) {
 	for (int i = 0; i < N - 1; i++) {
 		
 		// c1 = [CIJ(:,i)' CIJ(i,:)];
-		gsl_vector_const_view col_i = gsl_matrix_const_column(CIJ, i);
-		gsl_vector_const_view row_i = gsl_matrix_const_row(CIJ, i);
-		gsl_vector* c1 = concatenate(&col_i.vector, &row_i.vector);
+		gsl_vector_const_view CIJ_col_i = gsl_matrix_const_column(CIJ, i);
+		gsl_vector_const_view CIJ_row_i = gsl_matrix_const_row(CIJ, i);
+		gsl_vector* c1 = concatenate(&CIJ_col_i.vector, &CIJ_row_i.vector);
 		
 		// for j=i+1:N
 		for (int j = i + 1; j < N; j++) {
 			
 			// c2 = [CIJ(:,j)' CIJ(j,:)];
-			gsl_vector_const_view col_j = gsl_matrix_const_column(CIJ, j);
-			gsl_vector_const_view row_j = gsl_matrix_const_row(CIJ, j);
-			gsl_vector* c2 = concatenate(&col_j.vector, &row_j.vector);
+			gsl_vector_const_view CIJ_col_j = gsl_matrix_const_column(CIJ, j);
+			gsl_vector_const_view CIJ_row_j = gsl_matrix_const_row(CIJ, j);
+			gsl_vector* c2 = concatenate(&CIJ_col_j.vector, &CIJ_row_j.vector);
 			
 			gsl_matrix_set(Mall, i, j, matching_ind(c1, c2, i, j, N));
 			gsl_vector_free(c2);

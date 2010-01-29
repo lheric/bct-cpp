@@ -21,10 +21,10 @@ gsl_vector* bct::clustering_coef_bu(const gsl_matrix* G) {
 		// V=find(G(u,:));
 		// k=length(V);
 		// if k>=2;
-		gsl_vector_const_view row = gsl_matrix_const_row(G, u);
-		int k = nnz(&row.vector);
+		gsl_vector_const_view G_row_u = gsl_matrix_const_row(G, u);
+		int k = nnz(&G_row_u.vector);
 		if (k >= 2) {
-			gsl_vector* V = find(&row.vector);
+			gsl_vector* V = find(&G_row_u.vector);
 			
 			// S=G(V,V);
 			gsl_matrix* S = ordinal_index(G, V, V);

@@ -1,102 +1,112 @@
 #include "bct.h"
+#include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
-#include <gsl/gsl_math.h>
 
-#define WHITE 0
-#define GRAY 1
-#define BLACK 2
-
-/* Original comments:
- * note: breadth-first search tree does not contain all paths 
- * (or all shortest paths), but allows the determination of at least one 
- * path with minimum distance.
- * the entire graph is explored, starting from source vertex 'source'
- *
- * Olaf Sporns, Indiana University, 2002/2007/2008
+/*
+ * Performs a breadth-first search starting at the source node.  Because C++
+ * indexing is zero-based, a value of 0 in the ith position of branch could mean
+ * either that node 0 precedes node i or that node i is unreachable.
  */
-
-gsl_vector* bct::breadth(const gsl_matrix* CIJ, int source, gsl_vector* ret_branch) {
-	if (CIJ->size1 != CIJ->size2) {
-		throw size_exception();
+gsl_vector* bct::breadth(const gsl_matrix* CIJ, int source, gsl_vector** branch) {
+	
+	// N = size(CIJ,1);
+	int N = CIJ->size1;
+	
+	// % colors: white, gray, black
+	int white = 0;
+	int gray = 1;
+	int black = 2;
+	
+	// color = zeros(1,N);
+	gsl_vector* color = zeros_vector(N);
+	
+	// distance = inf*ones(1,N);
+	gsl_vector* distance = gsl_vector_alloc(N);
+	gsl_vector_set_all(distance, GSL_POSINF);
+	
+	// branch = zeros(1,N);
+	if (branch != NULL) {
+		*branch = zeros_vector(N);
 	}
 	
-	gsl_matrix* m =copy(CIJ);
+	// color(source) = gray;
+	gsl_vector_set(color, source, (double)gray);
 	
-	int N = m->size1;
-	gsl_matrix* color_m = zeros(1, N);
-	gsl_matrix* distance_m = gsl_matrix_alloc(1, N);
-	gsl_matrix_set_all(distance_m, GSL_POSINF);
-	gsl_matrix* branch_m = zeros(1, N);
-	
-	//Convert to vectors for comfy computation
-	gsl_vector* color = to_vector(color_m);
-	gsl_vector* distance = to_vector(distance_m);
-	gsl_vector* branch = to_vector(branch_m);
-	gsl_matrix_free(color_m);
-	gsl_matrix_free(distance_m);
-	gsl_matrix_free(branch_m);
-	
-	source = source - 1; //convert node range to C++ range, that is from (1.N) to (0,N-1)
-	
-	gsl_vector_set(color, source, GRAY);
+	// distance(source) = 0;
 	gsl_vector_set(distance, source, 0.0);
-	gsl_vector_set(branch, source, -1.0);
 	
+	// branch(source) = -1;
+	if (branch != NULL) {
+		gsl_vector_set(*branch, source, -1.0);
+	}
+	
+	// Q = source;
 	gsl_vector* Q = gsl_vector_alloc(1);
-	gsl_vector_set(Q, 0, source);
+	gsl_vector_set(Q, 0, (double)source);
 	
-	int start_index = 0;
-	int end_index = 0;
-	
-	while(start_index <= end_index) {
-		int u = gsl_vector_get(Q, start_index);
-		int dist_u = gsl_vector_get(distance, u);
-		gsl_vector_view u_row = gsl_matrix_row(m, u);
-		gsl_vector* ns = find(&u_row.vector);
-		for(int i = 0;i< ns->size;i++) {
-			int v = gsl_vector_get(ns, i);
-			int dist_v = gsl_vector_get(distance, v);
-			if(dist_v == 0) {
-				dist_v = dist_u + 1;
-				gsl_vector_set(distance, v, dist_v);
+	// while ~isempty(Q)
+	while (Q != NULL) {
+		
+		// u = Q(1);
+		int u = (int)gsl_vector_get(Q, 0);
+		
+		// ns = find(CIJ(u,:));
+		gsl_vector_const_view CIJ_row_u = gsl_matrix_const_row(CIJ, u);
+		gsl_vector* ns = find(&CIJ_row_u.vector);
+		
+		// for v=ns
+		if (ns != NULL) {
+			for (int i_ns = 0; i_ns < ns->size; i_ns++) {
+				int v = (int)gsl_vector_get(ns, i_ns);
+				
+				// if (distance(v)==0)
+				if ((int)gsl_vector_get(distance, v) == 0) {
+					
+					// distance(v) = distance(u)+1;
+					gsl_vector_set(distance, v, gsl_vector_get(distance, u) + 1.0);
+				}
+				
+				// if (color(v)==white)
+				if ((int)gsl_vector_get(color, v) == white) {
+					
+					// color(v) = gray;
+					gsl_vector_set(color, v, (double)gray);
+					
+					// distance(v) = distance(u)+1;
+					gsl_vector_set(distance, v, gsl_vector_get(distance, u) + 1.0);
+					
+					// branch(v) = u;
+					if (branch != NULL) {
+						gsl_vector_set(*branch, v, (double)u);
+					}
+					
+					// Q = [Q v];
+					gsl_vector* temp = concatenate(Q, (double)v);
+					gsl_vector_free(Q);
+					Q = temp;
+				}
 			}
-			int color_v = gsl_vector_get(color, v);
-			if(color_v == WHITE) {
-				color_v = GRAY;
-				gsl_vector_set(color, v, color_v);
-				int dist_v = gsl_vector_get(distance, v);
-				dist_v = dist_u + 1;
-				gsl_vector_set(distance, v, dist_v);
-				gsl_vector_set(branch, v, u+1.0);  //Convert 'u' back to node range (1,N)
-				gsl_vector* Q_cat = concatenate(Q, v);
-				gsl_vector_free(Q);
-				Q = Q_cat;
-				end_index++;
-			}
+			
+			gsl_vector_free(ns);
 		}
-		gsl_vector_set(color, u, BLACK);
-		start_index++;
+		
+		// Q = Q(2:length(Q));
+		gsl_vector* Q_cols = sequence(1, length(Q) - 1);
+		if (Q_cols != NULL) {
+			gsl_vector* temp = ordinal_index(Q, Q_cols);
+			gsl_vector_free(Q);
+			gsl_vector_free(Q_cols);
+			Q = temp;
+		} else {
+			gsl_vector_free(Q);
+			Q = NULL;
+		}
+		
+		// color(u) = black;
+		gsl_vector_set(color, u, (double)black);
 	}
 	
-	if(ret_branch == NULL) {
-		ret_branch = gsl_vector_alloc(branch->size);
-		gsl_vector_memcpy(ret_branch, branch);
-		gsl_vector_free(branch);
-	}
+	gsl_vector_free(color);
 	return distance;
 }
-				
-				
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
