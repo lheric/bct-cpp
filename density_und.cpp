@@ -4,16 +4,16 @@
 /*
  * Computes density for an undirected graph.  Connection weights are ignored.
  */
-double bct::density_und(const gsl_matrix* m) {
-	if (safe_mode) check_status(m, UNDIRECTED, "density_und");
+double bct::density_und(const gsl_matrix* CIJ) {
+	if (safe_mode) check_status(CIJ, UNDIRECTED, "density_und");
 	
 	// N = size(CIJ,1);
-	int N = m->size1;
+	int N = CIJ->size1;
 	
 	// K = nnz(triu(CIJ));
-	gsl_matrix* triu_m = triu(m);
-	int K = nnz(triu_m);
-	gsl_matrix_free(triu_m);
+	gsl_matrix* triu_CIJ = triu(CIJ);
+	int K = nnz(triu_CIJ);
+	gsl_matrix_free(triu_CIJ);
 	
 	// kden = K/((N^2-N)/2);
 	return (double)K / ((double)(N * N - N) / 2.0);

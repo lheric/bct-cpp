@@ -13,7 +13,7 @@ gsl_matrix* bct::matching_ind(const gsl_matrix* CIJ) {
 	int N = CIJ->size1;
 	
 	// Mall = zeros(N,N);
-	gsl_matrix* Mall = zeros(N);
+	gsl_matrix* Mall = zeros(N, N);
 	
 	// for i=1:N-1
 	for (int i = 0; i < N - 1; i++) {
@@ -50,7 +50,7 @@ gsl_matrix* bct::matching_ind_in(const gsl_matrix* CIJ) {
 	int N = CIJ->size1;
 	
 	// Min = zeros(N,N);
-	gsl_matrix* Min = zeros(N);
+	gsl_matrix* Min = zeros(N, N);
 	
 	// for i=1:N-1
 	for (int i = 0; i < N - 1; i++) {
@@ -80,7 +80,7 @@ gsl_matrix* bct::matching_ind_out(const gsl_matrix* CIJ) {
 	int N = CIJ->size1;
 	
 	// Mout = zeros(N,N);
-	gsl_matrix* Mout = zeros(N);
+	gsl_matrix* Mout = zeros(N, N);
 	
 	// for i=1:N-1
 	for (int i = 0; i < N - 1; i++) {
@@ -118,6 +118,7 @@ double matching_ind(const gsl_vector* c1, const gsl_vector* c2, int i, int j, in
 	// ncon = sum(c1(use))+sum(c2(use));
 	gsl_vector* c1_use = logical_index(c1, use);
 	gsl_vector* c2_use = logical_index(c2, use);
+	gsl_vector_free(use);
 	double ncon = 0.0;
 	if (c1_use != NULL) {
 		ncon += sum(c1_use);
@@ -144,7 +145,6 @@ double matching_ind(const gsl_vector* c1, const gsl_vector* c2, int i, int j, in
 		}
 	}
 	
-	gsl_vector_free(use);
 	if (c1_use != NULL) gsl_vector_free(c1_use);
 	if (c2_use != NULL) gsl_vector_free(c2_use);
 	return ret;
