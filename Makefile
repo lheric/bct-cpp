@@ -1,3 +1,5 @@
+CXXFLAGS = -g -Wall
+
 objects = \
 	assortativity.o \
 	betweenness_bin.o \

@@ -170,6 +170,46 @@ gsl_matrix* matlab::find_ij(const gsl_matrix* m, int n, const char* direction) {
 	}
 }
 
+gsl_vector* matlab::hist(const gsl_vector* v, int n) {
+	gsl_vector* centers = gsl_vector_alloc(n);
+	double min = gsl_vector_min(v);
+	double max = gsl_vector_max(v);
+	double width = (max - min) / (double)n;
+	for (int i = 0; i < n; i++) {
+		gsl_vector_set(centers, i, min + (i + 0.5) * width);
+	}
+	gsl_vector* hist_v = hist(v, centers);
+	gsl_vector_free(centers);
+	return hist_v;
+}
+
+gsl_vector* matlab::hist(const gsl_vector* v, const gsl_vector* centers) {
+	int n = centers->size;
+	gsl_vector* hist_v = gsl_vector_calloc(n);
+	for (int i = 0; i < v->size; i++) {
+		double value = gsl_vector_get(v, i);
+		int index = n - 1;
+		for (int j = 0; j < n - 1; j++) {
+			double left = gsl_vector_get(centers, j);
+			double right = gsl_vector_get(centers, j + 1);
+			if (value < left) {
+				index = j;
+				break;
+			} else if (value < right) {
+				double middle = (left + right) / 2.0;
+				if (fp_compare(value, middle) <= 0) {
+					index = j;
+				} else {
+					index = j + 1;
+				}
+				break;
+			}
+		}
+		gsl_vector_set(hist_v, index, gsl_vector_get(hist_v, index) + 1.0);
+	}
+	return hist_v;
+}
+
 int matlab::length(const gsl_vector* v) {
 	return v->size;
 }
@@ -178,10 +218,17 @@ int matlab::length(const gsl_matrix* m) {
 	return m->size1 > m->size2 ? m->size1 : m->size2;
 }
 
+double matlab::max(double x, double y) {
+	return x > y ? x : y;
+}
+
 double matlab::max(const gsl_vector* v) {
 	return gsl_vector_max(v);
 }
 
+/*
+ * Emulates (max(m)) or (max(m')).
+ */
 gsl_vector* matlab::max(const gsl_matrix* m, int dim) {
 	if (dim == 1) {
 		gsl_vector* max_v = gsl_vector_alloc(m->size2);
@@ -204,10 +251,17 @@ gsl_vector* matlab::max(const gsl_matrix* m, int dim) {
 	}
 }
 
+double matlab::min(double x, double y) {
+	return x < y ? x : y;
+}
+
 double matlab::min(const gsl_vector* v) {
 	return gsl_vector_min(v);
 }
 
+/*
+ * Emulates (min(m)) or (min(m')).
+ */
 gsl_vector* matlab::min(const gsl_matrix* m, int dim) {
 	if (dim == 1) {
 		gsl_vector* min_v = gsl_vector_alloc(m->size2);
@@ -307,52 +361,112 @@ gsl_vector* matlab::reverse(gsl_vector* v) {
 	return rev_v;
 }
 
-/*
- * Emulates (sortrows(v)) for a column vector.
- */
-gsl_vector* matlab::sortrows(const gsl_vector* v, gsl_permutation** ind) {
+gsl_vector* matlab::sort(const gsl_vector* v, const char* mode, gsl_vector** ind) {
+	if (std::strcmp(mode, "ascend") != 0 && std::strcmp(mode, "descend") != 0) {
+		return NULL;
+	}
 	double elements[v->size];
 	to_array(v, elements);
-	size_t indices[v->size];
-	stable_sort_index(indices, elements, v->size);
-	gsl_vector* sorted_v = gsl_vector_alloc(v->size);
+	std::size_t indices[v->size];
+	if (std::strcmp(mode, "ascend") == 0) {
+		stable_sort_index(indices, elements, v->size);
+	} else {
+		stable_sort_index(indices, elements, v->size, fp_greater);
+	}
+	gsl_vector* sort_v = gsl_vector_alloc(v->size);
 	if (ind != NULL) {
-		*ind = gsl_permutation_alloc(v->size);
+		*ind = gsl_vector_alloc(v->size);
 	}
 	for (int i = 0; i < v->size; i++) {
 		int index = indices[i];
-		gsl_vector_set(sorted_v, i, elements[index]);
+		gsl_vector_set(sort_v, i, elements[index]);
 		if (ind != NULL) {
-			(*ind)->data[i] = index;
+			gsl_vector_set(*ind, i, (double)index);
 		}
 	}
-	return sorted_v;
+	return sort_v;
 }
 
-gsl_matrix* matlab::sortrows(const gsl_matrix* m, gsl_permutation** ind) {
+gsl_matrix* matlab::sort(const gsl_matrix* m, int dim, const char* mode, gsl_matrix** ind) {
+	if (std::strcmp(mode, "ascend") != 0 && std::strcmp(mode, "descend") != 0) {
+		return NULL;
+	}
+	if (dim == 1) {
+		gsl_matrix* sort_m = gsl_matrix_alloc(m->size1, m->size2);
+		if (ind != NULL) {
+			*ind = gsl_matrix_alloc(m->size1, m->size2);
+		}
+		for (int i = 0; i < m->size2; i++) {
+			gsl_vector_const_view m_col_i = gsl_matrix_const_column(m, i);
+			gsl_vector* sort_m_col_i;
+			if (ind == NULL) {
+				sort_m_col_i = sort(&m_col_i.vector, mode);
+			} else {
+				gsl_vector* ind_col_i;
+				sort_m_col_i = sort(&m_col_i.vector, mode, &ind_col_i);
+				gsl_matrix_set_col(*ind, i, ind_col_i);
+				gsl_vector_free(ind_col_i);
+			}
+			gsl_matrix_set_col(sort_m, i, sort_m_col_i);
+			gsl_vector_free(sort_m_col_i);
+		}
+		return sort_m;
+	} else if (dim == 2) {
+		gsl_matrix* sort_m = gsl_matrix_alloc(m->size1, m->size2);
+		if (ind != NULL) {
+			*ind = gsl_matrix_alloc(m->size1, m->size2);
+		}
+		for (int i = 0; i < m->size1; i++) {
+			gsl_vector_const_view m_row_i = gsl_matrix_const_row(m, i);
+			gsl_vector* sort_m_row_i;
+			if (ind == NULL) {
+				sort_m_row_i = sort(&m_row_i.vector, mode);
+			} else {
+				gsl_vector* ind_row_i;
+				sort_m_row_i = sort(&m_row_i.vector, mode, &ind_row_i);
+				gsl_matrix_set_row(*ind, i, ind_row_i);
+				gsl_vector_free(ind_row_i);
+			}
+			gsl_matrix_set_row(sort_m, i, sort_m_row_i);
+			gsl_vector_free(sort_m_row_i);
+		}
+		return sort_m;
+	} else {
+		return NULL;
+	}
+}
+
+/*
+ * Emulates (sortrows(v)) for a column vector.
+ */
+gsl_vector* matlab::sortrows(const gsl_vector* v, gsl_vector** ind) {
+	return sort(v, "ascend", ind);
+}
+
+gsl_matrix* matlab::sortrows(const gsl_matrix* m, gsl_vector** ind) {
 	gsl_vector* rows[m->size1];
 	for (int i = 0; i < m->size1; i++) {
 		rows[i] = gsl_vector_alloc(m->size2);
 		gsl_matrix_get_row(rows[i], m, i);
 	}
-	size_t indices[m->size1];
-	stable_sort_index(indices, rows, m->size1, order_vectors);
+	std::size_t indices[m->size1];
+	stable_sort_index(indices, rows, m->size1, vector_less);
 	for (int i = 0; i < m->size1; i++) {
 		gsl_vector_free(rows[i]);
 	}
-	gsl_matrix* sorted_m = gsl_matrix_alloc(m->size1, m->size2);
+	gsl_matrix* sort_m = gsl_matrix_alloc(m->size1, m->size2);
 	if (ind != NULL) {
-		*ind = gsl_permutation_alloc(m->size1);
+		*ind = gsl_vector_alloc(m->size1);
 	}
 	for (int i = 0; i < m->size1; i++) {
 		int index = indices[i];
 		gsl_vector_const_view m_row_index = gsl_matrix_const_row(m, index);
-		gsl_matrix_set_row(sorted_m, i, &m_row_index.vector);
+		gsl_matrix_set_row(sort_m, i, &m_row_index.vector);
 		if (ind != NULL) {
-			(*ind)->data[i] = index;
+			gsl_vector_set(*ind, i, (double)index);
 		}
 	}
-	return sorted_m;
+	return sort_m;
 }
 
 double matlab::sum(const gsl_vector* v) {
@@ -413,6 +527,60 @@ gsl_matrix* matlab::triu(const gsl_matrix* m, int k) {
 	return triu_m;
 }
 
+gsl_vector* matlab::unique(const gsl_vector* v, const char* first_or_last, gsl_vector** i, gsl_vector** j) {
+	if (std::strcmp(first_or_last, "first") != 0 && std::strcmp(first_or_last, "last") != 0) {
+		return NULL;
+	}
+	gsl_vector* sort_v = sort(v);
+	gsl_vector* unsized_v = gsl_vector_alloc(v->size);
+	gsl_vector_set(unsized_v, 0, gsl_vector_get(sort_v, 0));
+	int n_unique = 1;
+	for (int x = 1; x < v->size; x++) {
+		double prev_value = gsl_vector_get(sort_v, x - 1);
+		double value = gsl_vector_get(sort_v, x);
+		if (fp_compare(prev_value, value) != 0) {
+			gsl_vector_set(unsized_v, n_unique++, value);
+		}
+	}
+	gsl_vector_free(sort_v);
+	gsl_vector* unique_v = gsl_vector_alloc(n_unique);
+	gsl_vector_view unsized_subv = gsl_vector_subvector(unsized_v, 0, n_unique);
+	gsl_vector_memcpy(unique_v, &unsized_subv.vector);
+	gsl_vector_free(unsized_v);
+	if (i != NULL) {
+		*i = gsl_vector_alloc(n_unique);
+		for (int x = 0; x < n_unique; x++) {
+			for (int y = 0; y < v->size; y++) {
+				if (fp_compare(gsl_vector_get(unique_v, x), gsl_vector_get(v, y)) == 0) {
+					gsl_vector_set(*i, x, y);
+					if (std::strcmp(first_or_last, "first") == 0) {
+						break;
+					}
+				}
+			}
+		}
+	}
+	if (j != NULL) {
+		*j = gsl_vector_alloc(v->size);
+		for (int x = 0; x < v->size; x++) {
+			for (int y = 0; y < n_unique; y++) {
+				if (fp_compare(gsl_vector_get(v, x), gsl_vector_get(unique_v, y)) == 0) {
+					gsl_vector_set(*j, x, y);
+					break;
+				}
+			}
+		}
+	}
+	return unique_v;
+}
+
+gsl_vector* matlab::unique(const gsl_matrix* m, const char* first_or_last, gsl_vector** i, gsl_vector** j) {
+	gsl_vector* v = to_vector(m);
+	gsl_vector* unique_v = unique(v, first_or_last, i, j);
+	gsl_vector_free(v);
+	return unique_v;
+}
+
 /*
  * Emulates (unique(m, "rows", first_or_last)).
  */
@@ -420,22 +588,22 @@ gsl_matrix* matlab::unique_rows(const gsl_matrix* m, const char* first_or_last, 
 	if (std::strcmp(first_or_last, "first") != 0 && std::strcmp(first_or_last, "last") != 0) {
 		return NULL;
 	}
-	gsl_matrix* sorted_m = sortrows(m);
+	gsl_matrix* sort_m = sortrows(m);
 	gsl_matrix* unsized_m = gsl_matrix_alloc(m->size1, m->size2);
-	gsl_vector_view first_row = gsl_matrix_row(sorted_m, 0);
+	gsl_vector_view first_row = gsl_matrix_row(sort_m, 0);
 	gsl_matrix_set_row(unsized_m, 0, &first_row.vector);
 	int n_unique = 1;
 	for (int x = 1; x < m->size1; x++) {
-		gsl_vector_view prev_row = gsl_matrix_row(sorted_m, x - 1);
-		gsl_vector_view sorted_m_row_x = gsl_matrix_row(sorted_m, x);
-		if (compare_vectors(&prev_row.vector, &sorted_m_row_x.vector) != 0) {
-			gsl_matrix_set_row(unsized_m, n_unique++, &sorted_m_row_x.vector);
+		gsl_vector_view sort_m_row_x_sub_1 = gsl_matrix_row(sort_m, x - 1);
+		gsl_vector_view sort_m_row_x = gsl_matrix_row(sort_m, x);
+		if (compare_vectors(&sort_m_row_x_sub_1.vector, &sort_m_row_x.vector) != 0) {
+			gsl_matrix_set_row(unsized_m, n_unique++, &sort_m_row_x.vector);
 		}
 	}
+	gsl_matrix_free(sort_m);
 	gsl_matrix* unique_m = gsl_matrix_alloc(n_unique, m->size2);
 	gsl_matrix_view unsized_subm = gsl_matrix_submatrix(unsized_m, 0, 0, n_unique, m->size2);
 	gsl_matrix_memcpy(unique_m, &unsized_subm.matrix);
-	gsl_matrix_free(sorted_m);
 	gsl_matrix_free(unsized_m);
 	if (i != NULL) {
 		*i = gsl_vector_alloc(n_unique);

@@ -23,10 +23,14 @@ namespace matlab {
 	gsl_vector* find(const gsl_vector*, int = GSL_POSINF, const char* = "first");
 	gsl_vector* find(const gsl_matrix*, int = GSL_POSINF, const char* = "first");
 	gsl_matrix* find_ij(const gsl_matrix*, int = GSL_POSINF, const char* = "first");
+	gsl_vector* hist(const gsl_vector*, int = 10);
+	gsl_vector* hist(const gsl_vector*, const gsl_vector*);
 	int length(const gsl_vector*);
 	int length(const gsl_matrix*);
+	double max(double, double);
 	double max(const gsl_vector*);
 	gsl_vector* max(const gsl_matrix*, int = 1);
+	double min(double, double);
 	double min(const gsl_vector*);
 	gsl_vector* min(const gsl_matrix*, int = 1);
 	int nnz(const gsl_vector*);
@@ -37,12 +41,16 @@ namespace matlab {
 	double prod(const gsl_vector*);
 	gsl_vector* prod(const gsl_matrix*, int = 1);
 	gsl_vector* reverse(gsl_vector*);
-	gsl_vector* sortrows(const gsl_vector*, gsl_permutation** = NULL);
-	gsl_matrix* sortrows(const gsl_matrix*, gsl_permutation** = NULL);
+	gsl_vector* sort(const gsl_vector*, const char* = "ascend", gsl_vector** = NULL);
+	gsl_matrix* sort(const gsl_matrix*, int = 1, const char* = "ascend", gsl_matrix** = NULL);
+	gsl_vector* sortrows(const gsl_vector*, gsl_vector** = NULL);
+	gsl_matrix* sortrows(const gsl_matrix*, gsl_vector** = NULL);
 	double sum(const gsl_vector*);
 	gsl_vector* sum(const gsl_matrix*, int = 1);
 	gsl_matrix* tril(const gsl_matrix*, int = 0);
 	gsl_matrix* triu(const gsl_matrix*, int = 0);
+	gsl_vector* unique(const gsl_vector*, const char* = "last", gsl_vector** = NULL, gsl_vector** = NULL);
+	gsl_vector* unique(const gsl_matrix*, const char* = "last", gsl_vector** = NULL, gsl_vector** = NULL);
 	gsl_matrix* unique_rows(const gsl_matrix*, const char* = "last", gsl_vector** = NULL, gsl_vector** = NULL);
 	gsl_matrix* zeros(int);
 	gsl_matrix* zeros(int, int);
@@ -92,9 +100,9 @@ namespace matlab {
 	
 	// Vector/matrix comparison
 	int compare_vectors(const gsl_vector*, const gsl_vector*);
-	bool order_vectors(gsl_vector*, gsl_vector*);
+	bool vector_less(gsl_vector*, gsl_vector*);
 	int compare_matrices(const gsl_matrix*, const gsl_matrix*);
-	bool order_matrices(gsl_matrix*, gsl_matrix*);
+	bool matrix_less(gsl_matrix*, gsl_matrix*);
 	gsl_vector* compare_elements(const gsl_vector*, fp_cmp_fn, double);
 	gsl_vector* compare_elements(const gsl_vector*, fp_cmp_fn, const gsl_vector*);
 	gsl_matrix* compare_elements(const gsl_matrix*, fp_cmp_fn, double);
@@ -151,6 +159,7 @@ namespace matlab {
 	gsl_vector* to_vector(const gsl_matrix*);
 	gsl_matrix* to_column_matrix(const gsl_vector*);
 	gsl_matrix* to_row_matrix(const gsl_vector*);
+	gsl_permutation* to_permutation(const gsl_vector*);
 	
 	// Utility
 	gsl_matrix* permute_columns(const gsl_permutation*, const gsl_matrix*);

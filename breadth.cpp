@@ -6,7 +6,8 @@
 /*
  * Performs a breadth-first search starting at the source node.  Because C++
  * indexing is zero-based, a value of 0 in the ith position of branch could mean
- * either that node 0 precedes node i or that node i is unreachable.
+ * either that node 0 precedes node i or that node i is unreachable.  Check
+ * distance(i) for GSL_POSINF to differentiate between these two cases.
  */
 gsl_vector* bct::breadth(const gsl_matrix* CIJ, int source, gsl_vector** branch) {
 	

@@ -124,9 +124,11 @@ gsl_matrix* bct::motif3generate(gsl_vector** ID, gsl_vector** N) {
 	}
 	
 	// [X ind]=sortrows(ID);
-	gsl_permutation* ind;
-	gsl_vector* X = sortrows(_ID, &ind);
+	gsl_vector* ind_v;
+	gsl_vector* X = sortrows(_ID, &ind_v);
 	gsl_vector_free(X);
+	gsl_permutation* ind = to_permutation(ind_v);
+	gsl_vector_free(ind_v);
 	
 	// ID=ID(ind,:);
 	if (ID == NULL) {
@@ -285,9 +287,11 @@ gsl_matrix* bct::motif4generate(gsl_vector** ID, gsl_vector** N) {
 	gsl_vector_add_constant(_ID, 1.0);
 	
 	// [X ind]=sortrows(ID);
-	gsl_permutation* ind;
-	gsl_vector* X = sortrows(_ID, &ind);
+	gsl_vector* ind_v;
+	gsl_vector* X = sortrows(_ID, &ind_v);
 	gsl_vector_free(X);
+	gsl_permutation* ind = to_permutation(ind_v);
+	gsl_vector_free(ind_v);
 	
 	// ID=ID(ind,:);
 	if (ID == NULL) {
