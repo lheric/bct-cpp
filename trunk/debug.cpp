@@ -9,7 +9,7 @@
  * provided for debugging purposes.  In other cases, use gsl_vector_fprintf.
  */
 void bct::printf(const gsl_vector* v, const char* format) {
-	for (int i = 0; i < v->size; i++) {
+	for (int i = 0; i < (int)v->size; i++) {
 		std::printf(format, gsl_vector_get(v, i));
 		std::printf(" ");
 	}
@@ -21,8 +21,8 @@ void bct::printf(const gsl_vector* v, const char* format) {
  * provided for debugging purposes.  In other cases, use gsl_matrix_fprintf.
  */
 void bct::printf(const gsl_matrix* m, const char* format) {
-	for (int i = 0; i < m->size1; i++) {
-		for (int j = 0; j < m->size2; j++) {
+	for (int i = 0; i < (int)m->size1; i++) {
+		for (int j = 0; j < (int)m->size2; j++) {
 			std::printf(format, gsl_matrix_get(m, i, j));
 			std::printf(" ");
 		}
@@ -36,7 +36,7 @@ void bct::printf(const gsl_matrix* m, const char* format) {
  * gsl_permutation_fprintf.
  */
 void bct::printf(const gsl_permutation* p, const char* format) {
-	for (int i = 0; i < p->size; i++) {
+	for (int i = 0; i < (int)p->size; i++) {
 		std::printf(format, gsl_permutation_get(p, i));
 		std::printf(" ");
 	}

@@ -241,7 +241,7 @@ gsl_vector* matlab::logical_and(const gsl_vector* v1, const gsl_vector* v2) {
 		return NULL;
 	}
 	gsl_vector* and_v = gsl_vector_alloc(v1->size);
-	for (int i = 0; i < v1->size; i++) {
+	for (int i = 0; i < (int)v1->size; i++) {
 		bool nz1 = fp_nonzero(gsl_vector_get(v1, i));
 		bool nz2 = fp_nonzero(gsl_vector_get(v2, i));
 		gsl_vector_set(and_v, i, (double)(nz1 && nz2));
@@ -257,8 +257,8 @@ gsl_matrix* matlab::logical_and(const gsl_matrix* m1, const gsl_matrix* m2) {
 		return NULL;
 	}
 	gsl_matrix* and_m = gsl_matrix_alloc(m1->size1, m1->size2);
-	for (int i = 0; i < m1->size1; i++) {
-		for (int j = 0; j < m1->size2; j++) {
+	for (int i = 0; i < (int)m1->size1; i++) {
+		for (int j = 0; j < (int)m1->size2; j++) {
 			bool nz1 = fp_nonzero(gsl_matrix_get(m1, i, j));
 			bool nz2 = fp_nonzero(gsl_matrix_get(m2, i, j));
 			gsl_matrix_set(and_m, i, j, (double)(nz1 && nz2));
@@ -272,7 +272,7 @@ gsl_matrix* matlab::logical_and(const gsl_matrix* m1, const gsl_matrix* m2) {
  */
 gsl_vector* matlab::logical_not(const gsl_vector* v) {
 	gsl_vector* not_v = gsl_vector_alloc(v->size);
-	for (int i = 0; i < v->size; i++) {
+	for (int i = 0; i < (int)v->size; i++) {
 		bool z = fp_zero(gsl_vector_get(v, i));
 		gsl_vector_set(not_v, i, (double)z);
 	}
@@ -284,8 +284,8 @@ gsl_vector* matlab::logical_not(const gsl_vector* v) {
  */
 gsl_matrix* matlab::logical_not(const gsl_matrix* m) {
 	gsl_matrix* not_m = gsl_matrix_alloc(m->size1, m->size2);
-	for (int i = 0; i < m->size1; i++) {
-		for (int j = 0; j < m->size2; j++) {
+	for (int i = 0; i < (int)m->size1; i++) {
+		for (int j = 0; j < (int)m->size2; j++) {
 			bool z = fp_zero(gsl_matrix_get(m, i, j));
 			gsl_matrix_set(not_m, i, j, (double)z);
 		}
@@ -301,7 +301,7 @@ gsl_vector* matlab::logical_or(const gsl_vector* v1, const gsl_vector* v2) {
 		return NULL;
 	}
 	gsl_vector* or_v = gsl_vector_alloc(v1->size);
-	for (int i = 0; i < v1->size; i++) {
+	for (int i = 0; i < (int)v1->size; i++) {
 		bool nz1 = fp_nonzero(gsl_vector_get(v1, i));
 		bool nz2 = fp_nonzero(gsl_vector_get(v2, i));
 		gsl_vector_set(or_v, i, (double)(nz1 || nz2));
@@ -317,8 +317,8 @@ gsl_matrix* matlab::logical_or(const gsl_matrix* m1, const gsl_matrix* m2) {
 		return NULL;
 	}
 	gsl_matrix* or_m = gsl_matrix_alloc(m1->size1, m1->size2);
-	for(int i = 0; i < m1->size1; i++) {
-		for(int j = 0; j < m1->size2; j++) {
+	for(int i = 0; i < (int)m1->size1; i++) {
+		for(int j = 0; j < (int)m1->size2; j++) {
 			bool nz1 = fp_nonzero(gsl_matrix_get(m1, i, j));
 			bool nz2 = fp_nonzero(gsl_matrix_get(m2, i, j));
 			gsl_matrix_set(or_m, i, j, (double)(nz1 || nz2));
@@ -357,7 +357,7 @@ gsl_matrix* matlab::pow(const gsl_matrix* m, int power) {
  */
 gsl_vector* matlab::pow_elements(const gsl_vector* v, double power) {
 	gsl_vector* pow_v = gsl_vector_alloc(v->size);
-	for (int i = 0; i < v->size; i++) {
+	for (int i = 0; i < (int)v->size; i++) {
 		double value = std::pow(gsl_vector_get(v, i), power);
 		gsl_vector_set(pow_v, i, value);
 	}
@@ -372,7 +372,7 @@ gsl_vector* matlab::pow_elements(const gsl_vector* v, const gsl_vector* powers) 
 		return NULL;
 	}
 	gsl_vector* pow_v = gsl_vector_alloc(v->size);
-	for (int i = 0; i < v->size; i++) {
+	for (int i = 0; i < (int)v->size; i++) {
 		double value = std::pow(gsl_vector_get(v, i), gsl_vector_get(powers, i));
 		gsl_vector_set(pow_v, i, value);
 	}
@@ -384,8 +384,8 @@ gsl_vector* matlab::pow_elements(const gsl_vector* v, const gsl_vector* powers) 
  */
 gsl_matrix* matlab::pow_elements(const gsl_matrix* m, double power) {
 	gsl_matrix* pow_m = gsl_matrix_alloc(m->size1, m->size2);
-	for (int i = 0; i < m->size1; i++) {
-		for (int j = 0; j < m->size2; j++) {
+	for (int i = 0; i < (int)m->size1; i++) {
+		for (int j = 0; j < (int)m->size2; j++) {
 			double value = std::pow(gsl_matrix_get(m, i, j), power);
 			gsl_matrix_set(pow_m, i, j, value);
 		}
@@ -401,8 +401,8 @@ gsl_matrix* matlab::pow_elements(const gsl_matrix* m, const gsl_matrix* powers) 
 		return NULL;
 	}
 	gsl_matrix* pow_m = gsl_matrix_alloc(m->size1, m->size2);
-	for (int i = 0; i < m->size1; i++) {
-		for (int j = 0; j < m->size2; j++) {
+	for (int i = 0; i < (int)m->size1; i++) {
+		for (int j = 0; j < (int)m->size2; j++) {
 			double value = std::pow(gsl_matrix_get(m, i, j), gsl_matrix_get(powers, i, j));
 			gsl_matrix_set(pow_m, i, j, value);
 		}

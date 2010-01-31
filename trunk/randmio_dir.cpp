@@ -19,7 +19,6 @@
 gsl_matrix* bct::randmio_dir(const gsl_matrix* m, int iters) {
 	//[i j]=find(R);
 	gsl_matrix* R = copy(m);
-	int n = m->size1;	
 	gsl_matrix* R_ij = find_ij(R); 
 	gsl_vector_view i = gsl_matrix_column(R_ij, 0); 
 	gsl_vector_view j = gsl_matrix_column(R_ij, 1); 

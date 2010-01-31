@@ -19,7 +19,6 @@
 gsl_matrix* bct::randmio_und(const gsl_matrix* m, int iters) {
 	//[i j]=find(tril(R));
 	gsl_matrix* R = copy(m);
-	int n = m->size1;
 	gsl_matrix* tril_R = tril(R);
 	gsl_matrix* R_ij = find_ij(tril_R); 
 	gsl_matrix_free(tril_R);

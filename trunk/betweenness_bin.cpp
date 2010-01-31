@@ -55,7 +55,7 @@ void bct::node_and_edge_betweenness_bin(const gsl_matrix* m, gsl_vector* node_be
 	}
 	
 	// for u=1:n
-	for (int u = 0; u < m->size1; u++) {
+	for (int u = 0; u < (int)m->size1; u++) {
 		
 		// D=false(1,n); D(u) = 1;
 		gsl_vector* d = gsl_vector_calloc(m->size1);
@@ -83,14 +83,14 @@ void bct::node_and_edge_betweenness_bin(const gsl_matrix* m, gsl_vector* node_be
 		while (V != NULL) {
 			
 			// Gu(:,V)=0;
-			for (int V_index = 0; V_index < V->size; V_index++) {
+			for (int V_index = 0; V_index < (int)V->size; V_index++) {
 				int v = (int)gsl_vector_get(V, V_index);
 				gsl_vector_view copy_m_column = gsl_matrix_column(copy_m, v);
 				gsl_vector_set_zero(&copy_m_column.vector);
 			}
 			
 			// for v=V
-			for (int V_index = 0; V_index < V->size; V_index++) {
+			for (int V_index = 0; V_index < (int)V->size; V_index++) {
 				int v = (int)gsl_vector_get(V, V_index);
 				
 				// Q(q)=v; q=q-1;
@@ -101,7 +101,7 @@ void bct::node_and_edge_betweenness_bin(const gsl_matrix* m, gsl_vector* node_be
 				gsl_vector* W = find(&copy_m_row.vector);
 				
 				// for w=W
-				for (int W_index = 0; W != NULL && W_index < W->size; W_index++) {
+				for (int W_index = 0; W != NULL && W_index < (int)W->size; W_index++) {
 					int w = (int)gsl_vector_get(W, W_index);
 					
 					// if D(w)
@@ -160,7 +160,7 @@ void bct::node_and_edge_betweenness_bin(const gsl_matrix* m, gsl_vector* node_be
 		gsl_vector* dp = gsl_vector_calloc(m->size1);
 		
 		// for w=Q(1:n-1);
-		for (int Q_index = 0; Q_index < m->size1 - 1; Q_index++) {
+		for (int Q_index = 0; Q_index < (int)m->size1 - 1; Q_index++) {
 			int w = (int)gsl_vector_get(Q, Q_index);
 			
 			// BC(w)=BC(w)+DP(w)
@@ -171,7 +171,7 @@ void bct::node_and_edge_betweenness_bin(const gsl_matrix* m, gsl_vector* node_be
 			// for v=find(P(w,:))
 			gsl_vector_view p_row = gsl_matrix_row(p, w);
 			gsl_vector* found_p_row = find(&p_row.vector);
-			for (int p_index = 0; found_p_row != NULL && p_index < found_p_row->size; p_index++) {
+			for (int p_index = 0; found_p_row != NULL && p_index < (int)found_p_row->size; p_index++) {
 				int v = (int)gsl_vector_get(found_p_row, p_index);
 				
 				// DPvw=(1+DP(w)).*NP(v)./NP(w);

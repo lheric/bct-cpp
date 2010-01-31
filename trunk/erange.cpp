@@ -27,7 +27,7 @@ gsl_matrix* bct::erange(const gsl_matrix* m, double* eta, gsl_matrix* eshort, do
 	gsl_matrix_free(m_equal_1);	
 	
 	// for c=1:length(i)
-	for (int c = 0; c < m_equal_1_indices->size1; c++) {
+	for (int c = 0; c < (int)m_equal_1_indices->size1; c++) {
 		
 		// CIJcut = CIJ;
 		gsl_matrix* m_cut = copy(m);

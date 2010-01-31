@@ -43,7 +43,7 @@ gsl_matrix* bct::motif3struct_bin(const gsl_matrix* A, gsl_vector** f) {
 		// for v1=find(V1)
 		gsl_vector* find_V1 = find(V1);
 		if (find_V1 != NULL) {
-			for (int i_find_V1 = 0; i_find_V1 < find_V1->size; i_find_V1++) {
+			for (int i_find_V1 = 0; i_find_V1 < (int)find_V1->size; i_find_V1++) {
 				int v1 = (int)gsl_vector_get(find_V1, i_find_V1);
 				
 				// V2=[false(1,u) As(v1,u+1:n)];
@@ -70,7 +70,7 @@ gsl_matrix* bct::motif3struct_bin(const gsl_matrix* A, gsl_vector** f) {
 				// for v2=find(V2)
 				gsl_vector* find_V2 = find(V2);
 				if (find_V2 != NULL) {
-					for (int i_find_V2 = 0; i_find_V2 < find_V2->size; i_find_V2++) {
+					for (int i_find_V2 = 0; i_find_V2 < (int)find_V2->size; i_find_V2++) {
 						int v2 = (int)gsl_vector_get(find_V2, i_find_V2);
 						
 						// s=uint32(sum(10.^(5:-1:0).*[A(v1,u) A(v2,u) A(u,v1) A(v2,v1) A(u,v2) A(v1,v2)]));
@@ -83,14 +83,14 @@ gsl_matrix* bct::motif3struct_bin(const gsl_matrix* A, gsl_vector** f) {
 						
 						// ind=ID3(s==M3n);
 						int i_M3 = 0;
-						for ( ; i_M3 < M3->size1; i_M3++) {
+						for ( ; i_M3 < (int)M3->size1; i_M3++) {
 							gsl_vector_view M3_row_i_M3 = gsl_matrix_row(M3, i_M3);
 							if (compare_vectors(s, &M3_row_i_M3.vector) == 0) {
 								break;
 							}
 						}
 						gsl_vector_free(s);
-						if (i_M3 < M3->size1) {
+						if (i_M3 < (int)M3->size1) {
 							int ind = (int)gsl_vector_get(ID3, i_M3) - 1;
 							
 							// if nargout==2; F(ind,[u v1 v2])=F(ind,[u v1 v2])+1; end
