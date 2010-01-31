@@ -25,8 +25,8 @@ gsl_matrix* bct::to_binary(const gsl_matrix* m) {
  */
 gsl_matrix* bct::to_positive(const gsl_matrix* m) {
 	gsl_matrix* pos_m = gsl_matrix_alloc(m->size1, m->size2);
-	for (int i = 0; i < m->size1; i++) {
-		for (int j = 0; j < m->size2; j++) {
+	for (int i = 0; i < (int)m->size1; i++) {
+		for (int j = 0; j < (int)m->size2; j++) {
 			gsl_matrix_set(pos_m, i, j, std::abs(gsl_matrix_get(m, i, j)));
 		}
 	}
@@ -44,8 +44,8 @@ gsl_matrix* bct::to_positive(const gsl_matrix* m) {
 gsl_matrix* bct::to_undirected(const gsl_matrix* m) {
 	if (m->size1 != m->size2) throw size_exception();
 	gsl_matrix* und_m = copy(m);
-	for (int i = 0; i < m->size1; i++) {
-		for (int j = i; j < m->size2; j++) {
+	for (int i = 0; i < (int)m->size1; i++) {
+		for (int j = i; j < (int)m->size2; j++) {
 			double value_ij = gsl_matrix_get(m, i, j);
 			double value_ji = gsl_matrix_get(m, j, i);
 			if (fp_zero(value_ij) && fp_nonzero(value_ji)) {

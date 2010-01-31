@@ -113,7 +113,7 @@ gsl_matrix* bct::motif3generate(gsl_vector** ID, gsl_vector** N) {
 	
 	// %convert IDs into Sporns & Kotter classification
 	if (_motif_convention == SPORNS) {
-		for (int i = 0; i < _ID->size; i++) {
+		for (int i = 0; i < (int)_ID->size; i++) {
 			for (int j = 0; j < 7; j++) {
 				if ((int)gsl_vector_get(_ID, i) == id_mika[j]) {
 					gsl_vector_set(_ID, i, id_olaf[j]);

@@ -54,7 +54,7 @@ gsl_matrix* bct::motif3struct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matri
 		// for v1=find(V1)
 		gsl_vector* find_V1 = find(V1);
 		if (find_V1 != NULL) {
-			for (int i_find_V1 = 0; i_find_V1 < find_V1->size; i_find_V1++) {
+			for (int i_find_V1 = 0; i_find_V1 < (int)find_V1->size; i_find_V1++) {
 				int v1 = (int)gsl_vector_get(find_V1, i_find_V1);
 				
 				// V2=[false(1,u) As(v1,u+1:n)];
@@ -81,7 +81,7 @@ gsl_matrix* bct::motif3struct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matri
 				// for v2=find(V2)
 				gsl_vector* find_V2 = find(V2);
 				if (find_V2 != NULL) {
-					for (int i_find_V2 = 0; i_find_V2 < find_V2->size; i_find_V2++) {
+					for (int i_find_V2 = 0; i_find_V2 < (int)find_V2->size; i_find_V2++) {
 						int v2 = (int)gsl_vector_get(find_V2, i_find_V2);
 						
 						// w=[W(v1,u) W(v2,u) W(u,v1) W(v2,v1) W(u,v2) W(v1,v2)];
@@ -100,14 +100,14 @@ gsl_matrix* bct::motif3struct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matri
 						
 						// ind=(s==M3n);
 						int ind = 0;
-						for ( ; ind < M3->size1; ind++) {
+						for ( ; ind < (int)M3->size1; ind++) {
 							gsl_vector_view M3_row_ind = gsl_matrix_row(M3, ind);
 							if (compare_vectors(s, &M3_row_ind.vector) == 0) {
 								break;
 							}
 						}
 						gsl_vector_free(s);
-						if (ind < M3->size1) {
+						if (ind < (int)M3->size1) {
 							
 							// M=w.*M3(ind,:);
 							gsl_vector* M = gsl_vector_alloc(M3->size2);

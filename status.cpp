@@ -41,8 +41,8 @@ bool bct::is_undirected(const gsl_matrix* m) {
  */
 bool bct::is_directed(const gsl_matrix* m) {
 	if (m->size1 != m->size2) throw size_exception();
-	for (int i = 0; i < m->size1; i++) {
-		for (int j = 0; j < m->size2; j++) {
+	for (int i = 0; i < (int)m->size1; i++) {
+		for (int j = 0; j < (int)m->size2; j++) {
 			if (fp_not_equal(gsl_matrix_get(m, i, j), gsl_matrix_get(m, j, i))) {
 				return true;
 			}
@@ -62,8 +62,8 @@ bool bct::is_binary(const gsl_matrix* m) {
  * Returns whether the given matrix is weighted.
  */
 bool bct::is_weighted(const gsl_matrix* m) {
-	for (int i = 0; i < m->size1; i++) {
-		for (int j = 0; j < m->size2; j++) {
+	for (int i = 0; i < (int)m->size1; i++) {
+		for (int j = 0; j < (int)m->size2; j++) {
 			double value = gsl_matrix_get(m, i, j);
 			if (fp_nonzero(value) && fp_not_equal(value, 1.0)) {
 				return true;
@@ -84,8 +84,8 @@ bool bct::is_positive(const gsl_matrix* m) {
  * Returns whether the given matrix is signed.
  */
 bool bct::is_signed(const gsl_matrix* m) {
-	for (int i = 0; i < m->size1; i++) {
-		for (int j = 0; j < m->size2; j++) {
+	for (int i = 0; i < (int)m->size1; i++) {
+		for (int j = 0; j < (int)m->size2; j++) {
 			if (fp_negative(gsl_matrix_get(m, i, j))) {
 				return true;
 			}

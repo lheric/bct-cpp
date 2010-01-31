@@ -13,14 +13,14 @@ gsl_vector* bct::degrees_dir(const gsl_matrix* CIJ, gsl_vector** id, gsl_vector*
 	// CIJ = double(CIJ~=0);
 	// id = sum(CIJ,1);
 	gsl_vector* _id = gsl_vector_alloc(CIJ->size2);
-	for (int i = 0; i < CIJ->size2; i++) {
+	for (int i = 0; i < (int)CIJ->size2; i++) {
 		gsl_vector_const_view CIJ_col_i = gsl_matrix_const_column(CIJ, i);
 		gsl_vector_set(_id, i, nnz(&CIJ_col_i.vector));
 	}
 	
 	// od = sum(CIJ,2);
 	gsl_vector* _od = gsl_vector_alloc(CIJ->size1);
-	for (int i = 0; i < CIJ->size1; i++) {
+	for (int i = 0; i < (int)CIJ->size1; i++) {
 		gsl_vector_const_view CIJ_col_i = gsl_matrix_const_row(CIJ, i);
 		gsl_vector_set(_od, i, nnz(&CIJ_col_i.vector));
 	}

@@ -32,8 +32,8 @@ bool matlab::fp_greater_or_equal(double x, double y) { return fp_compare(x, y) >
  * vector is less than, equal to, or greater than the second.
  */
 int matlab::compare_vectors(const gsl_vector* v1, const gsl_vector* v2) {
-	for (int i = 0; i < v1->size; i++) {
-		if (i >= v2->size) {
+	for (int i = 0; i < (int)v1->size; i++) {
+		if (i >= (int)v2->size) {
 			return 1;
 		}
 		int result = fp_compare(gsl_vector_get(v1, i), gsl_vector_get(v2, i));
@@ -92,7 +92,7 @@ bool matlab::matrix_less(gsl_matrix* m1, gsl_matrix* m2) {
  */
 gsl_vector* matlab::compare_elements(const gsl_vector* v, fp_cmp_fn compare, double x) {
 	gsl_vector* cmp_v = gsl_vector_alloc(v->size);
-	for (int i = 0; i < v->size; i++) {
+	for (int i = 0; i < (int)v->size; i++) {
 		double value = gsl_vector_get(v, i);
 		gsl_vector_set(cmp_v, i, (double)compare(value, x));
 	}
@@ -107,7 +107,7 @@ gsl_vector* matlab::compare_elements(const gsl_vector* v1, fp_cmp_fn compare, co
 		return NULL;
 	}
 	gsl_vector* cmp_v = gsl_vector_alloc(v1->size);
-	for (int i = 0; i < v1->size; i++) {
+	for (int i = 0; i < (int)v1->size; i++) {
 		double value1 = gsl_vector_get(v1, i);
 		double value2 = gsl_vector_get(v2, i);
 		gsl_vector_set(cmp_v, i, (double)compare(value1, value2));
@@ -120,8 +120,8 @@ gsl_vector* matlab::compare_elements(const gsl_vector* v1, fp_cmp_fn compare, co
  */
 gsl_matrix* matlab::compare_elements(const gsl_matrix* m, fp_cmp_fn compare, double x) {
 	gsl_matrix* cmp_m = gsl_matrix_alloc(m->size1, m->size2);
-	for (int i = 0; i < m->size1; i++) {
-		for (int j = 0; j < m->size2; j++) {
+	for (int i = 0; i < (int)m->size1; i++) {
+		for (int j = 0; j < (int)m->size2; j++) {
 			double value = gsl_matrix_get(m, i, j);
 			gsl_matrix_set(cmp_m, i, j, (double)compare(value, x));
 		}
@@ -137,8 +137,8 @@ gsl_matrix* matlab::compare_elements(const gsl_matrix* m1, fp_cmp_fn compare, co
 		return NULL;
 	}
 	gsl_matrix* cmp_m = gsl_matrix_alloc(m1->size1, m1->size2);
-	for (int i = 0; i < m1->size1; i++) {
-		for (int j = 0; j < m1->size2; j++) {
+	for (int i = 0; i < (int)m1->size1; i++) {
+		for (int j = 0; j < (int)m1->size2; j++) {
 			double value1 = gsl_matrix_get(m1, i, j);
 			double value2 = gsl_matrix_get(m2, i, j);
 			gsl_matrix_set(cmp_m, i, j, (double)compare(value1, value2));

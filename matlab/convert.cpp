@@ -6,7 +6,7 @@
  * Converts a vector to an array.
  */
 void matlab::to_array(const gsl_vector* v, double* array) {
-	for (int i = 0; i < v->size; i++) {
+	for (int i = 0; i < (int)v->size; i++) {
 		array[i] = gsl_vector_get(v, i);
 	}
 }
@@ -36,8 +36,8 @@ bool matlab::to_bool(const gsl_matrix* m) {
  */
 gsl_vector* matlab::to_vector(const gsl_matrix* m) {
 	gsl_vector* v = gsl_vector_alloc(m->size1 * m->size2);
-	for (int j = 0; j < m->size2; j++) {
-		for (int i = 0; i < m->size1; i++) {
+	for (int j = 0; j < (int)m->size2; j++) {
+		for (int i = 0; i < (int)m->size1; i++) {
 			double value = gsl_matrix_get(m, i, j);
 			gsl_vector_set(v, j * m->size1 + i, value);
 		}
@@ -50,7 +50,7 @@ gsl_vector* matlab::to_vector(const gsl_matrix* m) {
  */
 gsl_matrix* matlab::to_column_matrix(const gsl_vector* v) {
 	gsl_matrix* m = gsl_matrix_alloc(v->size, 1);
-	for (int i = 0; i < v->size; i++) {
+	for (int i = 0; i < (int)v->size; i++) {
 		gsl_matrix_set(m, i, 0, gsl_vector_get(v, i));
 	}
 	return m;
@@ -61,7 +61,7 @@ gsl_matrix* matlab::to_column_matrix(const gsl_vector* v) {
  */
 gsl_matrix* matlab::to_row_matrix(const gsl_vector* v) {
 	gsl_matrix* m = gsl_matrix_alloc(1, v->size);
-	for (int i = 0; i < v->size; i++) {
+	for (int i = 0; i < (int)v->size; i++) {
 		gsl_matrix_set(m, 0, i, gsl_vector_get(v, i));
 	}
 	return m;
@@ -72,7 +72,7 @@ gsl_matrix* matlab::to_row_matrix(const gsl_vector* v) {
  */
 gsl_permutation* matlab::to_permutation(const gsl_vector* v) {
 	gsl_permutation* p = gsl_permutation_alloc(v->size);
-	for (int i = 0; i < v->size; i++) {
+	for (int i = 0; i < (int)v->size; i++) {
 		p->data[i] = (int)gsl_vector_get(v, i);
 	}
 	if (gsl_permutation_valid(p) == 1) {

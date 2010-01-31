@@ -22,9 +22,9 @@ double bct::norm_avr_shortest_path_length_bu(const gsl_matrix* m) {
 	double sum;
 	double norm_dis;
 	
-	for ( int i = 0; i < D->size1; i++ ) {
+	for ( int i = 0; i < (int)D->size1; i++ ) {
 		sum = 0;
-		for ( int j = 0; j < D->size2; j++ ) {
+		for ( int j = 0; j < (int)D->size2; j++ ) {
 			if (gsl_matrix_get(D,i,j) == GSL_POSINF)
 				gsl_matrix_set(D,i,j,D->size1);
 			

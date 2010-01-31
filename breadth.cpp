@@ -58,7 +58,7 @@ gsl_vector* bct::breadth(const gsl_matrix* CIJ, int source, gsl_vector** branch)
 		
 		// for v=ns
 		if (ns != NULL) {
-			for (int i_ns = 0; i_ns < ns->size; i_ns++) {
+			for (int i_ns = 0; i_ns < (int)ns->size; i_ns++) {
 				int v = (int)gsl_vector_get(ns, i_ns);
 				
 				// if (distance(v)==0)
