@@ -11,7 +11,7 @@ DEFUN_DLD(randmio_und_connected_cpp, args, , "Wrapper for C++ function.") {
 		int iters = args(1).int_value();
 		//return values
 		if (!error_state) {
-			gsl_matrix* gslm = bct_test::to_gsl(m);
+			gsl_matrix* gslm = bct_test::to_gslm(m);
 			gsl_matrix* R = bct::randmio_und_connected(gslm, iters);
 			return octave_value(bct_test::from_gsl(R));
 		} else {

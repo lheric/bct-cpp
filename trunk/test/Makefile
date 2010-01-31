@@ -11,8 +11,6 @@ filenames = \
 	clustering_coef_bu_cpp \
 	clustering_coef_wd_cpp \
 	clustering_coef_wu_cpp \
-	cycprob_fcyc_cpp \
-	cycprob_pcyc_cpp \
 	degrees_dir_cpp \
 	degrees_und_cpp \
 	density_dir_cpp \
@@ -25,7 +23,6 @@ filenames = \
 	edge_betweenness_wei_cpp \
 	erange_cpp \
 	findpaths_cpp \
-	findwalks_cpp \
 	jdegree_cpp \
 	jdegree_bl_cpp \
 	jdegree_id_cpp \

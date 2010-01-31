@@ -1,23 +1,27 @@
 #include <bct/bct.h>
 #include "bct_test.h"
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_vector.h>
+#include <octave/oct.h>
 
 DEFUN_DLD(charpath_ecc_cpp, args, , "Wrapper for C++ function.") {
-	if (args.length() == 0) {
+	if (args.length() != 1) {
 		return octave_value_list();
 	}
-	Matrix m = args(0).matrix_value();
-	double *radius = new double;
-	double *diameter = new double;
-	octave_value_list retvals;
+	Matrix D = args(0).matrix_value();
 	if (!error_state) {
-		gsl_matrix* gslm = bct_test::to_gsl(m);
-		gsl_vector* ret_v = bct::charpath_ecc(gslm, radius, diameter);
-		retvals(0) = octave_value(bct_test::from_gsl(ret_v));
-		retvals(1) = octave_value(*radius);
-		retvals(2) = octave_value(*diameter);		
-		return retvals;
+		gsl_matrix* D_gsl = bct_test::to_gslm(D);
+		double radius;
+		double diameter;
+		gsl_vector* ecc = bct::charpath_ecc(D_gsl, &radius, &diameter);
+		octave_value_list ret;
+		ret(0) = octave_value(bct_test::from_gsl(ecc));
+		ret(1) = octave_value(radius);
+		ret(2) = octave_value(diameter);
+		gsl_matrix_free(D_gsl);
+		gsl_vector_free(ecc);
+		return ret;
 	} else {
 		return octave_value_list();
 	}
 }
-

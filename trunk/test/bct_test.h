@@ -4,14 +4,15 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include <octave/oct.h>
+#include <vector>
 
 namespace bct_test {
-	gsl_vector* to_gsl(const Array<int>);
-	gsl_matrix* to_gsl(const Matrix);
-	gsl_matrix** to_gsl(const NDArray);
-	Matrix from_gsl(const gsl_vector*);
-	Matrix from_gsl(const gsl_matrix*);
-	NDArray from_gsl(const gsl_matrix* const*, int);
+	gsl_vector* to_gslv(const Matrix, int = 0);
+	gsl_matrix* to_gslm(const Matrix, int = 0, int = 0);
+	std::vector<gsl_matrix*> to_gsl(const NDArray, int = 0);
+	Matrix from_gsl(const gsl_vector*, int = 0);
+	Matrix from_gsl(const gsl_matrix*, int = 0, int = 0);
+	NDArray from_gsl(const std::vector<gsl_matrix*>, int = 0);
 };
 
 #include "bct_test.cpp"
@@ -23,7 +24,7 @@ namespace bct_test {
 		} \
 		Matrix m = args(0).matrix_value(); \
 		if (!error_state) { \
-			gsl_matrix* gslm = bct_test::to_gsl(m); \
+			gsl_matrix* gslm = bct_test::to_gslm(m); \
 			octave_value ret = octave_value(bct::function_name(gslm)); \
 			gsl_matrix_free(gslm); \
 			return ret; \
@@ -39,7 +40,7 @@ namespace bct_test {
 		} \
 		Matrix m = args(0).matrix_value(); \
 		if (!error_state) { \
-			gsl_matrix* gslm = bct_test::to_gsl(m); \
+			gsl_matrix* gslm = bct_test::to_gslm(m); \
 			octave_value ret = bct_test::from_gsl(bct::function_name(gslm)); \
 			gsl_matrix_free(gslm); \
 			return ret; \

@@ -5,6 +5,7 @@
 #include <gsl/gsl_permutation.h>
 #include <gsl/gsl_vector.h>
 #include "matlab/matlab.h"
+#include <vector>
 
 namespace bct {
 	using namespace matlab;
@@ -40,8 +41,8 @@ namespace bct {
 	// Paths, distances, and cycles
 	gsl_vector* breadth(const gsl_matrix*, int, gsl_vector** = NULL);
 	gsl_matrix* breadthdist(const gsl_matrix*, gsl_matrix** = NULL);
+	gsl_vector* charpath_ecc(const gsl_matrix*, double* = NULL, double* = NULL);
 	double charpath_lambda(const gsl_matrix*);
-	gsl_vector* charpath_ecc(const gsl_matrix*, double * = NULL, double * = NULL);
 	gsl_vector* cycprob_fcyc(gsl_matrix**, int);
 	gsl_vector* cycprob_pcyc(gsl_matrix**, int);
 	gsl_matrix* distance_bin(const gsl_matrix*);
@@ -49,8 +50,7 @@ namespace bct {
 	gsl_matrix* distance_wei(const gsl_matrix*); 
 	gsl_matrix* efficiency_global(const gsl_matrix*);
 	gsl_matrix* efficiency_local(const gsl_matrix*);
-	gsl_matrix* findpaths(const gsl_matrix*, const gsl_vector*, int, int, \
-						  gsl_matrix** = NULL, long int* = NULL , gsl_vector* = NULL, int* = NULL, gsl_matrix* = NULL);
+	std::vector<gsl_matrix*> findpaths(const gsl_matrix*, const gsl_vector*, int, long* = NULL, gsl_vector** = NULL, int* = NULL, gsl_matrix** = NULL, gsl_matrix** = NULL);
 	gsl_vector* findwalks(const gsl_matrix*, gsl_matrix** = NULL, double* = NULL);
 	gsl_matrix* reachdist(gsl_matrix*, gsl_matrix* = NULL);
 	double norm_avr_shortest_path_length_bu(const gsl_matrix* m);

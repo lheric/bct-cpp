@@ -13,8 +13,8 @@ DEFUN_DLD(motif3generate_cpp, args, , "Wrapper for C++ function.") {
 	ret(0) = octave_value(bct_test::from_gsl(M));
 	ret(1) = octave_value(bct_test::from_gsl(ID));
 	ret(2) = octave_value(bct_test::from_gsl(N));
-	gsl_matrix_free(M);
 	gsl_vector_free(ID);
 	gsl_vector_free(N);
+	gsl_matrix_free(M);
 	return ret;
 }

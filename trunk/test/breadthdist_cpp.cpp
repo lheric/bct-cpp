@@ -7,14 +7,15 @@ DEFUN_DLD(breadthdist_cpp, args, , "Wrapper for C++ function.") {
 	if (args.length() != 1) {
 		return octave_value_list();
 	}
-	Matrix m = args(0).matrix_value();
+	Matrix CIJ = args(0).matrix_value();
 	if (!error_state) {
-		gsl_matrix* gslm = bct_test::to_gsl(m);
+		gsl_matrix* CIJ_gsl = bct_test::to_gslm(CIJ);
 		gsl_matrix* D;
-		gsl_matrix* R = bct::breadthdist(gslm, &D);
+		gsl_matrix* R = bct::breadthdist(CIJ_gsl, &D);
 		octave_value_list ret;
 		ret(0) = octave_value(bct_test::from_gsl(R));
 		ret(1) = octave_value(bct_test::from_gsl(D));
+		gsl_matrix_free(CIJ_gsl);
 		gsl_matrix_free(D);
 		gsl_matrix_free(R);
 		return ret;

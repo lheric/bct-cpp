@@ -50,7 +50,7 @@ gsl_vector* matlab::to_vector(const gsl_matrix* m) {
  */
 gsl_matrix* matlab::to_column_matrix(const gsl_vector* v) {
 	gsl_matrix* m = gsl_matrix_alloc(v->size, 1);
-	for(int i = 0; i < v->size; i++) {
+	for (int i = 0; i < v->size; i++) {
 		gsl_matrix_set(m, i, 0, gsl_vector_get(v, i));
 	}
 	return m;
@@ -61,8 +61,24 @@ gsl_matrix* matlab::to_column_matrix(const gsl_vector* v) {
  */
 gsl_matrix* matlab::to_row_matrix(const gsl_vector* v) {
 	gsl_matrix* m = gsl_matrix_alloc(1, v->size);
-	for(int i = 0; i < v->size; i++) {
+	for (int i = 0; i < v->size; i++) {
 		gsl_matrix_set(m, 0, i, gsl_vector_get(v, i));
 	}
 	return m;
+}
+
+/*
+ * Converts a vector to a permutation.
+ */
+gsl_permutation* matlab::to_permutation(const gsl_vector* v) {
+	gsl_permutation* p = gsl_permutation_alloc(v->size);
+	for (int i = 0; i < v->size; i++) {
+		p->data[i] = (int)gsl_vector_get(v, i);
+	}
+	if (gsl_permutation_valid(p) == 1) {
+		gsl_permutation_free(p);
+		return NULL;
+	} else {
+		return p;
+	}
 }
