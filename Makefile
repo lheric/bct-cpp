@@ -40,6 +40,7 @@ objects = \
 	matlab/index.o \
 	matlab/operators.o \
 	matlab/utility.o \
+	motif3funct_bin.o \
 	motif3struct_bin.o \
 	motif3struct_wei.o \
 	norm_avr_shortest_path_length_bu.o \

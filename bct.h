@@ -71,6 +71,7 @@ namespace bct {
 	void set_motif_convention(motif_convention);
 	gsl_matrix* motif3generate(gsl_vector** = NULL, gsl_vector** = NULL);
 	gsl_matrix* motif4generate(gsl_vector** = NULL, gsl_vector** = NULL);
+	gsl_matrix* motif3funct_bin(const gsl_matrix*, gsl_vector** = NULL);
 	gsl_matrix* motif3struct_bin(const gsl_matrix*, gsl_vector** = NULL);
 	gsl_matrix* motif3struct_wei(const gsl_matrix*, gsl_matrix** = NULL, gsl_matrix** = NULL);
 

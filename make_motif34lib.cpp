@@ -32,8 +32,8 @@ gsl_matrix* bct::motif3generate(gsl_vector** ID, gsl_vector** N) {
 	// cl=zeros(1,6,'uint8');
 	gsl_vector* cl = zeros_vector(6);
 	
-	double i_nondiagonal[] = { 1, 2, 3, 5, 6, 7 };
-	gsl_vector_view i_nondiagonal_vv = gsl_vector_view_array(i_nondiagonal, 6);
+	double i_nondiag[] = { 1, 2, 3, 5, 6, 7 };
+	gsl_vector_view i_nondiag_vv = gsl_vector_view_array(i_nondiag, 6);
 	
 	// for i=0:2^6-1
 	for (int i = 0; i < 64; i++) {
@@ -49,7 +49,7 @@ gsl_matrix* bct::motif3generate(gsl_vector** ID, gsl_vector** N) {
 		// m(2)  ' '  m(4)  ' '  '0'   ]);
 		gsl_matrix* G = gsl_matrix_calloc(3, 3);
 		for (int i = 0; i < 6; i++) {
-			int index = (int)i_nondiagonal[i];
+			int index = (int)i_nondiag[i];
 			if (m[i] == '1') {
 				ordinal_index_assign(G, index, 1.0);
 			}
@@ -86,9 +86,9 @@ gsl_matrix* bct::motif3generate(gsl_vector** ID, gsl_vector** N) {
 			gsl_matrix_set_row(CL, n, cl);
 			
 			// M(n,:)=G([2:4 6:8]);
-			gsl_vector* G_nondiagonal = ordinal_index(G, &i_nondiagonal_vv.vector);
-			gsl_matrix_set_row(M, n, G_nondiagonal);
-			gsl_vector_free(G_nondiagonal);
+			gsl_vector* G_nondiag = ordinal_index(G, &i_nondiag_vv.vector);
+			gsl_matrix_set_row(M, n, G_nondiag);
+			gsl_vector_free(G_nondiag);
 		}
 		
 		gsl_matrix_free(G);
@@ -169,8 +169,8 @@ gsl_matrix* bct::motif4generate(gsl_vector** ID, gsl_vector** N) {
 	// cl=zeros(1,16,'uint8');
 	gsl_vector* cl = zeros_vector(16);
 	
-	double i_nondiagonal[] = { 1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 13, 14 };
-	gsl_vector_view i_nondiagonal_vv = gsl_vector_view_array(i_nondiagonal, 12);
+	double i_nondiag[] = { 1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 13, 14 };
+	gsl_vector_view i_nondiag_vv = gsl_vector_view_array(i_nondiag, 12);
 	
 	// for i=0:2^12-1
 	for (int i = 0; i < 4096; i++) {
@@ -187,7 +187,7 @@ gsl_matrix* bct::motif4generate(gsl_vector** ID, gsl_vector** N) {
 		// m(3)  ' '  m(6)  ' '  m(9)  ' '  '0'    ]);
 		gsl_matrix* G = gsl_matrix_calloc(4, 4);
 		for (int i = 0; i < 12; i++) {
-			int index = (int)i_nondiagonal[i];
+			int index = (int)i_nondiag[i];
 			if (m[i] == '1') {
 				ordinal_index_assign(G, index, 1.0);
 			}
@@ -269,9 +269,9 @@ gsl_matrix* bct::motif4generate(gsl_vector** ID, gsl_vector** N) {
 			gsl_matrix_set_row(CL, n, cl);
 			
 			// M(n,:)=G([2:5 7:10 12:15]);
-			gsl_vector* G_nondiagonal = ordinal_index(G, &i_nondiagonal_vv.vector);
-			gsl_matrix_set_row(M, n, G_nondiagonal);
-			gsl_vector_free(G_nondiagonal);
+			gsl_vector* G_nondiag = ordinal_index(G, &i_nondiag_vv.vector);
+			gsl_matrix_set_row(M, n, G_nondiag);
+			gsl_vector_free(G_nondiag);
 		}
 		
 		gsl_matrix_free(G);
