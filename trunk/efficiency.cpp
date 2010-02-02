@@ -13,6 +13,8 @@
  * For directed networks, local efficiency works with the out-degree.
  */
  
+gsl_matrix* distance_inv(gsl_matrix*);
+
 gsl_matrix* bct::efficiency_local(const gsl_matrix* CIJ) {
 	if (safe_mode) check_status(CIJ, BINARY | UNDIRECTED, "efficiency_local");
 	gsl_matrix* m =copy(CIJ);
@@ -24,7 +26,7 @@ gsl_matrix* bct::efficiency_local(const gsl_matrix* CIJ) {
 		int degree = neighbors->size;
 		if(degree >= 2) {
 			gsl_matrix* m_neighbors = ordinal_index(m, neighbors, neighbors);
-			gsl_matrix* eff = bct::distance_inv(m_neighbors);
+			gsl_matrix* eff = distance_inv(m_neighbors);
 			gsl_vector* eff_v = to_vector(eff);
 			double factor = (double)1/((degree*degree)-degree);
 			gsl_vector_scale(eff_v, factor);
@@ -42,7 +44,9 @@ gsl_matrix* bct::efficiency_global(const gsl_matrix* CIJ) {
 	return E;
 }
 
-gsl_matrix* bct::distance_inv(gsl_matrix* g) {
+gsl_matrix* distance_inv(gsl_matrix* g) {
+	using namespace bct;
+	
 	gsl_matrix* D = eye(g->size1);
 	int n = 1;
 	gsl_matrix* npath = copy(g);

@@ -24,9 +24,27 @@ namespace bct_test {
 		} \
 		Matrix m = args(0).matrix_value(); \
 		if (!error_state) { \
-			gsl_matrix* gslm = bct_test::to_gslm(m); \
-			octave_value ret = octave_value(bct::function_name(gslm)); \
-			gsl_matrix_free(gslm); \
+			gsl_matrix* m_gsl = bct_test::to_gslm(m); \
+			octave_value ret = octave_value(bct::function_name(m_gsl)); \
+			gsl_matrix_free(m_gsl); \
+			return ret; \
+		} else { \
+			return octave_value_list(); \
+		} \
+	}
+
+#define MATRIX_TO_VECTOR_FUNCTION(function_name) \
+	DEFUN_DLD(function_name##_cpp, args, , "Wrapper for C++ function.") { \
+		if (args.length() == 0) { \
+			return octave_value_list(); \
+		} \
+		Matrix m = args(0).matrix_value(); \
+		if (!error_state) { \
+			gsl_matrix* m_gsl = bct_test::to_gslm(m); \
+			gsl_vector* ret_gsl = bct::function_name(m_gsl); \
+			octave_value ret = bct_test::from_gsl(ret_gsl); \
+			gsl_matrix_free(m_gsl); \
+			gsl_vector_free(ret_gsl); \
 			return ret; \
 		} else { \
 			return octave_value_list(); \
@@ -40,9 +58,11 @@ namespace bct_test {
 		} \
 		Matrix m = args(0).matrix_value(); \
 		if (!error_state) { \
-			gsl_matrix* gslm = bct_test::to_gslm(m); \
-			octave_value ret = bct_test::from_gsl(bct::function_name(gslm)); \
-			gsl_matrix_free(gslm); \
+			gsl_matrix* m_gsl = bct_test::to_gslm(m); \
+			gsl_matrix* ret_gsl = bct::function_name(m_gsl); \
+			octave_value ret = bct_test::from_gsl(ret_gsl); \
+			gsl_matrix_free(m_gsl); \
+			gsl_matrix_free(ret_gsl); \
 			return ret; \
 		} else { \
 			return octave_value_list(); \

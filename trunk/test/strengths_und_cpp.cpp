@@ -1,4 +1,4 @@
 #include <bct/bct.h>
 #include "bct_test.h"
 
-MATRIX_TO_MATRIX_FUNCTION(strengths_und)
+MATRIX_TO_VECTOR_FUNCTION(strengths_und)

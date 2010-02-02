@@ -23,26 +23,31 @@ end
 for i = 1:size(m)(2)
 	D = breadthdist_cpp(m{i});
 	[lambda ecc radius diameter] = charpath(D);
-	lambda_cpp = charpath_lambda_cpp(D);
 	[ecc_cpp radius_cpp diameter_cpp] = charpath_ecc_cpp(D);
-	bct_test(sprintf("charpath %s lambda", mname{i}), lambda == lambda_cpp);
+	bct_test(sprintf("charpath %s lambda", mname{i}), lambda == charpath_lambda_cpp(D));
 	bct_test(sprintf("charpath %s ecc", mname{i}), ecc == ecc_cpp');
 	bct_test(sprintf("charpath %s radius", mname{i}), radius == radius_cpp);
 	bct_test(sprintf("charpath %s diameter", mname{i}), diameter == diameter_cpp);
 end
 
+% cycprob
+for i = 1:size(m)(2)
+	sources = unique(floor(length(m{i}) * rand(1, 5))) + 1;
+	qmax = 3;
+	Pq = findpaths_cpp(m{i}, sources, qmax);
+	[fcyc pcyc] = cycprob(Pq);
+	bct_test(sprintf("cycprob %s fcyc", mname{i}), fcyc == cycprob_fcyc_cpp(Pq));
+	bct_test(sprintf("cycprob %s pcyc", mname{i}), pcyc == cycprob_pcyc_cpp(Pq));
+end
+
 % distance_bin
 for i = 1:size(m)(2)
-	D=distance_bin(m{i});
-	D_cpp = distance_bin_cpp(m{i});
-	bct_test(sprintf("distance_bin %s", mname{i}), D == D_cpp);
+	bct_test(sprintf("distance_bin %s", mname{i}), distance_bin(m{i}) == distance_bin_cpp(m{i}));
 end
 
 % distance_wei
 for i = 1:size(m)(2)
-	D = distance_wei(m{i});
-	D_cpp = distance_wei_cpp(m{i});
-	bct_test(sprintf("distance_wei %s", mname{i}), D == D_cpp);
+	bct_test(sprintf("distance_wei %s", mname{i}), distance_wei(m{i}) == distance_wei_cpp(m{i}));
 end
 
 % efficiency

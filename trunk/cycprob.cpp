@@ -1,62 +1,61 @@
 #include "bct.h"
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
+#include <vector>
 
 /*
- * cycprob_fcyc computes the proportion of paths that are cycels.
- * cycprob_pcyc computes the probability that non-cyclic path of length 'q-1' 
- * can be extended to form a cycle of length 'q',  for each path length 'q'.
+ * Computes the fraction of all paths that are cycles.
  */
- 
-gsl_vector* bct::cycprob_fcyc(gsl_matrix** pq, int len_pq) {
-	gsl_matrix* fcyc_m = zeros(1, len_pq);
-	gsl_vector* fcyc = to_vector(fcyc_m);
-	gsl_matrix_free(fcyc_m);
-	for(int q = 0;q < len_pq;q++) {
-		gsl_vector* first_sum = sum(pq[q]);
-		double total_paths = sum(first_sum);
-		if(total_paths > 0.0) {
-			gsl_vector_view diagonal = gsl_matrix_diagonal(pq[q]);
-			double total_cycles = sum(&diagonal.vector);
-			double frac_cycles = total_cycles/total_paths;
-			gsl_vector_set(fcyc, q, frac_cycles);
+gsl_vector* bct::cycprob_fcyc(const std::vector<gsl_matrix*>& Pq) {
+	
+	// fcyc = zeros(1,size(Pq,3));
+	gsl_vector* fcyc = zeros_vector(Pq.size());
+	
+	// for q=1:size(Pq,3)
+	for (int q = 1; q < (int)Pq.size(); q++) {
+		
+		// if(sum(sum(Pq(:,:,q)))>0)
+		gsl_vector* sum_Pq_q = sum(Pq[q]);
+		double sum_sum_Pq_q = sum(sum_Pq_q);
+		gsl_vector_free(sum_Pq_q);
+		if (sum_sum_Pq_q > 0.0) {
+			
+			// fcyc(q) = sum(diag(Pq(:,:,q)))/sum(sum(Pq(:,:,q)));
+			gsl_vector_view diag_Pq_q = gsl_matrix_diagonal(Pq[q]);
+			double sum_diag_Pq_q = sum(&diag_Pq_q.vector);
+			gsl_vector_set(fcyc, q, sum_diag_Pq_q / sum_sum_Pq_q);
 		}
-		else {
-			gsl_vector_set(fcyc, q, 0.0);
-		}
-		gsl_vector_free(first_sum);
 	}
+	
 	return fcyc;
 }
 
-gsl_vector* bct::cycprob_pcyc(gsl_matrix** pq, int len_pq) {
-	gsl_matrix* pcyc_m = zeros(1, len_pq);
-	gsl_vector* pcyc = to_vector(pcyc_m);
-	gsl_matrix_free(pcyc_m);
-	for(int q = 1;q < len_pq;q++) {
-		gsl_vector* first_sum1 = sum(pq[q-1]);
-		double total_paths = sum(first_sum1);
-		gsl_vector_view diagonal_1 = gsl_matrix_diagonal(pq[q-1]);
-		double total_cycles1 = sum(&diagonal_1.vector);
-		if((total_paths - total_cycles1) > 0) {
-			gsl_vector_view diagonal_0 = gsl_matrix_diagonal(pq[q]);
-			double total_cycles0 = sum(&diagonal_0.vector);
-			double prob_cycles = total_cycles0/(total_paths - total_cycles1);
-			gsl_vector_set(pcyc, q, prob_cycles);
+/*
+ * Computes the probability that a non-cyclic path of length (q - 1) can be
+ * extended to form a cycle of length q.
+ */
+gsl_vector* bct::cycprob_pcyc(const std::vector<gsl_matrix*>& Pq) {
+	
+	// pcyc = zeros(1,size(Pq,3));
+	gsl_vector* pcyc = zeros_vector(Pq.size());
+	
+	// for q=2:size(Pq,3)
+	for (int q = 2; q < (int)Pq.size(); q++) {
+		
+		// if((sum(sum(Pq(:,:,q-1)))-sum(diag(Pq(:,:,q-1))))>0)
+		gsl_vector* sum_Pq_q_sub_1 = sum(Pq[q - 1]);
+		double sum_sum_Pq_q_sub_1 = sum(sum_Pq_q_sub_1);
+		gsl_vector_free(sum_Pq_q_sub_1);
+		gsl_vector_view diag_Pq_q_sub_1 = gsl_matrix_diagonal(Pq[q - 1]);
+		double sum_diag_Pq_q_sub_1 = sum(&diag_Pq_q_sub_1.vector);
+		if (sum_sum_Pq_q_sub_1 - sum_diag_Pq_q_sub_1 > 0.0) {
+			
+			// pcyc(q) = sum(diag(Pq(:,:,q)))/(sum(sum(Pq(:,:,q-1)))-sum(diag(Pq(:,:,q-1))));
+			gsl_vector_view diag_Pq_q = gsl_matrix_diagonal(Pq[q]);
+			double sum_diag_Pq_q = sum(&diag_Pq_q.vector);
+			gsl_vector_set(pcyc, q, sum_diag_Pq_q / (sum_sum_Pq_q_sub_1 - sum_diag_Pq_q_sub_1));
 		}
-		else {
-			gsl_vector_set(pcyc, q, 0.0);
-		}
-		gsl_vector_free(first_sum1);
 	}
+	
 	return pcyc;
 }
-	
-	
-	
-	
-	
-	
-	
-	
-	

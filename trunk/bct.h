@@ -43,17 +43,16 @@ namespace bct {
 	gsl_matrix* breadthdist(const gsl_matrix*, gsl_matrix** = NULL);
 	gsl_vector* charpath_ecc(const gsl_matrix*, double* = NULL, double* = NULL);
 	double charpath_lambda(const gsl_matrix*);
-	gsl_vector* cycprob_fcyc(gsl_matrix**, int);
-	gsl_vector* cycprob_pcyc(gsl_matrix**, int);
+	gsl_vector* cycprob_fcyc(const std::vector<gsl_matrix*>&);
+	gsl_vector* cycprob_pcyc(const std::vector<gsl_matrix*>&);
 	gsl_matrix* distance_bin(const gsl_matrix*);
-	gsl_matrix* distance_inv(gsl_matrix*); //called by efficiency_*		
 	gsl_matrix* distance_wei(const gsl_matrix*); 
 	gsl_matrix* efficiency_global(const gsl_matrix*);
 	gsl_matrix* efficiency_local(const gsl_matrix*);
 	std::vector<gsl_matrix*> findpaths(const gsl_matrix*, const gsl_vector*, int, long* = NULL, gsl_vector** = NULL, int* = NULL, gsl_matrix** = NULL, gsl_matrix** = NULL);
 	gsl_vector* findwalks(const gsl_matrix*, gsl_matrix** = NULL, double* = NULL);
+	double norm_avr_shortest_path_length_bu(const gsl_matrix*);
 	gsl_matrix* reachdist(gsl_matrix*, gsl_matrix* = NULL);
-	double norm_avr_shortest_path_length_bu(const gsl_matrix* m);
 
 	// Centrality
 	gsl_vector* betweenness_bin(const gsl_matrix*);
@@ -69,10 +68,10 @@ namespace bct {
 	extern motif_convention _motif_convention;
 	motif_convention get_motif_convention();
 	void set_motif_convention(motif_convention);
-	gsl_matrix* motif3generate(gsl_vector** = NULL, gsl_vector** = NULL);
-	gsl_matrix* motif4generate(gsl_vector** = NULL, gsl_vector** = NULL);
 	gsl_matrix* motif3funct_bin(const gsl_matrix*, gsl_vector** = NULL);
 	gsl_matrix* motif3funct_wei(const gsl_matrix*, gsl_matrix** = NULL, gsl_matrix** = NULL);
+	gsl_matrix* motif3generate(gsl_vector** = NULL, gsl_vector** = NULL);
+	gsl_matrix* motif4generate(gsl_vector** = NULL, gsl_vector** = NULL);
 	gsl_matrix* motif3struct_bin(const gsl_matrix*, gsl_vector** = NULL);
 	gsl_matrix* motif3struct_wei(const gsl_matrix*, gsl_matrix** = NULL, gsl_matrix** = NULL);
 

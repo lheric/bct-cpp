@@ -35,7 +35,7 @@ DEFUN_DLD(findpaths_cpp, args, , "Wrapper for C++ function.") {
 		gsl_vector_free(plq);
 		gsl_matrix_free(allpths);
 		gsl_matrix_free(util);
-		for (int i = 0; i < Pq.size(); i++) {
+		for (int i = 1; i < (int)Pq.size(); i++) {
 			gsl_matrix_free(Pq[i]);
 		}
 		return ret;
