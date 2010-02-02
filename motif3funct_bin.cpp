@@ -97,12 +97,12 @@ gsl_matrix* bct::motif3funct_bin(const gsl_matrix* W, gsl_vector** f) {
 						gsl_vector* id = logical_index(ID3, ind);
 						gsl_vector_free(ind);
 						if (id != NULL) {
+							gsl_vector_add_constant(id, -1.0);
 						
 							// [idu j]=unique(id);
 							gsl_vector* j;
 							gsl_vector* idu = unique(id, "last", &j);
 							gsl_vector_free(id);
-							gsl_vector_add_constant(idu, -1.0);
 							
 							// j=[0;j];
 							gsl_vector* temp = gsl_vector_alloc(j->size + 1);
