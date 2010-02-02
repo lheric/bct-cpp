@@ -24,6 +24,15 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("motif3funct_bin %s F", mname{i}), F == F_cpp);
 end
 
+% motif3funct_wei
+for i = 1:size(m)(2)
+	[I Q F] = motif3funct_wei(m{i});
+	[I_cpp Q_cpp F_cpp] = motif3funct_wei_cpp(m{i});
+	bct_test(sprintf("motif3funct_wei %s I", mname{i}), I == I_cpp);
+	bct_test(sprintf("motif3funct_wei %s Q", mname{i}), Q == Q_cpp);
+	bct_test(sprintf("motif3funct_wei %s F", mname{i}), F == F_cpp);
+end
+
 % motif3struct_bin
 for i = 1:size(m)(2)
 	[f F] = motif3struct_bin(m{i});
