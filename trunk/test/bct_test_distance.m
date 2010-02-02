@@ -50,14 +50,9 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("distance_wei %s", mname{i}), distance_wei(m{i}) == distance_wei_cpp(m{i}));
 end
 
-% efficiency
+% efficiency_global
 for i = 1:size(m)(2)
-	E_local = efficiency(m{i},1);
-	E_local_cpp = efficiency_local_cpp(m{i});
-	E_global = efficiency(m{i});
-	E_global_cpp = efficiency_global_cpp(m{i});
-	bct_test(sprintf("efficiency_local %s", mname{i}), abs(E_local - E_local_cpp) < 1e-6);
-	bct_test(sprintf("efficiency_global %s", mname{i}), abs(E_global - E_global_cpp) < 1e-6);
+	bct_test(sprintf("efficiency_global %s", mname{i}), efficiency(m{i}) == efficiency_global_cpp(m{i}));
 end
 
 % findpaths
@@ -72,24 +67,6 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("findpaths %s qstop", mname{i}), qstop == qstop_cpp);
 	bct_test(sprintf("findpaths %s allpths", mname{i}), allpths == allpths_cpp);
 	bct_test(sprintf("findpaths %s util", mname{i}), util == util_cpp);
-end
-
-% findwalks
-for i = 1:size(m)(2)
-	[Wq,twalk,wlq] = findwalks(m{i});
-	N = size(m{i},1);
-	[wlq_cpp,twalk_cpp,Wq_cpp]  = findwalks_cpp(m{i}, N); 
-	%the second parameter is needed for testing from matlab but may not be necessary when used elsewhere
-	bct_test(sprintf("findwalks wlq %s", mname{i}), wlq == wlq_cpp);
-	bct_test(sprintf("findwalks Wq %s", mname{i}), Wq == Wq_cpp);
-	bct_test(sprintf("findwalks twalk %s", mname{i}), twalk == twalk_cpp);
-end
-
-%reachdist
-for i = 1:size(m)(2)
-	[R,D] = reachdist(m{i});
-	D_cpp = reachdist_cpp(m{i});
-	bct_test(sprintf("reachdist %s", mname{i}), D == D_cpp);
 end
 
 if ~exist("subtest", "var") || ~subtest
