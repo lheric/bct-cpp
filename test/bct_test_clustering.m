@@ -22,6 +22,11 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("clustering_coef_wu %s", mname{i}), abs(clustering_coef_wu(m{i}) - clustering_coef_wu_cpp(m{i})') < 1e-6)
 end
 
+% efficiency_local
+for i = 1:size(m)(2)
+	bct_test(sprintf("efficiency_local %s", mname{i}), efficiency(m{i}, 1) == efficiency_local_cpp(m{i}));
+end
+
 if ~exist("subtest", "var") || ~subtest
 	printf("Failures: %d\n", failures)
 	clear;
