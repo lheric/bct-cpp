@@ -4,13 +4,13 @@
 #include <gsl/gsl_vector.h>
 #include <vector>
 
-// TODO: Add note about 1-based indexing, -1 in allpths
-// TODO: Efficiency
-
 /*
  * Find paths from a set of source nodes up to a given length.  Note that there
  * is no savepths argument; if all paths are desired, pass a valid pointer as
- * the allpths argument.
+ * the allpths argument.  Since 0 is a valid node index in C++, -1 is used as
+ * the "filler" value in allpths rather than 0 as in MATLAB.  Pq (the main
+ * return), plq, and util are indexed by path length.  They therefore have
+ * (qmax + 1) elements and contain no valid data at index 0.
  */
 std::vector<gsl_matrix*> bct::findpaths(const gsl_matrix* CIJ, const gsl_vector* sources, int qmax, long* tpath, gsl_vector** plq, int* qstop, gsl_matrix** allpths, gsl_matrix** util) {
 	if (CIJ->size1 != CIJ->size2) throw size_exception();
@@ -38,34 +38,20 @@ std::vector<gsl_matrix*> bct::findpaths(const gsl_matrix* CIJ, const gsl_vector*
 	// q = 1;
 	int q = 1;
 	
-	// for j=1:N
-	for (int j = 0; j < N; j++) {
-		
-		// for i=1:length(sources)
-		for (int i = 0; i < length(sources); i++) {
-			
-			// is = sources(i);
-			int is = (int)gsl_vector_get(sources, i);
-			
-			// TODO: Use (find(_CIJ_row_is)) to reduce allocations?
-			// if (CIJ(is, j) == 1)
-			if ((int)gsl_matrix_get(_CIJ, is, j) == 1) {
-				
-				// pths = [pths [is j]'];
-				if (pths == NULL) {
-					pths = gsl_matrix_alloc(2, 1);
-				} else {
-					gsl_matrix* temp = gsl_matrix_alloc(2, pths->size2 + 1);
-					gsl_matrix_view temp_subm = gsl_matrix_submatrix(temp, 0, 0, 2, pths->size2);
-					gsl_matrix_memcpy(&temp_subm.matrix, pths);
-					gsl_matrix_free(pths);
-					pths = temp;
-				}
-				gsl_matrix_set(pths, 0, pths->size2 - 1, (double)is);
-				gsl_matrix_set(pths, 1, pths->size2 - 1, (double)j);
-			}
-		}
+	gsl_vector* _CIJ_cols = sequence(0, N - 1);
+	gsl_matrix* _CIJ_idx = ordinal_index(_CIJ, sources, _CIJ_cols);
+	gsl_vector_free(_CIJ_cols);
+	gsl_matrix* _CIJ_idx_ij = find_ij(_CIJ_idx);
+	gsl_matrix_free(_CIJ_idx);
+	pths = gsl_matrix_alloc(2, _CIJ_idx_ij->size1);
+	for (int i = 0; i < (int)_CIJ_idx_ij->size1; i++) {
+		int i_row = (int)gsl_matrix_get(_CIJ_idx_ij, i, 0);
+		int i_start = (int)gsl_vector_get(sources, i_row);
+		int i_end = (int)gsl_matrix_get(_CIJ_idx_ij, i, 1);
+		gsl_matrix_set(pths, 0, i, (double)i_start);
+		gsl_matrix_set(pths, 1, i, (double)i_end);
 	}
+	gsl_matrix_free(_CIJ_idx_ij);
 	
 	// util(1:N,q) = util(1:N,q)+hist(reshape(pths,1,size(pths,1)*size(pths,2)),1:N)';
 	if (util != NULL) {
@@ -251,7 +237,6 @@ std::vector<gsl_matrix*> bct::findpaths(const gsl_matrix* CIJ, const gsl_vector*
 	}
 	
 	gsl_matrix_free(_CIJ);
-	
 	if (pths != NULL) {
 		gsl_matrix_free(pths);
 	}

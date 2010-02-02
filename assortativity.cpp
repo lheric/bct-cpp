@@ -15,12 +15,12 @@ double bct::assortativity_dir(const gsl_matrix* CIJ) {
 	
 	// [i,j] = find(CIJ>0);
 	gsl_matrix* CIJ_gt_0 = compare_elements(CIJ, fp_greater, 0.0);
-	gsl_matrix* ij = find_ij(CIJ_gt_0);
+	gsl_matrix* CIJ_gt_0_ij = find_ij(CIJ_gt_0);
 	gsl_matrix_free(CIJ_gt_0);
 	
-	double ret = assortativity(deg, ij);
+	double ret = assortativity(deg, CIJ_gt_0_ij);
 	gsl_vector_free(deg);
-	gsl_matrix_free(ij);
+	gsl_matrix_free(CIJ_gt_0_ij);
 	return ret;
 }
 
@@ -38,12 +38,12 @@ double bct::assortativity_und(const gsl_matrix* CIJ) {
 	gsl_matrix* triu_CIJ = triu(CIJ, 1);
 	gsl_matrix* triu_CIJ_gt_0 = compare_elements(triu_CIJ, fp_greater, 0.0);
 	gsl_matrix_free(triu_CIJ);
-	gsl_matrix* ij = find_ij(triu_CIJ_gt_0);
+	gsl_matrix* triu_CIJ_gt_0_ij = find_ij(triu_CIJ_gt_0);
 	gsl_matrix_free(triu_CIJ_gt_0);
 	
-	double ret = assortativity(deg, ij);
+	double ret = assortativity(deg, triu_CIJ_gt_0_ij);
 	gsl_vector_free(deg);
-	gsl_matrix_free(ij);
+	gsl_matrix_free(triu_CIJ_gt_0_ij);
 	return ret;
 }
 
