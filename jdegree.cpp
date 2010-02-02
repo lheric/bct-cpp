@@ -3,7 +3,7 @@
 #include <gsl/gsl_vector.h>
 
 /*
- * Computes joint degree distribution, a matrix in which the value of each
+ * Computes the joint degree distribution, a matrix in which the value of each
  * element (u, v) is the number of nodes with u outgoing connections and v
  * incoming connections.
  */

@@ -14,7 +14,7 @@ DEFUN_DLD(breadth_cpp, args, , "Wrapper for C++ function.") {
 		gsl_matrix* CIJ_gsl = bct_test::to_gslm(CIJ);
 		gsl_vector* branch;
 		gsl_vector* distance = bct::breadth(CIJ_gsl, source, &branch);
-		for (int i = 0; i < branch->size; i++) {
+		for (int i = 0; i < (int)branch->size; i++) {
 			int value = (int)gsl_vector_get(branch, i);
 			if (gsl_isinf(gsl_vector_get(distance, i)) == 0 && value != -1) {
 				gsl_vector_set(branch, i, (double)value + 1.0);

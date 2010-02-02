@@ -11,6 +11,8 @@ filenames = \
 	clustering_coef_bu_cpp \
 	clustering_coef_wd_cpp \
 	clustering_coef_wu_cpp \
+	cycprob_fcyc_cpp \
+	cycprob_pcyc_cpp \
 	degrees_dir_cpp \
 	degrees_und_cpp \
 	density_dir_cpp \
@@ -61,7 +63,7 @@ all: $(oct_files)
 .SECONDEXPANSION:
 
 $(oct_files): /usr/local/lib/libbct.a bct_test.h bct_test.cpp $$(basename $$@).cpp
-	mkoctfile -lbct -lgsl -lgslcblas $(basename $@).cpp
+	mkoctfile -Wall -lbct -lgsl -lgslcblas $(basename $@).cpp
 
 install:
 	if [ ! -d /usr/local/share/bct ]; then \

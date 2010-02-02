@@ -1,4 +1,4 @@
 #include <bct/bct.h>
 #include "bct_test.h"
 
-MATRIX_TO_MATRIX_FUNCTION(betweenness_bin)
+MATRIX_TO_VECTOR_FUNCTION(betweenness_bin)
