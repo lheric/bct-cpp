@@ -1,66 +1,58 @@
 #include "bct.h"
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
+#include <vector>
 
 /*
- * Uses the powers of the adjacency matrix to produce numbers of walks
- * Note that Wq grows very quickly for larger N,K,q.
- * Note: Weights are discarded.
+ * Finds walks.  Note that there is no twalk argument as its value may overflow
+ * a C++ long.  Wq (the main return) and wlq are indexed by path length.  They
+ * therefore contain no valid data at index 0.
  */
-
-gsl_vector* bct::findwalks(const gsl_matrix* m, gsl_matrix** ret_Wq, double* ret_twalk) {
-	gsl_matrix* CIJ = to_binary(m);
+std::vector<gsl_matrix*> bct::findwalks(const gsl_matrix* CIJ, gsl_vector** wlq) {
+	
+	// CIJ = double(CIJ~=0);
+	gsl_matrix* _CIJ = compare_elements(CIJ, fp_not_equal, 0.0);
+	
+	// N = size(CIJ,1);
 	int N = CIJ->size1;
-	//Wq = zeros(N,N,N);
-	gsl_matrix* Wq[N];
-	for(int i = 0;i < N;i++) {
-		Wq[i] = gsl_matrix_alloc(N, N);  //'calloc' in original matlab source but is actually not necessary
+	
+	// Wq = zeros(N,N,N);
+	std::vector<gsl_matrix*> Wq(N + 1);
+	for (int i = 1; i <= N; i++) {
+		Wq[i] = zeros(N, N);
 	}
-	gsl_matrix* CIJpwr = copy(CIJ);
-	//Wq(:,:,1) = CIJ;
-	Wq[0] = copy(CIJ);
-	for(int q = 1;q < N;q++) {
-		gsl_matrix* CIJpwr_temp = mul(CIJpwr, CIJ);
-		gsl_matrix_free(CIJpwr);
-		CIJpwr = CIJpwr_temp;
-		Wq[q] = copy(CIJpwr);
+	
+	// CIJpwr = CIJ;
+	gsl_matrix* _CIJpwr = copy(_CIJ);
+	
+	// Wq(:,:,1) = CIJ;
+	Wq[1] = copy(_CIJ);
+	
+	// for q=2:N
+	for (int q = 2; q <= N; q++) {
+		
+		// CIJpwr = CIJpwr*CIJ;
+		gsl_matrix* temp = mul(_CIJpwr, _CIJ);
+		gsl_matrix_free(_CIJpwr);
+		_CIJpwr = temp;
+		
+		// Wq(:,:,q) = CIJpwr;
+		Wq[q] = copy(_CIJpwr);
 	}
-	//twalk = sum(sum(sum(Wq)));
-	gsl_matrix* first_sum = NULL;
-	for(int i=0;i < N;i++) {
-		gsl_vector* temp_sum = sum(Wq[i]);
-		gsl_matrix* concat_sum = concatenate_columns(first_sum, temp_sum);
-		if(first_sum != NULL) {
-			gsl_matrix_free(first_sum);
+	
+	gsl_matrix_free(_CIJ);
+	gsl_matrix_free(_CIJpwr);
+	
+	// twalk = sum(sum(sum(Wq)));
+	// wlq = reshape(sum(sum(Wq)),1,N);
+	if (wlq != NULL) {
+		*wlq = gsl_vector_alloc(N + 1);
+		for (int i = 1; i <= N; i++) {
+			gsl_vector* sum_Wq_i = sum(Wq[i]);
+			gsl_vector_set(*wlq, i, sum(sum_Wq_i));
+			gsl_vector_free(sum_Wq_i);
 		}
-		gsl_vector_free(temp_sum);
-		first_sum = concat_sum;
 	}
-	gsl_vector* second_sum = sum(first_sum, 2);
-	double twalk = sum(second_sum);
-	gsl_matrix_free(first_sum);
-	//wlq = reshape(sum(sum(Wq)),1,N);
-	gsl_vector* wlq = second_sum;
-	//assign ret_Wq
-	if(ret_Wq == NULL) {
-			ret_Wq = new gsl_matrix* [N];
-	}
-	for(int i=0;i < N;i++) {
-		ret_Wq[i] = gsl_matrix_alloc(N, N);
-	}
-	for(int i=0;i < N;i++) {	
-		gsl_matrix_memcpy(ret_Wq[i], Wq[i]);
-	}
-	for(int i=0;i < N;i++) {	
-		gsl_matrix_free(Wq[i]);
-	}
-	//assign ret_twalk
-	if(ret_twalk == NULL) {
-		ret_twalk = new double;
-	}
-	*ret_twalk = twalk;
-	return wlq;
+	
+	return Wq;
 }
-	
-	
-	

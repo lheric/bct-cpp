@@ -1,103 +1,122 @@
 #include "bct.h"
+#include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
-#include <gsl/gsl_math.h>
-#include <gsl/gsl_blas.h>
-#include <gsl/gsl_linalg.h> 
+
+gsl_matrix* distance_inv(const gsl_matrix*);
 
 /*
- * Computes the Global/local efficiency for binary undirected graph G.
- * Global efficiency: outputs the inverse distance matrix: the mean of this
- * matrix (excluding main diagonal) is equivalent to the global efficiency.
- * Local efficiency:  outputs individual nodal local efficiency.
- * For directed networks, local efficiency works with the out-degree.
+ * Computes global efficiency for a binary undirected graph.
  */
- 
-gsl_matrix* distance_inv(gsl_matrix*);
+gsl_matrix* bct::efficiency_global(const gsl_matrix* G) {
+	
+	// E=distance_inv(G);
+	return distance_inv(G);
+}
 
-gsl_matrix* bct::efficiency_local(const gsl_matrix* CIJ) {
-	if (safe_mode) check_status(CIJ, BINARY | UNDIRECTED, "efficiency_local");
-	gsl_matrix* m =copy(CIJ);
-	int N = m->size1;
-	gsl_matrix* E = zeros(N, 1);
-	for(int node=0;node < N;node++) {
-		gsl_vector_view neighbors_row = gsl_matrix_row(m, node);
-		gsl_vector* neighbors = find(&neighbors_row.vector);
-		int degree = neighbors->size;
-		if(degree >= 2) {
-			gsl_matrix* m_neighbors = ordinal_index(m, neighbors, neighbors);
-			gsl_matrix* eff = distance_inv(m_neighbors);
-			gsl_vector* eff_v = to_vector(eff);
-			double factor = (double)1/((degree*degree)-degree);
-			gsl_vector_scale(eff_v, factor);
-			double efficiency = sum(eff_v);
-			gsl_matrix_set(E, node, 0, efficiency);
+/*
+ * Computes local efficiency for a binary undirected graph.
+ */
+gsl_vector* bct::efficiency_local(const gsl_matrix* G) {
+	
+	// N=length(G);
+	int N = length(G);
+	
+	// E=zeros(N,1);
+	gsl_vector* E = zeros_vector(N);
+	
+	// for u=1:N
+	for (int u = 0; u < N; u++) {
+		
+		// V=find(G(u,:));
+		gsl_vector_const_view G_row_u = gsl_matrix_const_row(G, u);
+		gsl_vector* V = find(&G_row_u.vector);
+		if (V != NULL) {
+			
+			// k=length(V);
+			int k = length(V);
+			
+			// if k>=2;
+			if (k >= 2) {
+				
+				// e=distance_inv(G(V,V));
+				gsl_matrix* G_idx = ordinal_index(G, V, V);
+				gsl_matrix* e = distance_inv(G_idx);
+				gsl_matrix_free(G_idx);
+				
+				// E(u)=sum(e(:))./(k.^2-k);
+				gsl_vector* e_v = to_vector(e);
+				double sum_e = sum(e_v);
+				gsl_vector_free(e_v);
+				gsl_vector_set(E, u, sum_e / (double)(k * k - k));
+			}
+			
+			gsl_vector_free(V);
 		}
 	}
+	
 	return E;
 }
 
-gsl_matrix* bct::efficiency_global(const gsl_matrix* CIJ) {	
-	if (safe_mode) check_status(CIJ, BINARY | UNDIRECTED, "efficiency_global");
-	gsl_matrix* m =copy(CIJ);
-	gsl_matrix* E = distance_inv(m);
-	return E;
-}
-
-gsl_matrix* distance_inv(gsl_matrix* g) {
+gsl_matrix* distance_inv(const gsl_matrix* g) {
 	using namespace bct;
 	
-	gsl_matrix* D = eye(g->size1);
+	// D=eye(length(g));
+	gsl_matrix* D = eye(length(g));
+	
+	// n=1;
 	int n = 1;
-	gsl_matrix* npath = copy(g);
-	gsl_matrix* L = to_binary(npath);
 	
-	gsl_vector* L_non_zero;
-	while((L_non_zero = find(L, 1)) != NULL) {
-		gsl_vector_free(L_non_zero);	
+	// nPATH=g;
+	gsl_matrix* nPATH = copy(g);
+	
+	// L=(nPATH~=0);
+	gsl_matrix* L = compare_elements(nPATH, fp_not_equal, 0.0);
+	
+	// while find(L,1);
+	gsl_vector* find_L = find(L, 1);
+	while (find_L != NULL) {
+		gsl_vector_free(find_L);
+		
 		// D=D+n.*L;
-		gsl_matrix_scale(L, n);
+		gsl_matrix_scale(L, (double)n);
 		gsl_matrix_add(D, L);
+		
+		// n=n+1;
 		n++;
-		gsl_matrix* npath_temp = mul(npath, g);
-		gsl_matrix_free(npath);
-		npath = npath_temp;
-		gsl_matrix* L_temp = to_binary(npath);
-		gsl_matrix* D_zero_ind = compare_elements(D, fp_equal, 0.0);
-		gsl_matrix_mul_elements(L_temp, D_zero_ind);
+		
+		// nPATH=nPATH*g;
+		gsl_matrix* temp = mul(nPATH, g);
+		gsl_matrix_free(nPATH);
+		nPATH = temp;
+		
+		// L=(nPATH~=0).*(D==0);
 		gsl_matrix_free(L);
-		L = L_temp;
-		gsl_matrix_free(D_zero_ind);
+		L = compare_elements(nPATH, fp_not_equal, 0.0);
+		gsl_matrix* D_eq_0 = compare_elements(D, fp_equal, 0.0);
+		gsl_matrix_mul_elements(L, D_eq_0);
+		gsl_matrix_free(D_eq_0);
+		
+		find_L = find(L, 1);
 	}
-
-	gsl_matrix* notD_ind = compare_elements(D, fp_equal, 0.0);
-	logical_index_assign(D, notD_ind, GSL_POSINF);
-
-	//invert D. This is not the same as inverse of a matrix
-	gsl_matrix* div_D = ones(D->size1);
-	gsl_matrix_div_elements(div_D, D);
-	gsl_matrix_memcpy(D, div_D);
-	gsl_matrix* g_eye = eye(g->size1);
-    gsl_matrix_sub(D, g_eye);
-
-    return D;
+	
+	gsl_matrix_free(nPATH);
+	gsl_matrix_free(L);
+	
+	// D(~D)=inf;
+	gsl_matrix* not_D = logical_not(D);
+	logical_index_assign(D, not_D, GSL_POSINF);
+	gsl_matrix_free(not_D);
+	
+	// D=1./D;
+	gsl_matrix* temp = pow_elements(D, -1.0);
+	gsl_matrix_free(D);
+	D = temp;
+	
+	// D=D-eye(length(g));
+	gsl_matrix* eye_length_g = eye(length(g));
+	gsl_matrix_sub(D, eye_length_g);
+	gsl_matrix_free(eye_length_g);
+	
+	return D;
 }
-    
-    
-				
-			
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-			

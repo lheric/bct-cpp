@@ -5,14 +5,15 @@
 #include <vector>
 
 /*
- * Find paths from a set of source nodes up to a given length.  Note that there
+ * Finds paths from a set of source nodes up to a given length.  Note that there
  * is no savepths argument; if all paths are desired, pass a valid pointer as
- * the allpths argument.  Since 0 is a valid node index in C++, -1 is used as
- * the "filler" value in allpths rather than 0 as in MATLAB.  Pq (the main
- * return), plq, and util are indexed by path length.  They therefore have
- * (qmax + 1) elements and contain no valid data at index 0.
+ * the allpths argument.  There is also no tpath argument as its value may
+ * overflow a C++ long.  Since 0 is a valid node index in C++, -1 is used as the
+ * "filler" value in allpths rather than 0 as in MATLAB.  Pq (the main return),
+ * plq, and util are indexed by path length.  They therefore have (qmax + 1)
+ * elements and contain no valid data at index 0.
  */
-std::vector<gsl_matrix*> bct::findpaths(const gsl_matrix* CIJ, const gsl_vector* sources, int qmax, long* tpath, gsl_vector** plq, int* qstop, gsl_matrix** allpths, gsl_matrix** util) {
+std::vector<gsl_matrix*> bct::findpaths(const gsl_matrix* CIJ, const gsl_vector* sources, int qmax, gsl_vector** plq, int* qstop, gsl_matrix** allpths, gsl_matrix** util) {
 	if (CIJ->size1 != CIJ->size2) throw size_exception();
 	
 	// CIJ = double(CIJ~=0);
@@ -248,23 +249,12 @@ std::vector<gsl_matrix*> bct::findpaths(const gsl_matrix* CIJ, const gsl_vector*
 	
 	// tpath = sum(sum(sum(Pq)));
 	// plq = reshape(sum(sum(Pq)),1,qmax)
-	if (tpath != NULL || plq != NULL) {
-		if (tpath != NULL) {
-			*tpath = 0;
-		}
-		if (plq != NULL) {
-			*plq = gsl_vector_alloc(qmax + 1);
-		}
+	if (plq != NULL) {
+		*plq = gsl_vector_alloc(qmax + 1);
 		for (int i = 1; i <= qmax; i++) {
 			gsl_vector* sum_Pq_i = sum(Pq[i]);
-			double sum_sum_Pq_i = sum(sum_Pq_i);
+			gsl_vector_set(*plq, i, sum(sum_Pq_i));
 			gsl_vector_free(sum_Pq_i);
-			if (tpath != NULL) {
-				*tpath += sum_sum_Pq_i;
-			}
-			if (plq != NULL) {
-				gsl_vector_set(*plq, i, sum_sum_Pq_i);
-			}
 		}
 	}
 	
