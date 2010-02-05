@@ -353,12 +353,70 @@ gsl_vector* matlab::prod(const gsl_matrix* m, int dim) {
 	}
 }
 
-gsl_vector* matlab::reverse(gsl_vector* v) {
+gsl_vector* matlab::reverse(const gsl_vector* v) {
 	gsl_vector* rev_v = gsl_vector_alloc(v->size);
 	for(int i = (v->size-1),j = 0;i >= 0;i--,j++) {
 		gsl_vector_set(rev_v, j, gsl_vector_get(v, i));
 	}
 	return rev_v;
+}
+
+gsl_vector* matlab::setxor(const gsl_vector* v1, const gsl_vector* v2) {
+	if (v1 == NULL && v2 == NULL) {
+		return NULL;
+	}
+	if (v1 == NULL) {
+		return unique(v2);
+	}
+	if (v2 == NULL) {
+		return unique(v1);
+	}
+	gsl_vector* unique_v1 = unique(v1);
+	gsl_vector* unique_v2 = unique(v2);
+	gsl_vector* unsized_v = gsl_vector_alloc(v1->size + v2->size);
+	int n = 0;
+	for (int i = 0; i < (int)unique_v1->size; i++) {
+		bool found = false;
+		double v1_value = gsl_vector_get(unique_v1, i);
+		for (int j = 0; j < (int)unique_v2->size; j++) {
+			double v2_value = gsl_vector_get(unique_v2, j);
+			if (fp_equal(v1_value, v2_value)) {
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			gsl_vector_set(unsized_v, n++, v1_value);
+		}
+	}
+	for (int i = 0; i < (int)unique_v2->size; i++) {
+		bool found = false;
+		double v2_value = gsl_vector_get(unique_v2, i);
+		for (int j = 0; j < (int)unique_v1->size; j++) {
+			double v1_value = gsl_vector_get(unique_v1, j);
+			if (fp_equal(v2_value, v1_value)) {
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			gsl_vector_set(unsized_v, n++, v2_value);
+		}
+	}
+	gsl_vector_free(unique_v1);
+	gsl_vector_free(unique_v2);
+	if (n > 0) {
+		gsl_vector* unsorted_v = gsl_vector_alloc(n);
+		gsl_vector_view unsized_subv = gsl_vector_subvector(unsized_v, 0, n);
+		gsl_vector_memcpy(unsorted_v, &unsized_subv.vector);
+		gsl_vector_free(unsized_v);
+		gsl_vector* setxor_v = sort(unsorted_v);
+		gsl_vector_free(unsorted_v);
+		return setxor_v;
+	} else {
+		gsl_vector_free(unsized_v);
+		return NULL;
+	}
 }
 
 gsl_vector* matlab::sort(const gsl_vector* v, const char* mode, gsl_vector** ind) {
@@ -534,22 +592,22 @@ gsl_vector* matlab::unique(const gsl_vector* v, const char* first_or_last, gsl_v
 	gsl_vector* sort_v = sort(v);
 	gsl_vector* unsized_v = gsl_vector_alloc(v->size);
 	gsl_vector_set(unsized_v, 0, gsl_vector_get(sort_v, 0));
-	int n_unique = 1;
+	int n = 1;
 	for (int x = 1; x < (int)v->size; x++) {
 		double prev_value = gsl_vector_get(sort_v, x - 1);
 		double value = gsl_vector_get(sort_v, x);
 		if (fp_compare(prev_value, value) != 0) {
-			gsl_vector_set(unsized_v, n_unique++, value);
+			gsl_vector_set(unsized_v, n++, value);
 		}
 	}
 	gsl_vector_free(sort_v);
-	gsl_vector* unique_v = gsl_vector_alloc(n_unique);
-	gsl_vector_view unsized_subv = gsl_vector_subvector(unsized_v, 0, n_unique);
+	gsl_vector* unique_v = gsl_vector_alloc(n);
+	gsl_vector_view unsized_subv = gsl_vector_subvector(unsized_v, 0, n);
 	gsl_vector_memcpy(unique_v, &unsized_subv.vector);
 	gsl_vector_free(unsized_v);
 	if (i != NULL) {
-		*i = gsl_vector_alloc(n_unique);
-		for (int x = 0; x < n_unique; x++) {
+		*i = gsl_vector_alloc(n);
+		for (int x = 0; x < n; x++) {
 			for (int y = 0; y < (int)v->size; y++) {
 				if (fp_compare(gsl_vector_get(unique_v, x), gsl_vector_get(v, y)) == 0) {
 					gsl_vector_set(*i, x, y);
@@ -563,7 +621,7 @@ gsl_vector* matlab::unique(const gsl_vector* v, const char* first_or_last, gsl_v
 	if (j != NULL) {
 		*j = gsl_vector_alloc(v->size);
 		for (int x = 0; x < (int)v->size; x++) {
-			for (int y = 0; y < n_unique; y++) {
+			for (int y = 0; y < n; y++) {
 				if (fp_compare(gsl_vector_get(v, x), gsl_vector_get(unique_v, y)) == 0) {
 					gsl_vector_set(*j, x, y);
 					break;

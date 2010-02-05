@@ -24,7 +24,7 @@ end
 
 % efficiency_local
 for i = 1:size(m)(2)
-	bct_test(sprintf("efficiency_local %s", mname{i}), efficiency(m{i}, 1) == efficiency_local_cpp(m{i}));
+	bct_test(sprintf("efficiency_local %s", mname{i}), efficiency(m{i}, 1) == efficiency_local_cpp(m{i})');
 end
 
 if ~exist("subtest", "var") || ~subtest

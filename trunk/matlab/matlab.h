@@ -40,7 +40,8 @@ namespace matlab {
 	gsl_matrix* ones(int, int);
 	double prod(const gsl_vector*);
 	gsl_vector* prod(const gsl_matrix*, int = 1);
-	gsl_vector* reverse(gsl_vector*);
+	gsl_vector* reverse(const gsl_vector*);
+	gsl_vector* setxor(const gsl_vector*, const gsl_vector*);
 	gsl_vector* sort(const gsl_vector*, const char* = "ascend", gsl_vector** = NULL);
 	gsl_matrix* sort(const gsl_matrix*, int = 1, const char* = "ascend", gsl_matrix** = NULL);
 	gsl_vector* sortrows(const gsl_vector*, gsl_vector** = NULL);

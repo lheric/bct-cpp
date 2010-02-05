@@ -60,13 +60,28 @@ for i = 1:size(m)(2)
 	sources = unique(floor(length(m{i}) * rand(1, 5))) + 1;
 	qmax = 3;
 	[Pq tpath plq qstop allpths util] = findpaths(m{i}, sources, qmax, 1);
-	[Pq_cpp tpath_cpp plq_cpp qstop_cpp allpths_cpp util_cpp] = findpaths_cpp(m{i}, sources, qmax);
+	[Pq_cpp plq_cpp qstop_cpp allpths_cpp util_cpp] = findpaths_cpp(m{i}, sources, qmax);
 	bct_test(sprintf("findpaths %s Pq", mname{i}), Pq == Pq_cpp);
-	bct_test(sprintf("findpaths %s tpath", mname{i}), tpath == tpath_cpp);
 	bct_test(sprintf("findpaths %s plq", mname{i}), plq == plq_cpp);
 	bct_test(sprintf("findpaths %s qstop", mname{i}), qstop == qstop_cpp);
 	bct_test(sprintf("findpaths %s allpths", mname{i}), allpths == allpths_cpp);
 	bct_test(sprintf("findpaths %s util", mname{i}), util == util_cpp);
+end
+
+% findwalks
+for i = 1:size(m)(2)
+	[Wq twalk wlq] = findwalks(m{i});
+	[Wq_cpp wlq_cpp] = findwalks_cpp(m{i});
+	bct_test(sprintf("findwalks %s Wq", mname{i}), Wq == Wq_cpp);
+	bct_test(sprintf("findwalks %s wlq", mname{i}), wlq == wlq_cpp);
+end
+
+% reachdist
+for i = 1:size(m)(2)
+	[R D] = reachdist(m{i});
+	[R_cpp D_cpp] = reachdist_cpp(m{i});
+	bct_test(sprintf("reachdist %s R", mname{i}), R == R_cpp);
+	bct_test(sprintf("reachdist %s D", mname{i}), D == D_cpp);
 end
 
 if ~exist("subtest", "var") || ~subtest

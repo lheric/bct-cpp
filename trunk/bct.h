@@ -37,7 +37,7 @@ namespace bct {
 	gsl_vector* clustering_coef_bu(const gsl_matrix*);
 	gsl_vector* clustering_coef_wd(const gsl_matrix*);
 	gsl_vector* clustering_coef_wu(const gsl_matrix*);
-	gsl_matrix* efficiency_local(const gsl_matrix*);
+	gsl_vector* efficiency_local(const gsl_matrix*);
 
 	// Paths, distances, and cycles
 	gsl_vector* breadth(const gsl_matrix*, int, gsl_vector** = NULL);
@@ -49,10 +49,10 @@ namespace bct {
 	gsl_matrix* distance_bin(const gsl_matrix*);
 	gsl_matrix* distance_wei(const gsl_matrix*); 
 	gsl_matrix* efficiency_global(const gsl_matrix*);
-	std::vector<gsl_matrix*> findpaths(const gsl_matrix*, const gsl_vector*, int, long* = NULL, gsl_vector** = NULL, int* = NULL, gsl_matrix** = NULL, gsl_matrix** = NULL);
-	gsl_vector* findwalks(const gsl_matrix*, gsl_matrix** = NULL, double* = NULL);
+	std::vector<gsl_matrix*> findpaths(const gsl_matrix*, const gsl_vector*, int, gsl_vector** = NULL, int* = NULL, gsl_matrix** = NULL, gsl_matrix** = NULL);
+	std::vector<gsl_matrix*> findwalks(const gsl_matrix*, gsl_vector** = NULL);
 	double norm_avr_shortest_path_length_bu(const gsl_matrix*);
-	gsl_matrix* reachdist(gsl_matrix*, gsl_matrix* = NULL);
+	gsl_matrix* reachdist(const gsl_matrix*, gsl_matrix** = NULL);
 
 	// Centrality
 	gsl_vector* betweenness_bin(const gsl_matrix*);
