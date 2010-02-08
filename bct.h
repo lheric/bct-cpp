@@ -51,8 +51,11 @@ namespace bct {
 	gsl_matrix* efficiency_global(const gsl_matrix*);
 	std::vector<gsl_matrix*> findpaths(const gsl_matrix*, const gsl_vector*, int, gsl_vector** = NULL, int* = NULL, gsl_matrix** = NULL, gsl_matrix** = NULL);
 	std::vector<gsl_matrix*> findwalks(const gsl_matrix*, gsl_vector** = NULL);
-	double norm_avr_shortest_path_length_bu(const gsl_matrix*);
 	gsl_matrix* reachdist(const gsl_matrix*, gsl_matrix** = NULL);
+	double norm_avr_shortest_path_length_bu(const gsl_matrix*);
+	double norm_avr_shortest_path_length_bd(const gsl_matrix*);
+	double norm_avr_shortest_path_length_wd(gsl_matrix*);
+	double norm_avr_shortest_path_length_wu(gsl_matrix*);
 
 	// Centrality
 	gsl_vector* betweenness_bin(const gsl_matrix*);
