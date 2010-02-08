@@ -45,6 +45,9 @@ objects = \
 	motif3struct_bin.o \
 	motif3struct_wei.o \
 	norm_avr_shortest_path_length_bu.o \
+ 	norm_avr_shortest_path_length_bd.o \
+	norm_avr_shortest_path_length_wd.o \
+	norm_avr_shortest_path_length_wu.o \
 	randmio_dir.o \
 	randmio_dir_connected.o \
 	randmio_und.o \
