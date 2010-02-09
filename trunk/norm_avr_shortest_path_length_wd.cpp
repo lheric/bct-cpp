@@ -21,7 +21,7 @@ double bct::norm_avr_shortest_path_length_wd(gsl_matrix* m) {
 		for ( int j = 0; j < int(m->size2); j++ ) {
 			wei_edge = gsl_matrix_get(m,i,j);
 			if (wei_edge) {
-				gsl_matrix_set(m,i,j,wei_max/wei_edge);
+				gsl_matrix_set(m,i,j,1/wei_edge);
 			}
 		}
 	}
