@@ -10,10 +10,10 @@
  * the 12-digit numbers required for the four-node motif library.
  */
 
-bct::motif_convention bct::_motif_convention = MILO;
+bct::motif_mode_enum bct::motif_mode = MILO;
 
-bct::motif_convention bct::get_motif_convention() { return _motif_convention; }
-void bct::set_motif_convention(motif_convention _motif_convention) { bct::_motif_convention = _motif_convention; }
+bct::motif_mode_enum bct::get_motif_mode() { return motif_mode; }
+void bct::set_motif_mode(motif_mode_enum motif_mode) { bct::motif_mode = motif_mode; }
 
 /*
  * Constructs the three-node motif library.
@@ -112,7 +112,7 @@ gsl_matrix* bct::motif3generate(gsl_vector** ID, gsl_vector** N) {
 	int id_olaf[] = { 3, 6, 1, 11, 4, 7, 8};
 	
 	// %convert IDs into Sporns & Kotter classification
-	if (_motif_convention == SPORNS) {
+	if (motif_mode == SPORNS) {
 		for (int i = 0; i < (int)_ID->size; i++) {
 			for (int j = 0; j < 7; j++) {
 				if ((int)gsl_vector_get(_ID, i) == id_mika[j]) {

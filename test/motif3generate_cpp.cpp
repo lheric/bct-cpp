@@ -5,7 +5,7 @@
 #include <octave/oct.h>
 
 DEFUN_DLD(motif3generate_cpp, args, , "Wrapper for C++ function.") {
-	bct::set_motif_convention(bct::SPORNS);
+	bct::set_motif_mode(bct::SPORNS);
 	gsl_vector* ID;
 	gsl_vector* N;
 	gsl_matrix* M = bct::motif3generate(&ID, &N);

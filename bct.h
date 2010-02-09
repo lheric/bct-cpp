@@ -1,6 +1,10 @@
 #ifndef BCT_H
 #define BCT_H
 
+#ifdef SWIG
+%module bct
+#endif
+
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_permutation.h>
 #include <gsl/gsl_vector.h>
@@ -8,7 +12,9 @@
 #include <vector>
 
 namespace bct {
+#ifndef SWIG
 	using namespace matlab;
+#endif
 	
 	class bct_exception { };
 	class gsl_exception : public bct_exception { };
@@ -67,10 +73,10 @@ namespace bct {
 	void node_and_edge_betweenness_wei(const gsl_matrix*, gsl_vector* = NULL, gsl_matrix* = NULL);
 
 	// Motifs
-	enum motif_convention { MILO, SPORNS };
-	extern motif_convention _motif_convention;
-	motif_convention get_motif_convention();
-	void set_motif_convention(motif_convention);
+	enum motif_mode_enum { MILO, SPORNS };
+	extern motif_mode_enum motif_mode;
+	motif_mode_enum get_motif_mode();
+	void set_motif_mode(motif_mode_enum);
 	gsl_matrix* motif3funct_bin(const gsl_matrix*, gsl_vector** = NULL);
 	gsl_matrix* motif3funct_wei(const gsl_matrix*, gsl_matrix** = NULL, gsl_matrix** = NULL);
 	gsl_matrix* motif3generate(gsl_vector** = NULL, gsl_vector** = NULL);
@@ -93,12 +99,12 @@ namespace bct {
 	gsl_matrix* randmio_und(const gsl_matrix*, int);
 
 	// Data sets
-	extern double cat_all[];
-	extern double cat_ctx[];
-	extern double fve30[];
-	extern double fve32[];
-	extern double macaque47[];
-	extern double macaque71[];
+	extern double cat_all[95 * 95];
+	extern double cat_ctx[52 * 52];
+	extern double fve30[30 * 30];
+	extern double fve32[32 * 32];
+	extern double macaque47[47 * 47];
+	extern double macaque71[71 * 71];
 	
 	// Matrix status checking
 	enum status {
