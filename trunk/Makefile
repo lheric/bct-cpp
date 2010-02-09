@@ -1,4 +1,4 @@
-CXXFLAGS = -g -Wall
+CXXFLAGS = -Wall -g
 
 objects = \
 	assortativity.o \
@@ -58,12 +58,17 @@ objects = \
 	strengths_und.o \
 	utility.o
 
-.PHONY: all clean install uninstall
+.PHONY: all clean install swig uninstall
 
 all: libbct.a
 
 libbct.a: $(objects)
 	ar crs libbct.a $(objects)
+
+swig: $(objects)
+	swig -Wall -c++ -python -o bct_wrap.cpp bct.h
+	g++ -c bct_wrap.cpp -include bct.h -I/usr/include/python2.5
+	g++ -lgsl -lgslcblas -bundle -flat_namespace -undefined suppress -o _bct.so $(objects) bct_wrap.o
 
 $(objects): matlab/matlab.h bct.h
 
@@ -82,4 +87,4 @@ uninstall:
 	-rm /usr/local/lib/libbct.a
 
 clean:
-	-rm libbct.a $(objects)
+	-rm _bct.so bct.py bct.pyc bct_wrap.cpp bct_wrap.o libbct.a $(objects)

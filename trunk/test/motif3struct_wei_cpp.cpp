@@ -4,7 +4,7 @@
 #include <octave/oct.h>
 
 DEFUN_DLD(motif3struct_wei_cpp, args, , "Wrapper for C++ function.") {
-	bct::set_motif_convention(bct::SPORNS);
+	bct::set_motif_mode(bct::SPORNS);
 	if (args.length() != 1) {
 		return octave_value_list();
 	}
