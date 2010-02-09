@@ -17,8 +17,8 @@ gsl_matrix* bct::randmio_dir(const gsl_matrix* R, int ITER) {
 	
 	// [i j]=find(R);
 	gsl_matrix* R_ij = find_ij(R);
-	gsl_vector* i = gsl_matrix_alloc(R->size1);
-	gsl_vector* j = gsl_matrix_alloc(R->size1);
+	gsl_vector* i = gsl_vector_alloc(R->size1);
+	gsl_vector* j = gsl_vector_alloc(R->size1);
 	gsl_matrix_get_col(i, R_ij, 0);
 	gsl_matrix_get_col(i, R_ij, 1);
 	gsl_matrix_free(R_ij);
@@ -37,14 +37,17 @@ gsl_matrix* bct::randmio_dir(const gsl_matrix* R, int ITER) {
 		// while 1
 		while (true) {
 			
+			int e1, e2;
+			int a, b, c, d;
+			
 			// while 1
 			while (true) {
 				
 				// e1=ceil(K*rand);
-				int e1 = gsl_rng_uniform_int(rng, K);
+				e1 = gsl_rng_uniform_int(rng, K);
 				
 				// e2=ceil(K*rand);
-				int e2 = gsl_rng_uniform_int(rng, K);
+				e2 = gsl_rng_uniform_int(rng, K);
 				
 				// while (e2==e1),
 				while (e2 == e1) {
@@ -54,12 +57,12 @@ gsl_matrix* bct::randmio_dir(const gsl_matrix* R, int ITER) {
 				}
 				
 				// a=i(e1); b=j(e1);
-				int a = (int)gsl_vector_get(i, e1);
-				int b = (int)gsl_vector_get(j, e1);
+				a = (int)gsl_vector_get(i, e1);
+				b = (int)gsl_vector_get(j, e1);
 				
 				// c=i(e2); d=j(e2);
-				int c = (int)gsl_vector_get(i, e2);
-				int d = (int)gsl_vector_get(j, e2);
+				c = (int)gsl_vector_get(i, e2);
+				d = (int)gsl_vector_get(j, e2);
 				
 				// if all(a~=[c d]) && all(b~=[c d]);
 				if (a != c && a != d && b != c && b != d) {
