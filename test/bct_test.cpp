@@ -8,6 +8,50 @@
 #include <vector>
 
 /*
+ * Converts a GSL vector to an Octave matrix.
+ */
+Matrix bct_test::from_gsl(const gsl_vector* gslv, int start) {
+	Matrix m = Matrix(1, gslv->size - start);
+	for (int i = start; i < (int)gslv->size; i++) {
+		m(0, i - start) = gsl_vector_get(gslv, i);
+	}
+	return m;
+}
+
+/*
+ * Converts a GSL matrix to an Octave matrix.
+ */
+Matrix bct_test::from_gsl(const gsl_matrix* gslm, int start_row, int start_col) {
+	Matrix m = Matrix(gslm->size1 - start_row, gslm->size2 - start_col);
+	for (int i = start_row; i < (int)gslm->size1; i++) {
+		for (int j = start_col; j < (int)gslm->size2; j++) {
+			m(i - start_row, j - start_col) = gsl_matrix_get(gslm, i, j);
+		}
+	}
+	return m;
+}
+
+/*
+ * Converts a GSL 3D matrix to an Octave 3D matrix.
+ */
+NDArray bct_test::from_gsl(const std::vector<gsl_matrix*> gslm, int start) {
+	dim_vector dim_v(3);
+	dim_v.resize(3);
+	dim_v(0) = gslm[start]->size1;
+	dim_v(1) = gslm[start]->size2;
+	dim_v(2) = gslm.size() - start;
+	NDArray m(dim_v);
+	for (int k = start; k < (int)gslm.size(); k++) {
+		for (int i = 0; i < (int)gslm[start]->size1; i++) {
+			for (int j = 0; j < (int)gslm[start]->size2; j++) {
+				m(i, j, k - start) = gsl_matrix_get(gslm[k], i, j);
+			}
+		}
+	}
+	return m;
+}
+
+/*
  * Converts an Octave matrix to a GSL vector.
  */
 gsl_vector* bct_test::to_gslv(const Matrix m, int start) {
@@ -53,50 +97,6 @@ std::vector<gsl_matrix*> bct_test::to_gsl(const NDArray m, int start) {
 		}
 	}
 	return gslm;
-}
-
-/*
- * Converts a GSL vector to an Octave matrix.
- */
-Matrix bct_test::from_gsl(const gsl_vector* gslv, int start) {
-	Matrix m = Matrix(1, gslv->size - start);
-	for (int i = start; i < (int)gslv->size; i++) {
-		m(0, i - start) = gsl_vector_get(gslv, i);
-	}
-	return m;
-}
-
-/*
- * Converts a GSL matrix to an Octave matrix.
- */
-Matrix bct_test::from_gsl(const gsl_matrix* gslm, int start_row, int start_col) {
-	Matrix m = Matrix(gslm->size1 - start_row, gslm->size2 - start_col);
-	for (int i = start_row; i < (int)gslm->size1; i++) {
-		for (int j = start_col; j < (int)gslm->size2; j++) {
-			m(i - start_row, j - start_col) = gsl_matrix_get(gslm, i, j);
-		}
-	}
-	return m;
-}
-
-/*
- * Converts a GSL 3D matrix to an Octave 3D matrix.
- */
-NDArray bct_test::from_gsl(const std::vector<gsl_matrix*> gslm, int start) {
-	dim_vector dim_v(3);
-	dim_v.resize(3);
-	dim_v(0) = gslm[start]->size1;
-	dim_v(1) = gslm[start]->size2;
-	dim_v(2) = gslm.size() - start;
-	NDArray m(dim_v);
-	for (int k = start; k < (int)gslm.size(); k++) {
-		for (int i = 0; i < (int)gslm[start]->size1; i++) {
-			for (int j = 0; j < (int)gslm[start]->size2; j++) {
-				m(i, j, k - start) = gsl_matrix_get(gslm[k], i, j);
-			}
-		}
-	}
-	return m;
 }
 
 #endif

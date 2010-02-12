@@ -2,6 +2,7 @@
 #define BCT_H
 
 #ifdef SWIG
+#define BCT_SWIG
 %module bct
 #endif
 
@@ -11,8 +12,12 @@
 #include "matlab/matlab.h"
 #include <vector>
 
+#ifdef BCT_SWIG
+#include <Python.h>
+#endif
+
 namespace bct {
-#ifndef SWIG
+#ifndef BCT_SWIG
 	using namespace matlab;
 #endif
 	
@@ -142,6 +147,14 @@ namespace bct {
 	void printf(const gsl_vector*, const char*);
 	void printf(const gsl_matrix*, const char*);
 	void printf(const gsl_permutation*, const char*);
+	
+	// SWIG
+#ifdef BCT_SWIG
+	PyObject* from_gsl(const gsl_vector*);
+	PyObject* from_gsl(const gsl_matrix*);
+	gsl_vector* to_gslv(PyObject*);
+	gsl_matrix* to_gslm(PyObject*);
+#endif
 };
 
 #endif
