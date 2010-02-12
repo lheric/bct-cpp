@@ -67,8 +67,8 @@ libbct.a: $(objects)
 
 swig: $(objects)
 	swig -Wall -c++ -python -o bct_wrap.cpp bct.h
-	g++ -c bct_wrap.cpp -include bct.h -I/usr/include/python2.5
-	g++ -lgsl -lgslcblas -bundle -flat_namespace -undefined suppress -o _bct.so $(objects) bct_wrap.o
+	g++ $(CXXFLAGS) -c -D BCT_SWIG -I/usr/include/python2.5 -include bct.h bct_wrap.cpp swig.cpp
+	g++ $(CXXFLAGS) -lgsl -lgslcblas -bundle -flat_namespace -undefined suppress -o _bct.so $(objects) bct_wrap.o swig.o
 
 $(objects): matlab/matlab.h bct.h
 
@@ -87,4 +87,4 @@ uninstall:
 	-rm /usr/local/lib/libbct.a
 
 clean:
-	-rm _bct.so bct.py bct.pyc bct_wrap.cpp bct_wrap.o libbct.a $(objects)
+	-rm _bct.so bct.py bct.pyc bct_wrap.cpp bct_wrap.o libbct.a swig.o $(objects)

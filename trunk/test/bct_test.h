@@ -7,12 +7,12 @@
 #include <vector>
 
 namespace bct_test {
-	gsl_vector* to_gslv(const Matrix, int = 0);
-	gsl_matrix* to_gslm(const Matrix, int = 0, int = 0);
-	std::vector<gsl_matrix*> to_gsl(const NDArray, int = 0);
 	Matrix from_gsl(const gsl_vector*, int = 0);
 	Matrix from_gsl(const gsl_matrix*, int = 0, int = 0);
 	NDArray from_gsl(const std::vector<gsl_matrix*>, int = 0);
+	gsl_vector* to_gslv(const Matrix, int = 0);
+	gsl_matrix* to_gslm(const Matrix, int = 0, int = 0);
+	std::vector<gsl_matrix*> to_gsl(const NDArray, int = 0);
 };
 
 #include "bct_test.cpp"
