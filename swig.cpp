@@ -2,6 +2,9 @@
 #include <gsl/gsl_vector.h>
 #include <Python.h>
 
+/*
+ * Converts a gsl_vector* to a Python list.
+ */
 PyObject* bct::from_gsl(const gsl_vector* v) {
 	PyObject* list = PyList_New(v->size);
 	for (int i = 0; i < (int)v->size; i++) {
@@ -11,6 +14,9 @@ PyObject* bct::from_gsl(const gsl_vector* v) {
 	return list;
 }
 
+/*
+ * Converts a gsl_matrix* to a Python list of lists.
+ */
 PyObject* bct::from_gsl(const gsl_matrix* m) {
 	PyObject* list = PyList_New(m->size1);
 	for (int i = 0; i < (int)m->size1; i++) {
@@ -24,6 +30,9 @@ PyObject* bct::from_gsl(const gsl_matrix* m) {
 	return list;
 }
 
+/*
+ * Converts a Python list to a gsl_vector*.
+ */
 gsl_vector* bct::to_gslv(PyObject* list) {
 	int n = PyList_Size(list);
 	gsl_vector* v = gsl_vector_alloc(n);
@@ -34,6 +43,9 @@ gsl_vector* bct::to_gslv(PyObject* list) {
 	return v;
 }
 
+/*
+ * Converts a Python list of lists to a gsl_matrix*.
+ */
 gsl_matrix* bct::to_gslm(PyObject* list) {
 	int n_rows = PyList_Size(list);
 	int n_cols = PyList_Size(PyList_GetItem(list, 0));
