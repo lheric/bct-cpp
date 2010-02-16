@@ -3,9 +3,9 @@
 
 = Memory Management =
   * Some bct-cpp functions return pointers to `gsl_vector` or `gsl_matrix`.  It is the responsibility of the caller to free the memory associated with these pointers.
-  * Some bct-cpp functions take optional pointer arguments.  These arguments are used to pass additional returns back to the caller.  It is the responsibility of the caller to preallocate sufficient memory before the call and free this memory after its use.  If the additional returns are not needed, the caller may pass `NULL` to the function.  A default value of `NULL` is often provided in the bct-cpp function prototype.
+  * Some bct-cpp functions take optional "double pointer" arguments.  These arguments are used to pass additional returns back to the caller and must be freed by the caller.  If the additional returns are not needed, the caller may pass `NULL` to the function.  A default value of `NULL` is often provided in the bct-cpp function prototype.
 
-Pointers to both `gsl_vector` and `gsl_matrix` may be freed by calling `bct::gsl_free`, a convenience method that simply checks the type of its argument and calls either `gsl_vector_free` or `gsl_matrix_free`.
+Pointers to both `gsl_vector` and `gsl_matrix` may be freed by calling `bct::gsl_free`, a convenience method that calls either `gsl_vector_free` or `gsl_matrix_free` based on the type of its argument.
 
 Avoid usage such as the following:
 {{{
@@ -15,11 +15,11 @@ double s = sum(sum(triu(m));
 The call to `triu` returns a pointer to a newly allocated `gsl_matrix`.  The inner call to `sum` returns a pointer to a newly allocated `gsl_vector`.  The memory associated with both of these returns must be freed to avoid a memory leak:
 {{{
 using namespace bct;
-gsl_matrix mu = triu(m);
-gsl_vector v = sum(mu);
-double s = sum(v);
-gsl_free(mu);
-gsl_free(v);
+gsl_matrix* triu_m = triu(m);
+gsl_vector* sum_triu_m = sum(triu_m);
+double s = sum(sum_triu_m);
+gsl_free(triu_m);
+gsl_free(sum_triu_m);
 }}}
 
 = Error Handling =
