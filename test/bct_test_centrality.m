@@ -26,7 +26,12 @@ end
 
 % erange
 for i = 1:size(m)(2)
-	bct_test(sprintf("erange %s", mname{i}), erange(m{i}) == erange_cpp(m{i}))
+	[Erange eta Eshort fs] = erange(m{i});
+	[Erange_cpp eta_cpp Eshort_cpp fs_cpp] = erange_cpp(m{i});
+	bct_test(sprintf("erange %s Erange", mname{i}), Erange == Erange_cpp);
+	bct_test(sprintf("erange %s eta", mname{i}), eta == eta_cpp);
+	bct_test(sprintf("erange %s Eshort", mname{i}), Eshort == Eshort_cpp);
+	bct_test(sprintf("erange %s fs", mname{i}), fs == fs_cpp);
 end
 
 if ~exist("subtest", "var") || ~subtest

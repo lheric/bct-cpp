@@ -4,75 +4,73 @@
 #include <gsl/gsl_vector.h>
 
 /*
- * Computes the range for each edge (i.e., the shortest path length from i to j
- * after edge i-j has been removed from the graph.  Optional returns:
- * - eta:    Average range for the entire graph.
- * - eshort: Logical matrix indicated edges that are shortcuts.
- * - fs:     Fraction of shortcuts in the graph.
+ * Computes the range for each edge (i.e., the shortest path length between the
+ * nodes it connects after the edge has been removed from the graph)
  */
-gsl_matrix* bct::erange(const gsl_matrix* m, double* eta, gsl_matrix* eshort, double* fs) {
-	if (m->size1 != m->size2) {
-		throw size_exception();
-	}
+gsl_matrix* bct::erange(const gsl_matrix* CIJ, double* eta, gsl_matrix** Eshort, double* fs) {
+	if (CIJ->size1 != CIJ->size2) throw size_exception();
+	
+	// N = size(CIJ,1);
+	int N = CIJ->size1;
 	
 	// K = length(nonzeros(CIJ));
-	int k = nnz(m);
+	int k = nnz(CIJ);
 	
 	// Erange = zeros(N,N);
-	gsl_matrix* erange = gsl_matrix_calloc(m->size1, m->size2);
+	gsl_matrix* Erange = zeros(N, N);
 	
 	// [i,j] = find(CIJ==1);
-	gsl_matrix* m_equal_1 = compare_elements(m, fp_equal, 1.0);
-	gsl_matrix* m_equal_1_indices = find_ij(m_equal_1);
-	gsl_matrix_free(m_equal_1);	
+	gsl_matrix* CIJ_eq_1 = compare_elements(CIJ, fp_equal, 1.0);
+	gsl_matrix* find_CIJ_eq_1 = find_ij(CIJ_eq_1);
+	gsl_matrix_free(CIJ_eq_1);	
+	gsl_vector_view i = gsl_matrix_column(find_CIJ_eq_1, 0);
+	gsl_vector_view j = gsl_matrix_column(find_CIJ_eq_1, 1);
 	
 	// for c=1:length(i)
-	for (int c = 0; c < (int)m_equal_1_indices->size1; c++) {
+	for (int c = 0; c < length(&i.vector); c++) {
 		
 		// CIJcut = CIJ;
-		gsl_matrix* m_cut = copy(m);
+		gsl_matrix* CIJcut = copy(CIJ);
 		
 		// CIJcut(i(c),j(c)) = 0;
-		int i = (int)gsl_matrix_get(m_equal_1_indices, c, 0);
-		int j = (int)gsl_matrix_get(m_equal_1_indices, c, 1);
-		gsl_matrix_set(m_cut, i, j, 0.0);
+		int i_c = (int)gsl_vector_get(&i.vector, c);
+		int j_c = (int)gsl_vector_get(&j.vector, c);
+		gsl_matrix_set(CIJcut, i_c, j_c, 0.0);
 		
 		// [R,D] = reachdist(CIJcut);
-		gsl_matrix* d = reachdist(m_cut);
+		gsl_matrix* D;
+		gsl_matrix* R = reachdist(CIJcut, &D);
+		gsl_matrix_free(CIJcut);
+		gsl_matrix_free(R);
 		
 		// Erange(i(c),j(c)) = D(i(c),j(c))
-		gsl_matrix_set(erange, i, j, gsl_matrix_get(d, i, j));
-		gsl_matrix_free(d);
-		gsl_matrix_free(m_cut);
+		gsl_matrix_set(Erange, i_c, j_c, gsl_matrix_get(D, i_c, j_c));
+		gsl_matrix_free(D);
 	}
 	
-	gsl_matrix_free(m_equal_1_indices);
+	gsl_matrix_free(find_CIJ_eq_1);
 	
 	// eta = sum(Erange((Erange>0)&(Erange<Inf)))/length(Erange((Erange>0)&(Erange<Inf)));
 	if (eta != NULL) {
-		gsl_matrix* erange_positive = compare_elements(erange, fp_greater, 0.0);
-		gsl_matrix* erange_finite = compare_elements(erange, fp_less, GSL_POSINF);
-		gsl_matrix* erange_positive_finite = logical_and(erange_positive, erange_finite);
-		gsl_vector* erange_indexed = logical_index(erange, erange_positive_finite);
-		*eta = sum(erange_indexed) / (double)erange_indexed->size;
-		gsl_vector_free(erange_indexed);
-		gsl_matrix_free(erange_positive_finite);
-		gsl_matrix_free(erange_finite);
-		gsl_matrix_free(erange_positive);
+		gsl_matrix* Erange_gt_0 = compare_elements(Erange, fp_greater, 0.0);
+		gsl_matrix* Erange_lt_inf = compare_elements(Erange, fp_less, GSL_POSINF);
+		gsl_matrix* Erange_gt_0_and_Erange_lt_inf = logical_and(Erange_gt_0, Erange_lt_inf);
+		gsl_vector* Erange_idx = logical_index(Erange, Erange_gt_0_and_Erange_lt_inf);
+		gsl_matrix_free(Erange_gt_0);
+		gsl_matrix_free(Erange_lt_inf);
+		gsl_matrix_free(Erange_gt_0_and_Erange_lt_inf);
+		*eta = sum(Erange_idx) / (double)length(Erange_idx);
+		gsl_vector_free(Erange_idx);
 	}
 	
 	// Eshort = Erange>2;
-	if (eshort != NULL || fs != NULL) {
-		if (eshort != NULL) {
-			gsl_matrix_free(eshort);
-		}
-		eshort = compare_elements(erange, fp_greater, 2.0);
-	}
+	gsl_matrix* _Eshort = compare_elements(Erange, fp_greater, 2.0);
 	
 	// fs = length(nonzeros(Eshort))/K;
 	if (fs != NULL) {
-		*fs = (double)nnz(eshort) / (double)k;
+		*fs = (double)nnz(_Eshort) / (double)k;
 	}
 	
-	return erange;
+	if (Eshort != NULL) *Eshort = _Eshort; else gsl_matrix_free(_Eshort);
+	return Erange;
 }

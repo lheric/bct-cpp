@@ -69,11 +69,9 @@ namespace bct {
 	// Centrality
 	gsl_vector* betweenness_bin(const gsl_matrix*);
 	gsl_vector* betweenness_wei(const gsl_matrix*);
-	gsl_matrix* edge_betweenness_bin(const gsl_matrix*);
-	gsl_matrix* edge_betweenness_wei(const gsl_matrix*);
-	gsl_matrix* erange(const gsl_matrix*, double* = NULL, gsl_matrix* = NULL, double* = NULL);
-	void node_and_edge_betweenness_bin(const gsl_matrix*, gsl_vector* = NULL, gsl_matrix* = NULL);
-	void node_and_edge_betweenness_wei(const gsl_matrix*, gsl_vector* = NULL, gsl_matrix* = NULL);
+	gsl_matrix* edge_betweenness_bin(const gsl_matrix*, gsl_vector** = NULL);
+	gsl_matrix* edge_betweenness_wei(const gsl_matrix*, gsl_vector** = NULL);
+	gsl_matrix* erange(const gsl_matrix*, double* = NULL, gsl_matrix** = NULL, double* = NULL);
 
 	// Motifs
 	enum motif_mode_enum { MILO, SPORNS };
