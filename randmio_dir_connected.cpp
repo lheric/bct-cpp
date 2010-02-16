@@ -1,229 +1,220 @@
 #include "bct.h"
+#include <ctime>
 #include <gsl/gsl_matrix.h>
-#include <gsl/gsl_math.h>
-#include <math.h>
-#include <stdlib.h>
-#include <time.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_vector.h>
 
 /*
- * Returns a 'randomized' graph R, with equivalent degree sequence to the original 
- * weighted directed graph G, and with preserved connectedness 
- * (hence the input graph must be connected).
- *
- * Each edge is rewired (on average) ITER times. The strength distributions 
- * are not preserved for weighted graphs.
- *
- * Rewiring algorithm: Maslov and Sneppen (2002) Science 296:910
+ * Returns a randomized graph with equivalent degree sequence to the original
+ * weighted directed graph, and with preserved connectedness.  On average, each
+ * edge is rewired ITER times.  Out-strength is preserved for weighted graphs,
+ * while in-strength is not.
  */
-
-gsl_matrix* bct::randmio_dir_connected(const gsl_matrix* m, int iters) {	
-	//[i j]=find(R);
-	gsl_matrix* R = copy(m);
-	int n = m->size1;
-	gsl_matrix* R_ij = find_ij(R); 
-	gsl_vector_view i = gsl_matrix_column(R_ij, 0); 
-	gsl_vector_view j = gsl_matrix_column(R_ij, 1); 
-	int K = R_ij->size1;
-	int tot_iters = iters;
-	tot_iters *= K;
-	int rewire = 0;
-	srand(time(0));
-	for(int iter = 1;iter <= tot_iters;iter++) {
-		while(1) {
-			rewire = 1;
-			int a,b,c,d;
+gsl_matrix* bct::randmio_dir_connected(const gsl_matrix* R, int ITER) {
+	if (safe_mode) check_status(R, DIRECTED, "randmio_dir_connected");
+	if (R->size1 != R->size2) throw size_exception();
+	
+	gsl_rng_default_seed = std::time(NULL);
+	gsl_rng* rng = gsl_rng_alloc(gsl_rng_default);
+	
+	// [i j]=find(R);
+	gsl_matrix* find_R = find_ij(R);
+	gsl_vector_view i = gsl_matrix_column(find_R, 0);
+	gsl_vector_view j = gsl_matrix_column(find_R, 1);
+	
+	// K=length(i);
+	int K = length(&i.vector);
+	
+	// ITER=K*ITER;
+	ITER = K * ITER;
+	
+	gsl_matrix* _R = copy(R);
+	
+	// for iter=1:ITER
+	for (int iter = 1; iter <= ITER; iter++) {
+		
+		// while 1
+		while (true) {
+			
+			// rewire = 1
+			bool rewire = true;
+			
 			int e1, e2;
-			while(1) {
-				e1 = ceil((K-1) * (((double)rand())/((double)RAND_MAX)));
-				e2 = ceil((K-1) * (((double)rand())/((double)RAND_MAX)));
-				while(e2 == e1) {
-					e2 = ceil((K-1) * (((double)rand())/((double)RAND_MAX)));
+			int a, b, c, d;
+			
+			// while 1
+			while (true) {
+				
+				// e1=ceil(K*rand);
+				e1 = gsl_rng_uniform_int(rng, K);
+				
+				// e2=ceil(K*rand);
+				e2 = gsl_rng_uniform_int(rng, K);
+				
+				// while (e2==e1),
+				while (e2 == e1) {
+					
+					// e2=ceil(K*rand);
+					e2 = gsl_rng_uniform_int(rng, K);
 				}
-				a = gsl_vector_get(&i.vector, e1);
-				b = gsl_vector_get(&j.vector, e1);
-				c = gsl_vector_get(&i.vector, e2);
-				d = gsl_vector_get(&j.vector, e2);
-				//if all(a~=[c d]) && all(b~=[c d]);
-				if(a != c && a != d && b!=c && b!=d) {  //all four vertices must be different
+				
+				// a=i(e1); b=j(e1);
+				a = (int)gsl_vector_get(&i.vector, e1);
+				b = (int)gsl_vector_get(&j.vector, e1);
+				
+				// c=i(e2); d=j(e2);
+				c = (int)gsl_vector_get(&i.vector, e2);
+				d = (int)gsl_vector_get(&j.vector, e2);
+				
+				// if all(a~=[c d]) && all(b~=[c d]);
+				if (a != c && a != d && b != c && b != d) {
+					
+					// break
 					break;
 				}
 			}
-        
-	        //if ~(R(a,d) || R(c,b))
-	        //rewiring condition
-	        if(!(gsl_matrix_get(R, a, d) || gsl_matrix_get(R, c, b))) {
-        		//if ~(any([R(a,c) R(d,b) R(d,c)]) && any([R(c,a) R(b,d) R(b,a)]))
-        		gsl_vector* condn1 = gsl_vector_alloc(3);
-        		gsl_vector_set(condn1, 0, gsl_matrix_get(R, a, c));
-        		gsl_vector_set(condn1, 1, gsl_matrix_get(R, d, b));
-        		gsl_vector_set(condn1, 2, gsl_matrix_get(R, d, c));
-        		gsl_vector* condn2 = gsl_vector_alloc(3);
-        		gsl_vector_set(condn2, 0, gsl_matrix_get(R, c, a));
-        		gsl_vector_set(condn2, 1, gsl_matrix_get(R, b, d));
-        		gsl_vector_set(condn2, 2, gsl_matrix_get(R, b, a));
-        		int any_condn1 = any(condn1);
-        		int any_condn2 = any(condn2);
-        		if(!(any_condn1 && any_condn2)) { //connectedness condition
-        			//P=R([a c],:);
-        			gsl_vector* rows = gsl_vector_alloc(2);
-        			gsl_vector_set(rows, 0, a);
-        			gsl_vector_set(rows, 1, c);
-        			gsl_vector* columns = sequence(0, n-1);
-        			gsl_matrix* P = ordinal_index(m, rows, columns); 
-        			//P(1,b)=0; P(1,d)=1;
-        			gsl_matrix_set(P, 0, b, 0.0);
-        			gsl_matrix_set(P, 0, d, 1.0);
-        			//P(2,d)=0; P(2,b)=1;
-        			gsl_matrix_set(P, 1, d, 0.0);
-        			gsl_matrix_set(P, 1, b, 1.0);
-        			gsl_matrix* PN = copy(P); 
-        			//PN(1,a)=1; PN(2,c)=1;
-        			gsl_matrix_set(PN, 0, a, 1.0);
-        			gsl_matrix_set(PN, 1, c, 1.0);
-        			
-        			while(1) {
-        				//P(1,:)=any(R(P(1,:)~=0,:),1);
-        				gsl_vector_view row = gsl_matrix_row(P, 0); 
-        				gsl_vector* row_ind = compare_elements(&row.vector, fp_not_equal, 0.0);  
-        				gsl_vector_free(columns);
-        				columns = sequence(0, n-1); 
-        				gsl_matrix* R_indxd = log_ord_index(R, row_ind, columns); 
-        				gsl_vector* any_row;
-        				if(R_indxd == NULL) { //Refer comments above the defintion of log_ord_index
-        					gsl_matrix* any_row_mat = zeros(1, columns->size);
-        					any_row = to_vector(any_row_mat);
-        					gsl_matrix_free(any_row_mat);
-        				}
-        				else {
-	        				any_row = any(R_indxd, 1); 
-	        			}
-        				gsl_vector_memcpy(&row.vector, any_row);
-        				gsl_vector_free(row_ind);
-        				if(R_indxd != NULL) {
-	        				gsl_matrix_free(R_indxd);
-	        			}
-        				gsl_vector_free(any_row);
-        				//P(2,:)=any(R(P(2,:)~=0,:),1);	        				
-        				row = gsl_matrix_row(P, 1);
-        				row_ind = compare_elements(&row.vector, fp_not_equal, 0.0); 
-        				R_indxd = log_ord_index(R, row_ind, columns); 
-        				if(R_indxd == NULL) { //Refer comments above the defintion of log_ord_index
-        					gsl_matrix* any_row_mat = zeros(1, columns->size);
-        					any_row = to_vector(any_row_mat);
-        					gsl_matrix_free(any_row_mat);
-        				}
-        				else {
-	        				any_row = any(R_indxd, 1); 
-	        			}
-        				gsl_vector_memcpy(&row.vector, any_row);
-        				//P=P.*(~PN);
-        				gsl_matrix* not_PN = logical_not(PN); 
-        				gsl_matrix_mul_elements(P, not_PN);
-        				//PN=PN+P;
-        				gsl_matrix_add(PN, P);
-        				//if ~all(any(P,2))
-        				gsl_vector* any_P = any(P, 2); 
-        				int val = all(any_P);
-        				if(!val) {
-        					rewire = 0;
-        					break;
-        				}
-	    				else {
-							//elseif any(PN(1,[b c])) && any(PN(2,[d a]))
-							gsl_vector_free(condn1);
-							gsl_vector_free(condn2);
-							condn1 = gsl_vector_alloc(2);
-							condn2 = gsl_vector_alloc(2);
-							gsl_vector_set(condn1, 0, gsl_matrix_get(PN, 0, b));
-							gsl_vector_set(condn1, 1, gsl_matrix_get(PN, 0, c));
-							gsl_vector_set(condn2, 0, gsl_matrix_get(PN, 1, d));
-							gsl_vector_set(condn2, 1, gsl_matrix_get(PN, 1, a));
-							any_condn1 = any(condn1);
-							any_condn2 = any(condn2);
-	    					if(any_condn1 && any_condn2 ) {
-	    						break;
-	    					}
-	    				}
-	    				gsl_matrix_add(PN, P);
-	    				gsl_vector_free(row_ind);
-	    				if(R_indxd != NULL) {
-		    				gsl_matrix_free(R_indxd);
-		    			}
-	    				gsl_vector_free(any_row);
-	    				gsl_matrix_free(not_PN);
-        			}
-        			gsl_vector_free(rows);
-					gsl_vector_free(columns);
+			
+			// if ~(R(a,d) || R(c,b))
+			if (fp_zero(gsl_matrix_get(_R, a, d)) && fp_zero(gsl_matrix_get(_R, c, b))) {
+				
+				// if ~(any([R(a,c) R(d,b) R(d,c)]) && any([R(c,a) R(b,d) R(b,a)]))
+				gsl_vector* _R_idx_1 = gsl_vector_alloc(3);
+				gsl_vector_set(_R_idx_1, 0, gsl_matrix_get(_R, a, c));
+				gsl_vector_set(_R_idx_1, 1, gsl_matrix_get(_R, d, b));
+				gsl_vector_set(_R_idx_1, 2, gsl_matrix_get(_R, d, c));
+				gsl_vector* _R_idx_2 = gsl_vector_alloc(3);
+				gsl_vector_set(_R_idx_2, 0, gsl_matrix_get(_R, c, a));
+				gsl_vector_set(_R_idx_2, 1, gsl_matrix_get(_R, b, d));
+				gsl_vector_set(_R_idx_2, 2, gsl_matrix_get(_R, b, a));
+				bool any_R_idx_1_and_any_R_idx_2 = any(_R_idx_1) && any(_R_idx_2);
+				gsl_vector_free(_R_idx_1);
+				gsl_vector_free(_R_idx_2);
+				if (!any_R_idx_1_and_any_R_idx_2) {
+					
+					// P=R([a c],:);
+					gsl_vector* _R_rows = gsl_vector_alloc(2);
+					gsl_vector_set(_R_rows, 0, (double)a);
+					gsl_vector_set(_R_rows, 1, (double)c);
+					gsl_vector* _R_cols = sequence(0, _R->size2 - 1);
+					gsl_matrix* P = ordinal_index(_R, _R_rows, _R_cols);
+					gsl_vector_free(_R_rows);
+					gsl_vector_free(_R_cols);
+					
+					// P(1,b)=0; P(1,d)=1;
+					gsl_matrix_set(P, 0, b, 0.0);
+					gsl_matrix_set(P, 0, d, 1.0);
+					
+					// P(2,d)=0; P(2,b)=1;
+					gsl_matrix_set(P, 1, d, 0.0);
+					gsl_matrix_set(P, 1, b, 1.0);
+					
+					// PN=P;
+					gsl_matrix* PN = copy(P);
+					
+					// PN(1,a)=1; PN(2,c)=1;
+					gsl_matrix_set(PN, 0, a, 1.0);
+					gsl_matrix_set(PN, 1, c, 1.0);
+					
+					// while 1
+					while (true) {
+						
+						// P(1,:)=any(R(P(1,:)~=0,:),1);
+						gsl_vector_view P_row_0 = gsl_matrix_row(P, 0);
+						gsl_vector* P_row_0_neq_0 = compare_elements(&P_row_0.vector, fp_not_equal, 0.0);
+						gsl_vector* _R_cols = sequence(0, _R->size2 - 1);
+						gsl_matrix* _R_idx = log_ord_index(_R, P_row_0_neq_0, _R_cols);
+						gsl_vector_free(P_row_0_neq_0);
+						if (_R_idx != NULL) {
+							gsl_vector* any__R_idx = any(_R_idx, 1);
+							gsl_matrix_free(_R_idx);
+							gsl_matrix_set_row(P, 0, any__R_idx);
+							gsl_vector_free(any__R_idx);
+						} else {
+							gsl_vector_set_zero(&P_row_0.vector);
+						}
+						
+						// P(2,:)=any(R(P(2,:)~=0,:),1);
+						gsl_vector_view P_row_1 = gsl_matrix_row(P, 0);
+						gsl_vector* P_row_1_neq_0 = compare_elements(&P_row_1.vector, fp_not_equal, 0.0);
+						_R_idx = log_ord_index(_R, P_row_1_neq_0, _R_cols);
+						gsl_vector_free(P_row_1_neq_0);
+						gsl_vector_free(_R_cols);
+						if (_R_idx != NULL) {
+							gsl_vector* any__R_idx = any(_R_idx, 1);
+							gsl_matrix_free(_R_idx);
+							gsl_matrix_set_row(P, 1, any__R_idx);
+							gsl_vector_free(any__R_idx);
+						} else {
+							gsl_vector_set_zero(&P_row_1.vector);
+						}
+						
+						// P=P.*(~PN);
+						gsl_matrix* not_PN = logical_not(PN);
+						gsl_matrix_mul_elements(P, not_PN);
+						gsl_matrix_free(not_PN);
+						
+						// PN=PN+P
+						gsl_matrix_add(PN, P);
+						
+						// if ~all(any(P,2))
+						gsl_vector* any_P = any(P, 2);
+						bool all_any_P = all(any_P);
+						gsl_vector_free(any_P);
+						if (!all_any_P) {
+							
+							// rewire=0;
+							rewire = false;
+							
+							// break
+							break;
+						}
+						
+						// elseif any(PN(1,[b c])) && any(PN(2,[d a]))
+						gsl_vector* PN_idx_1 = gsl_vector_alloc(2);
+						gsl_vector_set(PN_idx_1, 0, gsl_matrix_get(PN, 0, b));
+						gsl_vector_set(PN_idx_1, 1, gsl_matrix_get(PN, 0, c));
+						gsl_vector* PN_idx_2 = gsl_vector_alloc(2);
+						gsl_vector_set(PN_idx_2, 0, gsl_matrix_get(PN, 1, d));
+						gsl_vector_set(PN_idx_2, 1, gsl_matrix_get(PN, 1, a));
+						bool any_PN_idx_1_and_any_PN_idx_2 = any(PN_idx_1) && any(PN_idx_2);
+						gsl_vector_free(PN_idx_1);
+						gsl_vector_free(PN_idx_2);
+						if (any_PN_idx_1_and_any_PN_idx_2) {
+							
+							// break
+							break;
+						}
+					}
+					
 					gsl_matrix_free(P);
 					gsl_matrix_free(PN);
-        		}
-        		
-	    		if(rewire) {
-	    			//R(a,d)=R(a,b); R(a,b)=0;
-	    			gsl_matrix_set(R, a, d, gsl_matrix_get(R, a, b));
-	    			gsl_matrix_set(R, a, b, 0.0);
-                	//R(c,b)=R(c,d); R(c,d)=0;
-                	gsl_matrix_set(R, c, b, gsl_matrix_get(R, c, d));
-	    			gsl_matrix_set(R, c, d, 0.0);
-	    			gsl_vector_set(&j.vector, e1, d);
-	    			gsl_vector_set(&j.vector, e2, b);
-	    			break;
-	    		}
-	    		gsl_vector_free(condn1);
-	    		gsl_vector_free(condn2);
+				}
+				
+				// if rewire
+				if (rewire) {
+					
+					// R(a,d)=R(a,b); R(a,b)=0;
+					gsl_matrix_set(_R, a, d, gsl_matrix_get(_R, a, b));
+					gsl_matrix_set(_R, a, b, 0.0);
+					
+					// R(c,b)=R(c,d); R(c,d)=0;
+					gsl_matrix_set(_R, c, b, gsl_matrix_get(_R, c, d));
+					gsl_matrix_set(_R, c, d, 0.0);
+					
+					// j(e1) = d;
+					gsl_vector_set(&j.vector, e1, (double)d);
+					
+					// j(e2) = b;
+					gsl_vector_set(&j.vector, e2, (double)b);
+					
+					// break;
+					break;
+				}
 			}
-		}	 
+		}
 	}
-	gsl_matrix_free(R_ij);
-	return R;
-}      	
-	        					
-	        				
-	        	
-	            
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-		
 	
-				
-
-
-
-
-
-
-
-
-
-
-
+	gsl_rng_free(rng);
+	gsl_matrix_free(find_R);
+	return _R;
+}

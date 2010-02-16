@@ -10,21 +10,19 @@
  * strength is preserved for weighted graphs, while in-strength is not.
  */
 gsl_matrix* bct::randmio_dir(const gsl_matrix* R, int ITER) {
+	if (safe_mode) check_status(R, DIRECTED, "randmio_dir");
 	if (R->size1 != R->size2) throw size_exception();
 	
 	gsl_rng_default_seed = std::time(NULL);
 	gsl_rng* rng = gsl_rng_alloc(gsl_rng_default);
 	
 	// [i j]=find(R);
-	gsl_matrix* R_ij = find_ij(R);
-	gsl_vector* i = gsl_vector_alloc(R->size1);
-	gsl_vector* j = gsl_vector_alloc(R->size1);
-	gsl_matrix_get_col(i, R_ij, 0);
-	gsl_matrix_get_col(i, R_ij, 1);
-	gsl_matrix_free(R_ij);
+	gsl_matrix* find_R = find_ij(R);
+	gsl_vector_view i = gsl_matrix_column(find_R, 0);
+	gsl_vector_view j = gsl_matrix_column(find_R, 1);
 	
 	// K=length(i);
-	int K = length(i);
+	int K = length(&i.vector);
 	
 	// ITER=K*ITER;
 	ITER = K * ITER;
@@ -57,12 +55,12 @@ gsl_matrix* bct::randmio_dir(const gsl_matrix* R, int ITER) {
 				}
 				
 				// a=i(e1); b=j(e1);
-				a = (int)gsl_vector_get(i, e1);
-				b = (int)gsl_vector_get(j, e1);
+				a = (int)gsl_vector_get(&i.vector, e1);
+				b = (int)gsl_vector_get(&j.vector, e1);
 				
 				// c=i(e2); d=j(e2);
-				c = (int)gsl_vector_get(i, e2);
-				d = (int)gsl_vector_get(j, e2);
+				c = (int)gsl_vector_get(&i.vector, e2);
+				d = (int)gsl_vector_get(&j.vector, e2);
 				
 				// if all(a~=[c d]) && all(b~=[c d]);
 				if (a != c && a != d && b != c && b != d) {
@@ -84,10 +82,10 @@ gsl_matrix* bct::randmio_dir(const gsl_matrix* R, int ITER) {
 				gsl_matrix_set(_R, c, d, 0.0);
 				
 				// j(e1) = d;
-				gsl_vector_set(j, e1, (double)d);
+				gsl_vector_set(&j.vector, e1, (double)d);
 				
 				// j(e2) = b;
-				gsl_vector_set(j, e2, (double)b);
+				gsl_vector_set(&j.vector, e2, (double)b);
 				
 				// break;
 				break;
@@ -95,7 +93,7 @@ gsl_matrix* bct::randmio_dir(const gsl_matrix* R, int ITER) {
 		}
 	}
 	
-	gsl_vector_free(i);
-	gsl_vector_free(j);
+	gsl_rng_free(rng);
+	gsl_matrix_free(find_R);
 	return _R;
 }
