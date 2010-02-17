@@ -1,5 +1,16 @@
 bct_test_setup
 
+N = floor(91 * rand()) + 10;
+K = floor((N * N - N + 1) * rand());
+
+% makerandCIJ_dir
+CIJ = makerandCIJ_dir(N, K);
+bct_test("makerandCIJ_dir", size(CIJ) == [N N] && sum(degrees_dir(CIJ)) == K)
+
+% makerandCIJ_und
+CIJ = makerandCIJ_und(N, K);
+bct_test("makerandCIJ_und", size(CIJ) == [N N] && sum(degrees_und(CIJ)) == 2 * K)
+
 ITER = 10;
 
 % randmio_dir

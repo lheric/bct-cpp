@@ -34,6 +34,8 @@ filenames = \
 	latmio_dir_connected_cpp \
 	latmio_und_cpp \
 	latmio_und_connected_cpp \
+	makerandCIJ_dir_cpp \
+	makerandCIJ_und_cpp \
 	matching_ind_cpp \
 	matching_ind_in_cpp \
 	matching_ind_out_cpp \
