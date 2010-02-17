@@ -1,7 +1,10 @@
 #include <cmath>
 #include <cstring>
+#include <ctime>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_permutation.h>
+#include <gsl/gsl_randist.h>
+#include <gsl/gsl_rng.h>
 #include <gsl/gsl_vector.h>
 #include "matlab.h"
 
@@ -329,6 +332,24 @@ double matlab::prod(const gsl_vector* v) {
 		prod *= gsl_vector_get(v, i);
 	}
 	return prod;
+}
+
+/*
+ * Generates a permutation of the integers 0 to (size - 1), whereas the MATLAB
+ * version uses the integers 1 to size.
+ */
+gsl_permutation* matlab::randperm(int size) {
+	gsl_rng_default_seed = std::time(NULL);
+	gsl_rng* rng = gsl_rng_alloc(gsl_rng_default);
+	double values[size];
+	for (int i = 0; i < size; i++) {
+		values[i] = (double)i;
+	}
+	gsl_ran_shuffle(rng, values, size, sizeof(double));
+	gsl_vector_view values_vv = gsl_vector_view_array(values, size);
+	gsl_permutation* values_p = to_permutation(&values_vv.vector);
+	gsl_rng_free(rng);
+	return values_p;
 }
 
 gsl_vector* matlab::prod(const gsl_matrix* m, int dim) {

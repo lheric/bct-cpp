@@ -88,6 +88,8 @@ namespace bct {
 	// Modularity and community structure
 	
 	// Synthetic connection networks
+	gsl_matrix* makerandCIJ_dir(int, int);
+	gsl_matrix* makerandCIJ_und(int, int);
 	
 	// Graph randomization
 	gsl_matrix* latmio_dir(const gsl_matrix*, int);
