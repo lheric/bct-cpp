@@ -1,20 +1,20 @@
-source bct_test_setup.m
+bct_test_setup
 
 subtest = 1;
 printf("\nCentrality\n")
-source bct_test_centrality.m
+bct_test_centrality
 printf("\nClustering\n")
-source bct_test_clustering.m
+bct_test_clustering
 printf("\nDegree\n")
-source bct_test_degree.m
+bct_test_degree
 printf("\nDistance\n")
-source bct_test_distance.m
+bct_test_distance
 printf("\nModularity\n")
-source bct_test_modularity.m
+bct_test_modularity
 printf("\nMotifs\n")
-source bct_test_motifs.m
+bct_test_motifs
 printf("\nReference\n")
-source bct_test_reference.m
+bct_test_reference
+subtest = 0;
 
-printf("\nFailures: %d\n", failures)
-clear;
+bct_test_teardown

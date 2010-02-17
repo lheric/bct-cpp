@@ -1,6 +1,4 @@
-if ~exist("subtest", "var") || ~subtest
-	source bct_test_setup.m
-end
+bct_test_setup
 
 % assortativity_dir
 for i = 1:size(m)(2)
@@ -61,7 +59,4 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("strengths_und %s", mname{i}), strengths_und(m{i}) == strengths_und_cpp(m{i}))
 end
 
-if ~exist("subtest", "var") || ~subtest
-	printf("Failures: %d\n", failures)
-	clear;
-end
+bct_test_teardown
