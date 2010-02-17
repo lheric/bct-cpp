@@ -1,6 +1,4 @@
-if ~exist("subtest", "var") || ~subtest
-	source bct_test_setup.m
-end
+bct_test_setup
 
 % clustering_coef_bd
 for i = 1:size(m)(2)
@@ -24,10 +22,7 @@ end
 
 % efficiency_local
 for i = 1:size(m)(2)
-	bct_test(sprintf("efficiency_local %s", mname{i}), efficiency(m{i}, 1) == efficiency_local_cpp(m{i})');
+	bct_test(sprintf("efficiency_local %s", mname{i}), efficiency(m{i}, 1) == efficiency_local_cpp(m{i})')
 end
 
-if ~exist("subtest", "var") || ~subtest
-	printf("Failures: %d\n", failures)
-	clear;
-end
+bct_test_teardown

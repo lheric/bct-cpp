@@ -1,6 +1,4 @@
-if ~exist("subtest", "var") || ~subtest
-	source bct_test_setup.m
-end
+bct_test_setup
 
 % betweenness_bin
 for i = 1:size(m)(2)
@@ -28,13 +26,10 @@ end
 for i = 1:size(m)(2)
 	[Erange eta Eshort fs] = erange(m{i});
 	[Erange_cpp eta_cpp Eshort_cpp fs_cpp] = erange_cpp(m{i});
-	bct_test(sprintf("erange %s Erange", mname{i}), Erange == Erange_cpp);
-	bct_test(sprintf("erange %s eta", mname{i}), eta == eta_cpp);
-	bct_test(sprintf("erange %s Eshort", mname{i}), Eshort == Eshort_cpp);
-	bct_test(sprintf("erange %s fs", mname{i}), fs == fs_cpp);
+	bct_test(sprintf("erange %s Erange", mname{i}), Erange == Erange_cpp)
+	bct_test(sprintf("erange %s eta", mname{i}), eta == eta_cpp)
+	bct_test(sprintf("erange %s Eshort", mname{i}), Eshort == Eshort_cpp)
+	bct_test(sprintf("erange %s fs", mname{i}), fs == fs_cpp)
 end
 
-if ~exist("subtest", "var") || ~subtest
-	printf("Failures: %d\n", failures)
-	clear;
-end
+bct_test_teardown

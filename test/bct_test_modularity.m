@@ -1,8 +1,3 @@
-if ~exist("subtest", "var") || ~subtest
-	source bct_test_setup.m
-end
+bct_test_setup
 
-if ~exist("subtest", "var") || ~subtest
-	printf("Failures: %d\n", failures)
-	clear;
-end
+bct_test_teardown
