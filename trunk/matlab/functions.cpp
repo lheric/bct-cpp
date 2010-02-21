@@ -1,6 +1,8 @@
 #include <cmath>
 #include <cstring>
 #include <ctime>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_permutation.h>
 #include <gsl/gsl_randist.h>
@@ -12,7 +14,25 @@
  * See MATLAB documentation for descriptions of these functions.  We will
  * document instances where our version differs from the MATLAB version.
  */
- 
+
+gsl_vector* matlab::abs(const gsl_vector* v) {
+	gsl_vector* abs_v = gsl_vector_alloc(v->size);
+	for (int i = 0; i < (int)v->size; i++) {
+		gsl_vector_set(abs_v, i, std::abs(gsl_vector_get(v, i)));
+	}
+	return abs_v;
+}
+
+gsl_matrix* matlab::abs(const gsl_matrix* m) {
+	gsl_matrix* abs_m = gsl_matrix_alloc(m->size1, m->size2);
+	for (int i = 0; i < (int)m->size1; i++) {
+		for (int j = 0; j < (int)m->size2; j++) {
+			gsl_matrix_set(abs_m, i, j, std::abs(gsl_matrix_get(m, i, j)));
+		}
+	}
+	return abs_m;
+}
+
 int matlab::all(const gsl_vector* v) {
 	for (int i = 0; i < (int)v->size; i++) {
 		if (fp_zero(gsl_vector_get(v, i))) {
@@ -104,6 +124,37 @@ void matlab::dec2bin(int n, int len, char* bin) {
 	}
 }
 
+gsl_matrix* matlab::diag(const gsl_vector* v, int k) {
+	int i0;
+	int j0;
+	if (k >= 0) { i0 = 0; j0 = k; }
+	else { i0 = -k; j0 = 0; }
+	int n = (int)v->size + (int)std::abs(k);
+	gsl_matrix* diag_m = gsl_matrix_calloc(n, n);
+	for (int i = 0; i < (int)v->size; i++) {
+		gsl_matrix_set(diag_m, i0 + i, j0 + i, gsl_vector_get(v, i));
+	}
+	return diag_m;
+}
+
+gsl_vector* matlab::diag(const gsl_matrix* m, int k) {
+	if (k <= -(int)m->size1 || k >= (int)m->size2) {
+		return NULL;
+	}
+	int i0;
+	int j0;
+	if (k >= 0) { i0 = 0; j0 = k; }
+	else { i0 = -k; j0 = 0; }
+	int n_rows = (int)m->size1 - i0;
+	int n_cols = (int)m->size2 - j0;
+	int n = n_rows < n_cols ? n_rows : n_cols;
+	gsl_vector* diag_v = gsl_vector_alloc(n);
+	for (int i = 0; i < n; i++) {
+		gsl_vector_set(diag_v, i, gsl_matrix_get(m, i0 + i, j0 + i));
+	}
+	return diag_v;
+}
+
 gsl_matrix* matlab::eye(int size) {
 	return eye(size, size);
 }
@@ -175,11 +226,11 @@ gsl_matrix* matlab::find_ij(const gsl_matrix* m, int n, const char* direction) {
 
 gsl_vector* matlab::hist(const gsl_vector* v, int n) {
 	gsl_vector* centers = gsl_vector_alloc(n);
-	double min = gsl_vector_min(v);
-	double max = gsl_vector_max(v);
-	double width = (max - min) / (double)n;
+	double min_value = min(v);
+	double max_value = max(v);
+	double width = (max_value - min_value) / (double)n;
 	for (int i = 0; i < n; i++) {
-		gsl_vector_set(centers, i, min + (i + 0.5) * width);
+		gsl_vector_set(centers, i, min_value + (i + 0.5) * width);
 	}
 	gsl_vector* hist_v = hist(v, centers);
 	gsl_vector_free(centers);
@@ -213,6 +264,24 @@ gsl_vector* matlab::hist(const gsl_vector* v, const gsl_vector* centers) {
 	return hist_v;
 }
 
+gsl_matrix* matlab::inv(const gsl_matrix* m) {
+	if (m->size1 != m->size2) {
+		return NULL;
+	}
+	gsl_matrix* LU = copy(m);
+	gsl_permutation* p = gsl_permutation_alloc(m->size1);
+	int signum;
+	gsl_linalg_LU_decomp(LU, p, &signum);
+	gsl_matrix* inv_m = NULL;
+	if (fp_nonzero(gsl_linalg_LU_det(LU, signum))) {
+		inv_m = gsl_matrix_alloc(m->size1, m->size2);
+		gsl_linalg_LU_invert(LU, p, inv_m);
+	}
+	gsl_matrix_free(LU);
+	gsl_permutation_free(p);
+	return inv_m;
+}
+
 int matlab::length(const gsl_vector* v) {
 	return v->size;
 }
@@ -222,11 +291,32 @@ int matlab::length(const gsl_matrix* m) {
 }
 
 double matlab::max(double x, double y) {
-	return x > y ? x : y;
+	if (gsl_isnan(x) == 1) {
+		return y;
+	} else if (gsl_isnan(y) == 1) {
+		return x;
+	} else {
+		return x > y ? x : y;
+	}
 }
 
 double matlab::max(const gsl_vector* v) {
-	return gsl_vector_max(v);
+	double max = GSL_NAN;
+	int i = 0;
+	for ( ; i < (int)v->size; i++) {
+		double value = gsl_vector_get(v, i);
+		if (gsl_isnan(value) == 0) {
+			max = value;
+			break;
+		}
+	}
+	for ( ; i < (int)v->size; i++) {
+		double value = gsl_vector_get(v, i);
+		if (gsl_isnan(value) == 0 && value > max) {
+			max = value;
+		}
+	}
+	return max;
 }
 
 /*
@@ -237,7 +327,7 @@ gsl_vector* matlab::max(const gsl_matrix* m, int dim) {
 		gsl_vector* max_v = gsl_vector_alloc(m->size2);
 		for (int i = 0; i < (int)m->size2; i++) {
 			gsl_vector_const_view m_col_i = gsl_matrix_const_column(m, i);
-			double value = gsl_vector_max(&m_col_i.vector);
+			double value = max(&m_col_i.vector);
 			gsl_vector_set(max_v, i, value);
 		}
 		return max_v;
@@ -245,7 +335,7 @@ gsl_vector* matlab::max(const gsl_matrix* m, int dim) {
 		gsl_vector* max_v = gsl_vector_alloc(m->size1);
 		for (int i = 0; i < (int)m->size1; i++) {
 			gsl_vector_const_view m_row_i = gsl_matrix_const_row(m, i);
-			double value = gsl_vector_max(&m_row_i.vector);
+			double value = max(&m_row_i.vector);
 			gsl_vector_set(max_v, i, value);
 		}
 		return max_v;
@@ -255,11 +345,32 @@ gsl_vector* matlab::max(const gsl_matrix* m, int dim) {
 }
 
 double matlab::min(double x, double y) {
-	return x < y ? x : y;
+	if (gsl_isnan(x) == 1) {
+		return y;
+	} else if (gsl_isnan(y) == 1) {
+		return x;
+	} else {
+		return x < y ? x : y;
+	}
 }
 
 double matlab::min(const gsl_vector* v) {
-	return gsl_vector_min(v);
+	double min = GSL_NAN;
+	int i = 0;
+	for ( ; i < (int)v->size; i++) {
+		double value = gsl_vector_get(v, i);
+		if (gsl_isnan(value) == 0) {
+			min = value;
+			break;
+		}
+	}
+	for ( ; i < (int)v->size; i++) {
+		double value = gsl_vector_get(v, i);
+		if (gsl_isnan(value) == 0 && value < min) {
+			min = value;
+		}
+	}
+	return min;
 }
 
 /*
@@ -270,7 +381,7 @@ gsl_vector* matlab::min(const gsl_matrix* m, int dim) {
 		gsl_vector* min_v = gsl_vector_alloc(m->size2);
 		for (int i = 0; i < (int)m->size2; i++) {
 			gsl_vector_const_view m_col_i = gsl_matrix_const_column(m, i);
-			double value = gsl_vector_min(&m_col_i.vector);
+			double value = min(&m_col_i.vector);
 			gsl_vector_set(min_v, i, value);
 		}
 		return min_v;
@@ -278,7 +389,7 @@ gsl_vector* matlab::min(const gsl_matrix* m, int dim) {
 		gsl_vector* min_v = gsl_vector_alloc(m->size1);
 		for (int i = 0; i < (int)m->size1; i++) {
 			gsl_vector_const_view m_row_i = gsl_matrix_const_row(m, i);
-			double value = gsl_vector_min(&m_row_i.vector);
+			double value = min(&m_row_i.vector);
 			gsl_vector_set(min_v, i, value);
 		}
 		return min_v;
@@ -322,8 +433,17 @@ gsl_matrix* matlab::ones(int size) {
 
 gsl_matrix* matlab::ones(int size1, int size2) {
 	gsl_matrix* ones_m = gsl_matrix_alloc(size1, size2);
-	gsl_matrix_set_all(ones_m, 1);
+	gsl_matrix_set_all(ones_m, 1.0);
 	return ones_m;
+}
+
+/*
+ * Emulates (ones(size, 1)) or (ones(1, size)).
+ */
+gsl_vector* matlab::ones_vector(int size) {
+	gsl_vector* ones_v = gsl_vector_alloc(size);
+	gsl_vector_set_all(ones_v, 1.0);
+	return ones_v;
 }
 
 double matlab::prod(const gsl_vector* v) {

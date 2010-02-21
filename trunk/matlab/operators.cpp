@@ -234,6 +234,39 @@ gsl_matrix* matlab::copy(const gsl_matrix* m) {
 }
 
 /*
+ * Emulates (m1 \ m2) = (inv(m1) * m2).
+ */
+gsl_matrix* matlab::div_left(const gsl_matrix* m1, const gsl_matrix* m2) {
+	if (m1->size1 != m1->size2 || m2->size1 != m2->size2 || m1->size1 != m2->size1) {
+		return NULL;
+	}
+	gsl_matrix* inv_m1 = inv(m1);
+	gsl_matrix* div_m = mul(inv_m1, m2);
+	gsl_matrix_free(inv_m1);
+	return div_m;
+}
+
+/*
+ * Emulates (m1 / m2) = ((inv(m2') * m1')').
+ */
+gsl_matrix* matlab::div_right(const gsl_matrix* m1, const gsl_matrix* m2) {
+	if (m1->size1 != m1->size2 || m2->size1 != m2->size2 || m1->size1 != m2->size1) {
+		return NULL;
+	}
+	gsl_matrix* m2_transpose = gsl_matrix_alloc(m2->size2, m2->size1);
+	gsl_matrix_transpose_memcpy(m2_transpose, m2);
+	gsl_matrix* inv_m2_transpose = inv(m2_transpose);
+	gsl_matrix_free(m2_transpose);
+	gsl_matrix* m1_transpose = gsl_matrix_alloc(m1->size2, m1->size1);
+	gsl_matrix_transpose_memcpy(m1_transpose, m1);
+	gsl_matrix* div_m = mul(inv_m2_transpose, m1_transpose);
+	gsl_matrix_free(inv_m2_transpose);
+	gsl_matrix_free(m1_transpose);
+	gsl_matrix_transpose(div_m);
+	return div_m;
+}
+
+/*
  * Emulates (v1 & v2).
  */
 gsl_vector* matlab::logical_and(const gsl_vector* v1, const gsl_vector* v2) {

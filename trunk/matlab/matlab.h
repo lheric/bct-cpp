@@ -12,12 +12,16 @@ namespace matlab {
 	const double EPSILON = 1e-6;
 
 	// Functions
+	gsl_vector* abs(const gsl_vector*);
+	gsl_matrix* abs(const gsl_matrix*);
 	int all(const gsl_vector*);
 	gsl_vector* all(const gsl_matrix*, int = 1);
 	int any(const gsl_vector*);
 	gsl_vector* any(const gsl_matrix*, int = 1);
 	void dec2bin(int, char*);
 	void dec2bin(int, int, char*);
+	gsl_matrix* diag(const gsl_vector*, int = 0);
+	gsl_vector* diag(const gsl_matrix*, int = 0);
 	gsl_matrix* eye(int);
 	gsl_matrix* eye(int, int);
 	gsl_vector* find(const gsl_vector*, int = GSL_POSINF, const char* = "first");
@@ -25,6 +29,7 @@ namespace matlab {
 	gsl_matrix* find_ij(const gsl_matrix*, int = GSL_POSINF, const char* = "first");
 	gsl_vector* hist(const gsl_vector*, int = 10);
 	gsl_vector* hist(const gsl_vector*, const gsl_vector*);
+	gsl_matrix* inv(const gsl_matrix*);
 	int length(const gsl_vector*);
 	int length(const gsl_matrix*);
 	double max(double, double);
@@ -38,6 +43,7 @@ namespace matlab {
 	gsl_vector* nonzeros(const gsl_matrix*);
 	gsl_matrix* ones(int);
 	gsl_matrix* ones(int, int);
+	gsl_vector* ones_vector(int);
 	double prod(const gsl_vector*);
 	gsl_vector* prod(const gsl_matrix*, int = 1);
 	gsl_permutation* randperm(int);
@@ -72,6 +78,8 @@ namespace matlab {
 	gsl_matrix* concatenate_rows(const gsl_matrix*, const gsl_matrix*);
 	gsl_vector* copy(const gsl_vector*);
 	gsl_matrix* copy(const gsl_matrix*);
+	gsl_matrix* div_left(const gsl_matrix*, const gsl_matrix*);
+	gsl_matrix* div_right(const gsl_matrix*, const gsl_matrix*);
 	gsl_vector* logical_and(const gsl_vector*, const gsl_vector*);
 	gsl_matrix* logical_and(const gsl_matrix*, const gsl_matrix*);
 	gsl_vector* logical_not(const gsl_vector*);

@@ -42,6 +42,7 @@ objects = \
 	matlab/index.o \
 	matlab/operators.o \
 	matlab/utility.o \
+	modularity_dir.o \
 	motif3funct_bin.o \
 	motif3funct_wei.o \
 	motif3struct_bin.o \
