@@ -86,6 +86,7 @@ namespace bct {
 	gsl_matrix* motif4generate(gsl_vector** = NULL, gsl_vector** = NULL);
 
 	// Modularity and community structure
+	double modularity_dir(const gsl_matrix*, gsl_vector** = NULL);
 	
 	// Synthetic connection networks
 	gsl_matrix* makerandCIJ_dir(int, int);

@@ -39,6 +39,7 @@ filenames = \
 	matching_ind_cpp \
 	matching_ind_in_cpp \
 	matching_ind_out_cpp \
+	modularity_dir_cpp \
 	motif3funct_bin_cpp \
 	motif3funct_wei_cpp \
 	motif3generate_cpp \
