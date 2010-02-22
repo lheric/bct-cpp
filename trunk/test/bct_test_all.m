@@ -13,8 +13,10 @@ printf("\nModularity\n")
 bct_test_modularity
 printf("\nMotifs\n")
 bct_test_motifs
-printf("\nReference\n")
-bct_test_reference
+printf("\nRandom\n")
+bct_test_random
+printf("\nSynthetic\n")
+bct_test_synthetic
 subtest = 0;
 
 bct_test_teardown
