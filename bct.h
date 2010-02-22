@@ -87,6 +87,7 @@ namespace bct {
 
 	// Modularity and community structure
 	double modularity_dir(const gsl_matrix*, gsl_vector** = NULL);
+	double modularity_und(const gsl_matrix*, gsl_vector** = NULL);
 	
 	// Synthetic connection networks
 	gsl_matrix* makerandCIJ_dir(int, int);

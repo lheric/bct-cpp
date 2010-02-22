@@ -1,10 +1,11 @@
 #include "bct.h"
 #include <cmath>
-#include <gsl/gsl_complex.h>
 #include <gsl/gsl_eigen.h>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
+
+gsl_vector* modularity(const gsl_matrix* B, int N, double m);
 
 /*
  * Computes Newman modularity and community structure for a directed graph.
@@ -48,8 +49,99 @@ double bct::modularity_dir(const gsl_matrix* A, gsl_vector** Ci) {
 	gsl_matrix_add(B, b_transpose);
 	gsl_matrix_free(b_transpose);
 	
+	gsl_vector* _Ci = modularity(B, N, m);
+	
+	// s=Ci(:,ones(1,N));
+	gsl_matrix* s = gsl_matrix_alloc(N, N);
+	for (int i = 0; i < N; i++) {
+		gsl_matrix_set_col(s, i, _Ci);
+	}
+	
+	// Q=~(s-s.').*B/(2*m);
+	gsl_matrix* s_transpose = gsl_matrix_alloc(s->size2, s->size1);
+	gsl_matrix_transpose_memcpy(s_transpose, s);
+	gsl_matrix_sub(s, s_transpose);
+	gsl_matrix_free(s_transpose);
+	gsl_matrix* Q_m = logical_not(s);
+	gsl_matrix_free(s);
+	gsl_matrix_mul_elements(Q_m, B);
+	gsl_matrix_free(B);
+	gsl_matrix_scale(Q_m, 1.0 / (2.0 * m));
+	
+	// Q=sum(Q(:));
+	gsl_vector* sum_Q_m = sum(Q_m);
+	gsl_matrix_free(Q_m);
+	double Q = sum(sum_Q_m);
+	gsl_vector_free(sum_Q_m);
+	
+	if (Ci != NULL) *Ci = _Ci; else gsl_vector_free(_Ci);
+	return Q;
+}
+
+/*
+ * Computes Newman modularity and community structure for an undirected graph.
+ * Since GSL solves eigensystems differently from MATLAB, network communities
+ * may be numbered differently.
+ */
+double bct::modularity_und(const gsl_matrix* A, gsl_vector** Ci) {
+	if (safe_mode) check_status(A, UNDIRECTED, "modularity_und");
+	if (A->size1 != A->size2) throw size_exception();
+	
+	// K=sum(A);
+	gsl_vector* K = sum(A);
+	
+	// N=length(A);
+	int N = length(A);
+	
+	// m=sum(K);
+	double m = sum(K);
+	
+	// B=A-(K.'*K)/m;
+	gsl_matrix* K_m_transpose = to_column_matrix(K);
+	gsl_matrix* K_m = to_row_matrix(K);
+	gsl_vector_free(K);
+	gsl_matrix* K_m_transpose_mul_K_m = mul(K_m_transpose, K_m);
+	gsl_matrix_free(K_m_transpose);
+	gsl_matrix_free(K_m);
+	gsl_matrix_scale(K_m_transpose_mul_K_m, 1.0 / m);
+	gsl_matrix* B = copy(A);
+	gsl_matrix_sub(B, K_m_transpose_mul_K_m);
+	gsl_matrix_free(K_m_transpose_mul_K_m);
+	
+	gsl_vector* _Ci = modularity(B, N, m);
+	
+	// s=Ci(:,ones(1,N));
+	gsl_matrix* s = gsl_matrix_alloc(N, N);
+	for (int i = 0; i < N; i++) {
+		gsl_matrix_set_col(s, i, _Ci);
+	}
+	
+	// Q=~(s-s.').*B/m;
+	gsl_matrix* s_transpose = gsl_matrix_alloc(s->size2, s->size1);
+	gsl_matrix_transpose_memcpy(s_transpose, s);
+	gsl_matrix_sub(s, s_transpose);
+	gsl_matrix_free(s_transpose);
+	gsl_matrix* Q_m = logical_not(s);
+	gsl_matrix_free(s);
+	gsl_matrix_mul_elements(Q_m, B);
+	gsl_matrix_free(B);
+	gsl_matrix_scale(Q_m, 1.0 / m);
+	
+	// Q=sum(Q(:));
+	gsl_vector* sum_Q_m = sum(Q_m);
+	gsl_matrix_free(Q_m);
+	double Q = sum(sum_Q_m);
+	gsl_vector_free(sum_Q_m);
+	
+	if (Ci != NULL) *Ci = _Ci; else gsl_vector_free(_Ci);
+	return Q;
+}
+
+gsl_vector* modularity(const gsl_matrix* B, int N, double m) {
+	using namespace bct;
+	
 	// Ci=ones(N,1);
-	gsl_vector* _Ci = ones_vector(N);
+	gsl_vector* Ci = ones_vector(N);
 	
 	// cn=1;
 	int cn = 1;
@@ -147,6 +239,7 @@ double bct::modularity_dir(const gsl_matrix* A, gsl_vector** Ci) {
 				qmax = gsl_vector_get(qmax_v, 0);
 				gsl_vector_free(qmax_v);
 				
+				// TODO: Fix precision issue (differences of 1e-14 for macaque47/71)
 				// imax=(Qit==qmax);
 				gsl_matrix* imax = compare_elements(Qit, fp_equal, qmax);
 				gsl_matrix_free(Qit);
@@ -205,7 +298,7 @@ double bct::modularity_dir(const gsl_matrix* A, gsl_vector** Ci) {
 					gsl_vector* ind_idx = logical_index(ind, S_eq_1);
 					gsl_vector_free(S_eq_1);
 					if (ind_idx != NULL) {
-						ordinal_index_assign(_Ci, ind_idx, gsl_vector_get(U, 0));
+						ordinal_index_assign(Ci, ind_idx, gsl_vector_get(U, 0));
 						gsl_vector_free(ind_idx);
 					}
 					
@@ -216,7 +309,7 @@ double bct::modularity_dir(const gsl_matrix* A, gsl_vector** Ci) {
 					ind_idx = logical_index(ind, S_eq_neg_1);
 					gsl_vector_free(S_eq_neg_1);
 					if (ind_idx != NULL) {
-						ordinal_index_assign(_Ci, ind_idx, (double)cn);
+						ordinal_index_assign(Ci, ind_idx, (double)cn);
 						gsl_vector_free(ind_idx);
 					}
 				}
@@ -242,7 +335,7 @@ double bct::modularity_dir(const gsl_matrix* A, gsl_vector** Ci) {
 		gsl_matrix_free(S);
 		
 		// ind=find(Ci==U(1));
-		gsl_vector* _Ci_eq_U_0 = compare_elements(_Ci, fp_equal, gsl_vector_get(U, 0));
+		gsl_vector* _Ci_eq_U_0 = compare_elements(Ci, fp_equal, gsl_vector_get(U, 0));
 		gsl_vector_free(ind);
 		ind = find(_Ci_eq_U_0);
 		gsl_vector_free(_Ci_eq_U_0);
@@ -271,29 +364,5 @@ double bct::modularity_dir(const gsl_matrix* A, gsl_vector** Ci) {
 	gsl_matrix_free(Bg);
 	gsl_eigen_symmv_free(eig);
 	
-	// s=Ci(:,ones(1,N));
-	gsl_matrix* s = gsl_matrix_alloc(N, N);
-	for (int i = 0; i < N; i++) {
-		gsl_matrix_set_col(s, i, _Ci);
-	}
-	
-	// Q=~(s-s.').*B/(2*m);
-	gsl_matrix* s_transpose = gsl_matrix_alloc(s->size2, s->size1);
-	gsl_matrix_transpose_memcpy(s_transpose, s);
-	gsl_matrix_sub(s, s_transpose);
-	gsl_matrix_free(s_transpose);
-	gsl_matrix* Q_m = logical_not(s);
-	gsl_matrix_free(s);
-	gsl_matrix_mul_elements(Q_m, B);
-	gsl_matrix_free(B);
-	gsl_matrix_scale(Q_m, 1.0 / (2.0 * m));
-	
-	// Q=sum(Q(:));
-	gsl_vector* sum_Q_m = sum(Q_m);
-	gsl_matrix_free(Q_m);
-	double Q = sum(sum_Q_m);
-	gsl_vector_free(sum_Q_m);
-	
-	if (Ci != NULL) *Ci = _Ci; else gsl_vector_free(_Ci);
-	return Q;
+	return Ci;
 }
