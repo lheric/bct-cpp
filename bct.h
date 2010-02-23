@@ -104,12 +104,12 @@ namespace bct {
 	gsl_matrix* randmio_und_connected(const gsl_matrix*, int);
 
 	// Data sets
-	extern double cat_all[95 * 95];
-	extern double cat_ctx[52 * 52];
-	extern double fve30[30 * 30];
-	extern double fve32[32 * 32];
-	extern double macaque47[47 * 47];
-	extern double macaque71[71 * 71];
+	extern const double cat_all[95 * 95];
+	extern const double cat_ctx[52 * 52];
+	extern const double fve30[30 * 30];
+	extern const double fve32[32 * 32];
+	extern const double macaque47[47 * 47];
+	extern const double macaque71[71 * 71];
 	
 	// Matrix status checking
 	enum status {
@@ -152,6 +152,8 @@ namespace bct {
 #ifdef BCT_SWIG
 	PyObject* from_gsl(const gsl_vector*);
 	PyObject* from_gsl(const gsl_matrix*);
+	gsl_vector* to_gslv(const double*, int);
+	gsl_matrix* to_gslm(const double*, int, int);
 	gsl_vector* to_gslv(PyObject*);
 	gsl_matrix* to_gslm(PyObject*);
 #endif

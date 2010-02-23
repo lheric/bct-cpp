@@ -31,6 +31,30 @@ PyObject* bct::from_gsl(const gsl_matrix* m) {
 }
 
 /*
+ * Converts a double* to a gsl_vector*.
+ */
+gsl_vector* bct::to_gslv(const double* array, int size) {
+	gsl_vector* v = gsl_vector_alloc(size);
+	for (int i = 0; i < size; i++) {
+		gsl_vector_set(v, i, array[i]);
+	}
+	return v;
+}
+
+/*
+ * Converts a double* to a gsl_matrix*.
+ */
+gsl_matrix* bct::to_gslm(const double* array, int size1, int size2) {
+	gsl_matrix* m = gsl_matrix_alloc(size1, size2);
+	for (int i = 0; i < size1; i++) {
+		for (int j = 0; j < size2; j++) {
+			gsl_matrix_set(m, i, j, array[i * size2 + j]);
+		}
+	}
+	return m;
+}
+
+/*
  * Converts a Python list to a gsl_vector*.
  */
 gsl_vector* bct::to_gslv(PyObject* list) {
