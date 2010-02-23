@@ -41,3 +41,11 @@ print bct.from_gsl(deg)  # [2.0, 2.0, 2.0]
 bct.gsl_free(m)
 bct.gsl_free(deg)
 }}}
+
+`bct::to_gslv` and `bct::to_gslm` may also be used to convert the cortical connectivity data sets (or any `double*`) to `gsl_matrix*`s:
+{{{
+import bct
+fve30 = bct.to_gslm(bct.fve30, 30, 30)
+bct.density_dir(fve30)  # 0.35747126436781607
+bct.gsl_free(fve30)
+}}}
