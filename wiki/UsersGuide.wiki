@@ -46,6 +46,6 @@ bct.gsl_free(deg)
 {{{
 import bct
 fve30 = bct.to_gslm(bct.fve30, 30, 30)
-bct.density_dir(fve30)  # 0.35747126436781607
+print bct.density_dir(fve30)  # 0.35747126436781607
 bct.gsl_free(fve30)
 }}}
