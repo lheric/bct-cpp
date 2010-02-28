@@ -2,7 +2,7 @@
 #define SORT_H
 
 #include <algorithm>
-#include <cstring>
+#include <cstddef>
 #include <vector>
 
 namespace matlab {

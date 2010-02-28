@@ -13,7 +13,7 @@ gsl_matrix* bct::matching_ind(const gsl_matrix* CIJ) {
 	int N = CIJ->size1;
 	
 	// Mall = zeros(N,N);
-	gsl_matrix* Mall = zeros(N, N);
+	gsl_matrix* Mall = zeros_double(N, N);
 	
 	// for i=1:N-1
 	for (int i = 0; i < N - 1; i++) {
@@ -50,7 +50,7 @@ gsl_matrix* bct::matching_ind_in(const gsl_matrix* CIJ) {
 	int N = CIJ->size1;
 	
 	// Min = zeros(N,N);
-	gsl_matrix* Min = zeros(N, N);
+	gsl_matrix* Min = zeros_double(N, N);
 	
 	// for i=1:N-1
 	for (int i = 0; i < N - 1; i++) {
@@ -80,7 +80,7 @@ gsl_matrix* bct::matching_ind_out(const gsl_matrix* CIJ) {
 	int N = CIJ->size1;
 	
 	// Mout = zeros(N,N);
-	gsl_matrix* Mout = zeros(N, N);
+	gsl_matrix* Mout = zeros_double(N, N);
 	
 	// for i=1:N-1
 	for (int i = 0; i < N - 1; i++) {

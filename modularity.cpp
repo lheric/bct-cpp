@@ -141,7 +141,7 @@ gsl_vector* modularity(const gsl_matrix* B, int N, double m) {
 	using namespace bct;
 	
 	// Ci=ones(N,1);
-	gsl_vector* Ci = ones_vector(N);
+	gsl_vector* Ci = ones_vector_double(N);
 	
 	// cn=1;
 	int cn = 1;
@@ -152,7 +152,7 @@ gsl_vector* modularity(const gsl_matrix* B, int N, double m) {
 	gsl_vector_set(U, 1, 0.0);
 	
 	// ind=1:N;
-	gsl_vector* ind = sequence(0, N - 1);
+	gsl_vector* ind = sequence_double(0, N - 1);
 	
 	// Bg=B;
 	gsl_matrix* Bg = copy(B);
@@ -184,7 +184,7 @@ gsl_vector* modularity(const gsl_matrix* B, int N, double m) {
 		gsl_matrix_free(evec);
 		
 		// S=ones(Ng,1);
-		gsl_matrix* S = ones(Ng, 1);
+		gsl_matrix* S = ones_double(Ng, 1);
 		
 		// S(v1<0)=-1;
 		gsl_vector* v1_lt_0 = compare_elements(v1, fp_less, 0.0);
@@ -209,12 +209,12 @@ gsl_vector* modularity(const gsl_matrix* B, int N, double m) {
 			double qmax = q;
 			
 			// Bg(logical(eye(Ng)))=0;
-			gsl_matrix* eye_Ng = eye(Ng);
+			gsl_matrix* eye_Ng = eye_double(Ng);
 			logical_index_assign(Bg, eye_Ng, 0.0);
 			gsl_matrix_free(eye_Ng);
 			
 			// indg=ones(Ng,1);
-			gsl_matrix* indg = ones(Ng, 1);
+			gsl_matrix* indg = ones_double(Ng, 1);
 			
 			// Sit=S;
 			gsl_matrix* Sit = copy(S);

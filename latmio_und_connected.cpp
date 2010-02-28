@@ -22,11 +22,11 @@ gsl_matrix* bct::latmio_und_connected(const gsl_matrix* R, int ITER) {
 	int n = length(R);
 	
 	// D=zeros(n);
-	gsl_matrix* D = zeros(n);
+	gsl_matrix* D = zeros_double(n);
 	
 	// u=[0 min([mod(1:n-1,n);mod(n-1:-1:1,n)])];
-	gsl_vector* seq1 = sequence(1, n - 1);
-	gsl_vector* seq2 = sequence(n - 1, -1, 1);
+	gsl_vector* seq1 = sequence_double(1, n - 1);
+	gsl_vector* seq2 = sequence_double(n - 1, -1, 1);
 	gsl_matrix* seq1_seq2 = concatenate_columns(seq1, seq2);
 	gsl_vector_free(seq1);
 	gsl_vector_free(seq2);
@@ -39,8 +39,8 @@ gsl_matrix* bct::latmio_und_connected(const gsl_matrix* R, int ITER) {
 	for (int v = 1; v <= (int)std::ceil((double)n / 2.0); v++) {
 		
 		// D(n-v+1,:)=u([v+1:n 1:v]);
-		gsl_vector* u_indices1 = sequence(v, n - 1);
-		gsl_vector* u_indices2 = sequence(0, v - 1);
+		gsl_vector* u_indices1 = sequence_double(v, n - 1);
+		gsl_vector* u_indices2 = sequence_double(0, v - 1);
 		gsl_vector* u_indices = concatenate(u_indices1, u_indices2);
 		gsl_vector_free(u_indices1);
 		gsl_vector_free(u_indices2);
@@ -52,7 +52,7 @@ gsl_matrix* bct::latmio_und_connected(const gsl_matrix* R, int ITER) {
 		// D(v,:)=D(n-v+1,n:-1:1);
 		gsl_vector* D_rows = gsl_vector_alloc(1);
 		gsl_vector_set(D_rows, 0, (double)(n - v));
-		gsl_vector* D_cols = sequence(n - 1, -1, 0);
+		gsl_vector* D_cols = sequence_double(n - 1, -1, 0);
 		gsl_matrix* D_idx = ordinal_index(D, D_rows, D_cols);
 		gsl_vector_free(D_rows);
 		gsl_vector_free(D_cols);
@@ -147,7 +147,7 @@ gsl_matrix* bct::latmio_und_connected(const gsl_matrix* R, int ITER) {
 						gsl_vector* _R_rows = gsl_vector_alloc(2);
 						gsl_vector_set(_R_rows, 0, (double)a);
 						gsl_vector_set(_R_rows, 1, (double)d);
-						gsl_vector* _R_cols = sequence(0, _R->size2 - 1);
+						gsl_vector* _R_cols = sequence_double(0, _R->size2 - 1);
 						gsl_matrix* P = ordinal_index(_R, _R_rows, _R_cols);
 						gsl_vector_free(_R_rows);
 						gsl_vector_free(_R_cols);
@@ -171,7 +171,7 @@ gsl_matrix* bct::latmio_und_connected(const gsl_matrix* R, int ITER) {
 							// P(1,:)=any(R(P(1,:)~=0,:),1);
 							gsl_vector_view P_row_0 = gsl_matrix_row(P, 0);
 							gsl_vector* P_row_0_neq_0 = compare_elements(&P_row_0.vector, fp_not_equal, 0.0);
-							gsl_vector* _R_cols = sequence(0, _R->size2 - 1);
+							gsl_vector* _R_cols = sequence_double(0, _R->size2 - 1);
 							gsl_matrix* _R_idx = log_ord_index(_R, P_row_0_neq_0, _R_cols);
 							gsl_vector_free(P_row_0_neq_0);
 							if (_R_idx != NULL) {

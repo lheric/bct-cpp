@@ -95,7 +95,7 @@ gsl_matrix* bct::randmio_dir_connected(const gsl_matrix* R, int ITER) {
 					gsl_vector* _R_rows = gsl_vector_alloc(2);
 					gsl_vector_set(_R_rows, 0, (double)a);
 					gsl_vector_set(_R_rows, 1, (double)c);
-					gsl_vector* _R_cols = sequence(0, _R->size2 - 1);
+					gsl_vector* _R_cols = sequence_double(0, _R->size2 - 1);
 					gsl_matrix* P = ordinal_index(_R, _R_rows, _R_cols);
 					gsl_vector_free(_R_rows);
 					gsl_vector_free(_R_cols);
@@ -121,7 +121,7 @@ gsl_matrix* bct::randmio_dir_connected(const gsl_matrix* R, int ITER) {
 						// P(1,:)=any(R(P(1,:)~=0,:),1);
 						gsl_vector_view P_row_0 = gsl_matrix_row(P, 0);
 						gsl_vector* P_row_0_neq_0 = compare_elements(&P_row_0.vector, fp_not_equal, 0.0);
-						gsl_vector* _R_cols = sequence(0, _R->size2 - 1);
+						gsl_vector* _R_cols = sequence_double(0, _R->size2 - 1);
 						gsl_matrix* _R_idx = log_ord_index(_R, P_row_0_neq_0, _R_cols);
 						gsl_vector_free(P_row_0_neq_0);
 						if (_R_idx != NULL) {

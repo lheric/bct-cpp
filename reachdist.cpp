@@ -48,7 +48,7 @@ gsl_matrix* bct::reachdist(const gsl_matrix* CIJ, gsl_matrix** D) {
 	gsl_vector_free(od_eq_0);
 	
 	// col = setxor(1:N,id_0);
-	gsl_vector* i_all = sequence(0, N - 1);
+	gsl_vector* i_all = sequence_double(0, N - 1);
 	gsl_vector* col = setxor(i_all, id_0);
 	
 	// row = setxor(1:N,od_0);
@@ -77,7 +77,7 @@ gsl_matrix* bct::reachdist(const gsl_matrix* CIJ, gsl_matrix** D) {
 		gsl_matrix_free(D_eq_N_add_2);
 		
 		// D(:,id_0) = Inf;
-		gsl_vector* D_rows_cols = sequence(0, N - 1);
+		gsl_vector* D_rows_cols = sequence_double(0, N - 1);
 		if (id_0 != NULL) {
 			ordinal_index_assign(*D, D_rows_cols, id_0, GSL_POSINF);
 		}

@@ -36,12 +36,10 @@ objects = \
 	makerandCIJ_dir.o \
 	makerandCIJ_und.o \
 	matching_ind.o \
-	matlab/compare.o \
-	matlab/convert.o \
-	matlab/functions.o \
-	matlab/index.o \
-	matlab/operators.o \
-	matlab/utility.o \
+	matlab/matlab.o \
+	matlab/matlab_double.o \
+	matlab/matlab_float.o \
+	matlab/matlab_long_double.o \
 	modularity.o \
 	motif3funct_bin.o \
 	motif3funct_wei.o \
@@ -78,7 +76,11 @@ install: libbct.a
 		mkdir /usr/local/include/bct; \
 		mkdir /usr/local/include/bct/matlab; \
 	fi
+	cp matlab/macros.h /usr/local/include/bct/matlab
 	cp matlab/matlab.h /usr/local/include/bct/matlab
+	cp matlab/matlab_double.h /usr/local/include/bct/matlab
+	cp matlab/matlab_float.h /usr/local/include/bct/matlab
+	cp matlab/matlab_long_double.h /usr/local/include/bct/matlab
 	cp matlab/sort.h /usr/local/include/bct/matlab
 	cp bct.h /usr/local/include/bct
 	cp libbct.a /usr/local/lib

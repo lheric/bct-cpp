@@ -13,7 +13,7 @@ gsl_vector* bct::clustering_coef_bu(const gsl_matrix* G) {
 	int n = length(G);
 	
 	// C=zeros(n,1);
-	gsl_vector* C = zeros_vector(n);
+	gsl_vector* C = zeros_vector_double(n);
 	
 	// for u=1:n
 	for (int u = 0; u < n; u++) {

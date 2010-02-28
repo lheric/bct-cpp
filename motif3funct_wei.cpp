@@ -20,16 +20,16 @@ gsl_matrix* bct::motif3funct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matrix
 	
 	// I=zeros(13,n);
 	if (I != NULL) {
-		*I = zeros(13, n);
+		*I = zeros_double(13, n);
 	}
 	
 	// Q=zeros(13,n);
 	if (Q != NULL) {
-		*Q = zeros(13, n);
+		*Q = zeros_double(13, n);
 	}
 	
 	// F=zeros(13,n);
-	gsl_matrix* F = zeros(13, n);
+	gsl_matrix* F = zeros_double(13, n);
 	
 	// A=1*(W~=0);
 	gsl_matrix* A = compare_elements(W, fp_not_equal, 0.0);
@@ -110,7 +110,7 @@ gsl_matrix* bct::motif3funct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matrix
 						if (m > 0) {
 							
 							// M=M3(ind,:).*repmat(w,m,1);
-							gsl_vector* M3_cols = sequence(0, M3->size2 - 1);
+							gsl_vector* M3_cols = sequence_double(0, M3->size2 - 1);
 							gsl_matrix* M = log_ord_index(M3, ind, M3_cols);
 							gsl_vector_free(M3_cols);
 							for (int i = 0; i < (int)M->size1; i++) {
@@ -165,7 +165,7 @@ gsl_matrix* bct::motif3funct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matrix
 							int mu = length(idu);
 							
 							// i2=zeros(mu,1);
-							gsl_vector* i2 = zeros_vector(mu);
+							gsl_vector* i2 = zeros_vector_double(mu);
 							
 							// q2=i2; f2=i2;
 							gsl_vector* q2 = copy(i2);
@@ -177,7 +177,7 @@ gsl_matrix* bct::motif3funct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matrix
 								// i2(h)=sum(i(j(h)+1:j(h+1)));
 								int j_h = (int)gsl_vector_get(j, h);
 								int j_h_add_1 = (int)gsl_vector_get(j, h + 1);
-								gsl_vector* iq_indices = sequence(j_h + 1, j_h_add_1);
+								gsl_vector* iq_indices = sequence_double(j_h + 1, j_h_add_1);
 								gsl_vector* i_idx = ordinal_index(i, iq_indices);
 								gsl_vector_set(i2, h, sum(i_idx));
 								gsl_vector_free(i_idx);

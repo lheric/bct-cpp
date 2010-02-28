@@ -11,7 +11,7 @@
 gsl_matrix* bct::makerandCIJ_dir(int N, int K) {
 	
 	// ind = ~eye(N);
-	gsl_matrix* eye_N = eye(N);
+	gsl_matrix* eye_N = eye_double(N);
 	gsl_matrix* ind = logical_not(eye_N);
 	gsl_matrix_free(eye_N);
 	
@@ -28,7 +28,7 @@ gsl_matrix* bct::makerandCIJ_dir(int N, int K) {
 	gsl_vector* irp = i;
 	
 	// CIJ = zeros(N);
-	gsl_matrix* CIJ = zeros(N);
+	gsl_matrix* CIJ = zeros_double(N);
 	
 	// CIJ(irp(1:K)) = 1;
 	gsl_vector_view irp_subv = gsl_vector_subvector(irp, 0, K);

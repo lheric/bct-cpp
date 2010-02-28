@@ -19,11 +19,11 @@ gsl_matrix* bct::motif3funct_bin(const gsl_matrix* W, gsl_vector** f) {
 	
 	// f=zeros(13,1);
 	if (f != NULL) {
-		*f = zeros_vector(13);
+		*f = zeros_vector_double(13);
 	}
 	
 	// F=zeros(13,n);
-	gsl_matrix* F = zeros(13, n);
+	gsl_matrix* F = zeros_double(13, n);
 	
 	// A=1*(W~=0);
 	gsl_matrix* A = compare_elements(W, fp_not_equal, 0.0);
@@ -116,7 +116,7 @@ gsl_matrix* bct::motif3funct_bin(const gsl_matrix* W, gsl_vector** f) {
 							int mu = length(idu);
 							
 							// f2=zeros(mu,1);
-							gsl_vector* f2 = zeros_vector(mu);
+							gsl_vector* f2 = zeros_vector_double(mu);
 							
 							// for h=1:mu
 							for (int h = 0; h < mu; h++) {

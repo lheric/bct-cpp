@@ -29,7 +29,7 @@ gsl_matrix* bct::jdegree(const gsl_matrix* CIJ) {
 	int szJ = (int)max(max_id, max_od) + 1;
 	
 	// J = zeros(szJ);
-	gsl_matrix* J = zeros(szJ);
+	gsl_matrix* J = zeros_double(szJ);
 	
 	// for i=1:N
 	for (int i = 0; i < N; i++) {

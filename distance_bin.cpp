@@ -11,7 +11,7 @@ gsl_matrix* bct::distance_bin(const gsl_matrix* G) {
 	if (G->size1 != G->size2) throw size_exception();
 	
 	// D=eye(length(G));
-	gsl_matrix* D = eye(length(G));
+	gsl_matrix* D = eye_double(length(G));
 	
 	// n=1;
 	int n = 1;
@@ -58,7 +58,7 @@ gsl_matrix* bct::distance_bin(const gsl_matrix* G) {
 	gsl_matrix_free(not_D);
 	
 	// D=D-eye(length(G));
-	gsl_matrix* eye_length_G = eye(length(G));
+	gsl_matrix* eye_length_G = eye_double(length(G));
 	gsl_matrix_sub(D, eye_length_G);
 	gsl_matrix_free(eye_length_G);
 	

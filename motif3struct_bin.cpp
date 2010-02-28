@@ -17,11 +17,11 @@ gsl_matrix* bct::motif3struct_bin(const gsl_matrix* A, gsl_vector** f) {
 	int n = length(A);
 	
 	// F=zeros(13,n);
-	gsl_matrix* F = zeros(13, n);
+	gsl_matrix* F = zeros_double(13, n);
 	
 	// f=zeros(13,1);
 	if (f != NULL) {
-		*f = zeros_vector(13);
+		*f = zeros_vector_double(13);
 	}
 	
 	// As=A|A.';
