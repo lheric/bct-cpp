@@ -1,13 +1,12 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
-#include "matlab.h"
 
 /*
  * Converts a vector to an array.
  */
-void matlab::to_array(const gsl_vector* v, double* array) {
+void matlab::to_array(const VECTOR_TYPE* v, FP_TYPE* array) {
 	for (int i = 0; i < (int)v->size; i++) {
-		array[i] = gsl_vector_get(v, i);
+		array[i] = VECTOR_ID(get)(v, i);
 	}
 }
 
@@ -15,7 +14,7 @@ void matlab::to_array(const gsl_vector* v, double* array) {
  * Converts a vector to a boolean: true if all elements are nonzero, false
  * otherwise.
  */
-bool matlab::to_bool(const gsl_vector* v) {
+bool matlab::to_bool(const VECTOR_TYPE* v) {
 	return all(v) == 1;
 }
 
@@ -23,10 +22,10 @@ bool matlab::to_bool(const gsl_vector* v) {
  * Converts a matrix to a boolean: true if all elements are nonzero, false
  * otherwise.
  */
-bool matlab::to_bool(const gsl_matrix* m) {
-	gsl_vector* all_v = all(m);
+bool matlab::to_bool(const MATRIX_TYPE* m) {
+	VECTOR_TYPE* all_v = all(m);
 	bool ret = all(all_v);
-	gsl_vector_free(all_v);
+	VECTOR_ID(free)(all_v);
 	return ret;
 }
 
@@ -34,12 +33,12 @@ bool matlab::to_bool(const gsl_matrix* m) {
  * Converts a matrix to a vector.  The vector is constructed by consecutively
  * appending columns.
  */
-gsl_vector* matlab::to_vector(const gsl_matrix* m) {
-	gsl_vector* v = gsl_vector_alloc(m->size1 * m->size2);
+VECTOR_TYPE* matlab::to_vector(const MATRIX_TYPE* m) {
+	VECTOR_TYPE* v = VECTOR_ID(alloc)(m->size1 * m->size2);
 	for (int j = 0; j < (int)m->size2; j++) {
 		for (int i = 0; i < (int)m->size1; i++) {
-			double value = gsl_matrix_get(m, i, j);
-			gsl_vector_set(v, j * m->size1 + i, value);
+			FP_TYPE value = MATRIX_ID(get)(m, i, j);
+			VECTOR_ID(set)(v, j * m->size1 + i, value);
 		}
 	}
 	return v;
@@ -48,10 +47,10 @@ gsl_vector* matlab::to_vector(const gsl_matrix* m) {
 /*
  * Converts a vector to a single-column matrix.
  */
-gsl_matrix* matlab::to_column_matrix(const gsl_vector* v) {
-	gsl_matrix* m = gsl_matrix_alloc(v->size, 1);
+MATRIX_TYPE* matlab::to_column_matrix(const VECTOR_TYPE* v) {
+	MATRIX_TYPE* m = MATRIX_ID(alloc)(v->size, 1);
 	for (int i = 0; i < (int)v->size; i++) {
-		gsl_matrix_set(m, i, 0, gsl_vector_get(v, i));
+		MATRIX_ID(set)(m, i, 0, VECTOR_ID(get)(v, i));
 	}
 	return m;
 }
@@ -59,10 +58,10 @@ gsl_matrix* matlab::to_column_matrix(const gsl_vector* v) {
 /*
  * Converts a vector to a single-row matrix.
  */
-gsl_matrix* matlab::to_row_matrix(const gsl_vector* v) {
-	gsl_matrix* m = gsl_matrix_alloc(1, v->size);
+MATRIX_TYPE* matlab::to_row_matrix(const VECTOR_TYPE* v) {
+	MATRIX_TYPE* m = MATRIX_ID(alloc)(1, v->size);
 	for (int i = 0; i < (int)v->size; i++) {
-		gsl_matrix_set(m, 0, i, gsl_vector_get(v, i));
+		MATRIX_ID(set)(m, 0, i, VECTOR_ID(get)(v, i));
 	}
 	return m;
 }
@@ -70,10 +69,10 @@ gsl_matrix* matlab::to_row_matrix(const gsl_vector* v) {
 /*
  * Converts a vector to a permutation.
  */
-gsl_permutation* matlab::to_permutation(const gsl_vector* v) {
+gsl_permutation* matlab::to_permutation(const VECTOR_TYPE* v) {
 	gsl_permutation* p = gsl_permutation_alloc(v->size);
 	for (int i = 0; i < (int)v->size; i++) {
-		p->data[i] = (int)gsl_vector_get(v, i);
+		p->data[i] = (int)VECTOR_ID(get)(v, i);
 	}
 	if (gsl_permutation_valid(p) == 1) {
 		gsl_permutation_free(p);

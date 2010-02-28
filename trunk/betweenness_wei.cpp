@@ -25,11 +25,11 @@ gsl_matrix* bct::edge_betweenness_wei(const gsl_matrix* G, gsl_vector** BC) {
 	
 	// BC=zeros(n,1);
 	if (BC != NULL) {
-		*BC = zeros_vector(n);
+		*BC = zeros_vector_double(n);
 	}
 	
 	// EBC=zeros(n);
-	gsl_matrix* EBC = zeros(n);
+	gsl_matrix* EBC = zeros_double(n);
 	
 	// for u=1:n
 	for (int u = 0; u < n; u++) {
@@ -40,7 +40,7 @@ gsl_matrix* bct::edge_betweenness_wei(const gsl_matrix* G, gsl_vector** BC) {
 		gsl_vector_set(D, u, 0.0);
 		
 		// NP=zeros(1,n); NP(u)=1;
-		gsl_vector* NP = zeros_vector(n);
+		gsl_vector* NP = zeros_vector_double(n);
 		gsl_vector_set(NP, u, 1.0);
 		
 		// S=true(1,n);
@@ -51,7 +51,7 @@ gsl_matrix* bct::edge_betweenness_wei(const gsl_matrix* G, gsl_vector** BC) {
 		gsl_matrix* P = gsl_matrix_calloc(n, n);
 		
 		// Q=zeros(1,n); q=n;
-		gsl_vector* Q = zeros_vector(n);
+		gsl_vector* Q = zeros_vector_double(n);
 		int q = n - 1;
 		
 		// G1=G;
@@ -68,7 +68,7 @@ gsl_matrix* bct::edge_betweenness_wei(const gsl_matrix* G, gsl_vector** BC) {
 			ordinal_index_assign(S, V, 0.0);
 			
 			// G1(:,V)=0;
-			gsl_vector* G1_rows = sequence(0, G1->size1 - 1);
+			gsl_vector* G1_rows = sequence_double(0, G1->size1 - 1);
 			ordinal_index_assign(G1, G1_rows, V, 0.0);
 			gsl_vector_free(G1_rows);
 			
@@ -158,7 +158,7 @@ gsl_matrix* bct::edge_betweenness_wei(const gsl_matrix* G, gsl_vector** BC) {
 		gsl_vector_free(V);
 		
 		// DP=zeros(n,1);
-		gsl_vector* DP = zeros_vector(n);
+		gsl_vector* DP = zeros_vector_double(n);
 		
 		// for w=Q(1:n-1);
 		for (int i_Q = 0; i_Q < n - 1; i_Q++) {

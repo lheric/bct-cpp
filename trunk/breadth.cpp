@@ -20,7 +20,7 @@ gsl_vector* bct::breadth(const gsl_matrix* CIJ, int source, gsl_vector** branch)
 	int black = 2;
 	
 	// color = zeros(1,N);
-	gsl_vector* color = zeros_vector(N);
+	gsl_vector* color = zeros_vector_double(N);
 	
 	// distance = inf*ones(1,N);
 	gsl_vector* distance = gsl_vector_alloc(N);
@@ -28,7 +28,7 @@ gsl_vector* bct::breadth(const gsl_matrix* CIJ, int source, gsl_vector** branch)
 	
 	// branch = zeros(1,N);
 	if (branch != NULL) {
-		*branch = zeros_vector(N);
+		*branch = zeros_vector_double(N);
 	}
 	
 	// color(source) = gray;
@@ -93,7 +93,7 @@ gsl_vector* bct::breadth(const gsl_matrix* CIJ, int source, gsl_vector** branch)
 		}
 		
 		// Q = Q(2:length(Q));
-		gsl_vector* Q_cols = sequence(1, length(Q) - 1);
+		gsl_vector* Q_cols = sequence_double(1, length(Q) - 1);
 		if (Q_cols != NULL) {
 			gsl_vector* temp = ordinal_index(Q, Q_cols);
 			gsl_vector_free(Q);

@@ -23,7 +23,7 @@ gsl_vector* bct::efficiency_local(const gsl_matrix* G) {
 	int N = length(G);
 	
 	// E=zeros(N,1);
-	gsl_vector* E = zeros_vector(N);
+	gsl_vector* E = zeros_vector_double(N);
 	
 	// for u=1:N
 	for (int u = 0; u < N; u++) {
@@ -62,7 +62,7 @@ gsl_matrix* distance_inv(const gsl_matrix* g) {
 	using namespace bct;
 	
 	// D=eye(length(g));
-	gsl_matrix* D = eye(length(g));
+	gsl_matrix* D = eye_double(length(g));
 	
 	// n=1;
 	int n = 1;
@@ -114,7 +114,7 @@ gsl_matrix* distance_inv(const gsl_matrix* g) {
 	D = temp;
 	
 	// D=D-eye(length(g));
-	gsl_matrix* eye_length_g = eye(length(g));
+	gsl_matrix* eye_length_g = eye_double(length(g));
 	gsl_matrix_sub(D, eye_length_g);
 	gsl_matrix_free(eye_length_g);
 	

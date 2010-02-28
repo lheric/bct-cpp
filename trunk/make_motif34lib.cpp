@@ -27,10 +27,10 @@ gsl_matrix* bct::motif3generate(gsl_vector** ID, gsl_vector** N) {
 	gsl_matrix* M = gsl_matrix_calloc(54, 6);
 	
 	// CL=zeros(54,6,'uint8');
-	gsl_matrix* CL = zeros(54, 6);
+	gsl_matrix* CL = zeros_double(54, 6);
 	
 	// cl=zeros(1,6,'uint8');
-	gsl_vector* cl = zeros_vector(6);
+	gsl_vector* cl = zeros_vector_double(6);
 	
 	double i_nondiag[] = { 1, 2, 3, 5, 6, 7 };
 	gsl_vector_view i_nondiag_vv = gsl_vector_view_array(i_nondiag, 6);
@@ -164,10 +164,10 @@ gsl_matrix* bct::motif4generate(gsl_vector** ID, gsl_vector** N) {
 	gsl_matrix* M = gsl_matrix_calloc(3834, 12);
 	
 	// CL=zeros(3834,16,'uint8');
-	gsl_matrix* CL = zeros(3834, 16);
+	gsl_matrix* CL = zeros_double(3834, 16);
 	
 	// cl=zeros(1,16,'uint8');
-	gsl_vector* cl = zeros_vector(16);
+	gsl_vector* cl = zeros_vector_double(16);
 	
 	double i_nondiag[] = { 1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 13, 14 };
 	gsl_vector_view i_nondiag_vv = gsl_vector_view_array(i_nondiag, 12);
@@ -207,7 +207,7 @@ gsl_matrix* bct::motif4generate(gsl_vector** ID, gsl_vector** N) {
 			
 			// v=any(Gs(v~=0,:),1)+v;
 			gsl_vector* v_neq_0 = compare_elements(v, fp_not_equal, 0.0);
-			gsl_vector* Gs_cols = sequence(0, Gs->size2 - 1);
+			gsl_vector* Gs_cols = sequence_double(0, Gs->size2 - 1);
 			gsl_matrix* Gs_idx = log_ord_index(Gs, v_neq_0, Gs_cols);
 			gsl_vector_free(v_neq_0);
 			gsl_vector_free(Gs_cols);

@@ -17,7 +17,7 @@ gsl_matrix* bct::erange(const gsl_matrix* CIJ, double* eta, gsl_matrix** Eshort,
 	int k = nnz(CIJ);
 	
 	// Erange = zeros(N,N);
-	gsl_matrix* Erange = zeros(N, N);
+	gsl_matrix* Erange = zeros_double(N, N);
 	
 	// [i,j] = find(CIJ==1);
 	gsl_matrix* CIJ_eq_1 = compare_elements(CIJ, fp_equal, 1.0);

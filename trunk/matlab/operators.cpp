@@ -1,45 +1,43 @@
 #include <cmath>
-#include <gsl/gsl_blas.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
-#include "matlab.h"
 
 /*
  * Emulates ([v x]) for a row vector or ([v ; x]) for a column vector.
  */
-gsl_vector* matlab::concatenate(const gsl_vector* v, double x) {
+VECTOR_TYPE* matlab::concatenate(const VECTOR_TYPE* v, FP_TYPE x) {
 	if (v == NULL) {
-		gsl_vector* cat_v = gsl_vector_alloc(1);
-		gsl_vector_set(cat_v, 0, x);
+		VECTOR_TYPE* cat_v = VECTOR_ID(alloc)(1);
+		VECTOR_ID(set)(cat_v, 0, x);
 		return cat_v;
 	}
-	gsl_vector* cat_v = gsl_vector_alloc(v->size + 1);
-	gsl_vector_view cat_subv = gsl_vector_subvector(cat_v, 0, v->size);
-	gsl_vector_memcpy(&cat_subv.vector, v);
-	gsl_vector_set(cat_v, v->size, x);
+	VECTOR_TYPE* cat_v = VECTOR_ID(alloc)(v->size + 1);
+	VECTOR_ID(view) cat_subv = VECTOR_ID(subvector)(cat_v, 0, v->size);
+	VECTOR_ID(memcpy)(&cat_subv.vector, v);
+	VECTOR_ID(set)(cat_v, v->size, x);
 	return cat_v;
 }
 
 /*
  * Emulates ([x v]) for a row vector or ([x ; v]) for a column vector.
  */
-gsl_vector* matlab::concatenate(double x, const gsl_vector* v) {
+VECTOR_TYPE* matlab::concatenate(FP_TYPE x, const VECTOR_TYPE* v) {
 	if (v == NULL) {
-		gsl_vector* cat_v = gsl_vector_alloc(1);
-		gsl_vector_set(cat_v, 0, x);
+		VECTOR_TYPE* cat_v = VECTOR_ID(alloc)(1);
+		VECTOR_ID(set)(cat_v, 0, x);
 		return cat_v;
 	}
-	gsl_vector* cat_v = gsl_vector_alloc(v->size + 1);
-	gsl_vector_view cat_subv = gsl_vector_subvector(cat_v, 1, v->size);
-	gsl_vector_memcpy(&cat_subv.vector, v);
-	gsl_vector_set(cat_v, 0, x);
+	VECTOR_TYPE* cat_v = VECTOR_ID(alloc)(v->size + 1);
+	VECTOR_ID(view) cat_subv = VECTOR_ID(subvector)(cat_v, 1, v->size);
+	VECTOR_ID(memcpy)(&cat_subv.vector, v);
+	VECTOR_ID(set)(cat_v, 0, x);
 	return cat_v;
 }
  
 /*
  * Emulates ([v1 v2]) for row vectors or ([v1 ; v2]) for column vectors.
  */
-gsl_vector* matlab::concatenate(const gsl_vector* v1, const gsl_vector* v2) {
+VECTOR_TYPE* matlab::concatenate(const VECTOR_TYPE* v1, const VECTOR_TYPE* v2) {
 	if (v1 == NULL && v2 == NULL) {
 		return NULL;
 	} else if (v1 == NULL) {
@@ -47,18 +45,18 @@ gsl_vector* matlab::concatenate(const gsl_vector* v1, const gsl_vector* v2) {
 	} else if (v2 == NULL) {
 		return copy(v1);
 	}
-	gsl_vector* cat_v = gsl_vector_alloc(v1->size + v2->size);
-	gsl_vector_view cat_subv1 = gsl_vector_subvector(cat_v, 0, v1->size);
-	gsl_vector_view cat_subv2 = gsl_vector_subvector(cat_v, v1->size, v2->size);
-	gsl_vector_memcpy(&cat_subv1.vector, v1);
-	gsl_vector_memcpy(&cat_subv2.vector, v2);
+	VECTOR_TYPE* cat_v = VECTOR_ID(alloc)(v1->size + v2->size);
+	VECTOR_ID(view) cat_subv1 = VECTOR_ID(subvector)(cat_v, 0, v1->size);
+	VECTOR_ID(view) cat_subv2 = VECTOR_ID(subvector)(cat_v, v1->size, v2->size);
+	VECTOR_ID(memcpy)(&cat_subv1.vector, v1);
+	VECTOR_ID(memcpy)(&cat_subv2.vector, v2);
 	return cat_v;
 }
 
 /*
  * Emulates ([v1 ; v2]) for row vectors.
  */
-gsl_matrix* matlab::concatenate_columns(const gsl_vector* v1, const gsl_vector* v2) {
+MATRIX_TYPE* matlab::concatenate_columns(const VECTOR_TYPE* v1, const VECTOR_TYPE* v2) {
 	if (v1 == NULL && v2 == NULL) {
 		return NULL;
 	} else if (v1 == NULL) {
@@ -68,16 +66,16 @@ gsl_matrix* matlab::concatenate_columns(const gsl_vector* v1, const gsl_vector* 
 	} else if (v1->size != v2->size) {
 		return NULL;
 	}
-	gsl_matrix* cat_m = gsl_matrix_alloc(2, v1->size);
-	gsl_matrix_set_row(cat_m, 0, v1);
-	gsl_matrix_set_row(cat_m, 1, v2);
+	MATRIX_TYPE* cat_m = MATRIX_ID(alloc)(2, v1->size);
+	MATRIX_ID(set_row)(cat_m, 0, v1);
+	MATRIX_ID(set_row)(cat_m, 1, v2);
 	return cat_m;
 }
 
 /*
  * Emulates ([m ; v]) for a row vector.
  */
-gsl_matrix* matlab::concatenate_columns(const gsl_matrix* m, const gsl_vector* v) {
+MATRIX_TYPE* matlab::concatenate_columns(const MATRIX_TYPE* m, const VECTOR_TYPE* v) {
 	if (m == NULL && v == NULL) {
 		return NULL;
 	} else if (m == NULL) {
@@ -87,17 +85,17 @@ gsl_matrix* matlab::concatenate_columns(const gsl_matrix* m, const gsl_vector* v
 	} else if (m->size2 != v->size) {
 		return NULL;
 	}
-	gsl_matrix* cat_m = gsl_matrix_alloc(m->size1 + 1, m->size2);
-	gsl_matrix_view cat_subm = gsl_matrix_submatrix(cat_m, 0, 0, m->size1, m->size2);
-	gsl_matrix_memcpy(&cat_subm.matrix, m);
-	gsl_matrix_set_row(cat_m, m->size1, v);
+	MATRIX_TYPE* cat_m = MATRIX_ID(alloc)(m->size1 + 1, m->size2);
+	MATRIX_ID(view) cat_subm = MATRIX_ID(submatrix)(cat_m, 0, 0, m->size1, m->size2);
+	MATRIX_ID(memcpy)(&cat_subm.matrix, m);
+	MATRIX_ID(set_row)(cat_m, m->size1, v);
 	return cat_m;
 }
 
 /*
  * Emulates ([v ; m]) for a row vector.
  */
-gsl_matrix* matlab::concatenate_columns(const gsl_vector* v, const gsl_matrix* m) {
+MATRIX_TYPE* matlab::concatenate_columns(const VECTOR_TYPE* v, const MATRIX_TYPE* m) {
 	if (m == NULL && v == NULL) {
 		return NULL;
 	} else if (m == NULL) {
@@ -107,17 +105,17 @@ gsl_matrix* matlab::concatenate_columns(const gsl_vector* v, const gsl_matrix* m
 	} else if (m->size2 != v->size) {
 		return NULL;
 	}
-	gsl_matrix* cat_m = gsl_matrix_alloc(m->size1 + 1, m->size2);
-	gsl_matrix_set_row(cat_m, 0, v);
-	gsl_matrix_view cat_subm = gsl_matrix_submatrix(cat_m, 1, 0, m->size1, m->size2);
-	gsl_matrix_memcpy(&cat_subm.matrix, m);
+	MATRIX_TYPE* cat_m = MATRIX_ID(alloc)(m->size1 + 1, m->size2);
+	MATRIX_ID(set_row)(cat_m, 0, v);
+	MATRIX_ID(view) cat_subm = MATRIX_ID(submatrix)(cat_m, 1, 0, m->size1, m->size2);
+	MATRIX_ID(memcpy)(&cat_subm.matrix, m);
 	return cat_m;
 }
 
 /*
  * Emulates ([m1 ; m2]).
  */
-gsl_matrix* matlab::concatenate_columns(const gsl_matrix* m1, const gsl_matrix* m2) {
+MATRIX_TYPE* matlab::concatenate_columns(const MATRIX_TYPE* m1, const MATRIX_TYPE* m2) {
 	if (m1 == NULL && m2 == NULL) {
 		return NULL;
 	} else if (m1 == NULL) {
@@ -127,18 +125,18 @@ gsl_matrix* matlab::concatenate_columns(const gsl_matrix* m1, const gsl_matrix* 
 	} else if (m1->size2 != m2->size2) {
 		return NULL;
 	}
-	gsl_matrix* cat_m = gsl_matrix_alloc(m1->size1 + m2->size1, m1->size2);
-	gsl_matrix_view cat_subm1 = gsl_matrix_submatrix(cat_m, 0, 0, m1->size1, m1->size2);
-	gsl_matrix_view cat_subm2 = gsl_matrix_submatrix(cat_m, m1->size1, 0, m2->size1, m2->size2);
-	gsl_matrix_memcpy(&cat_subm1.matrix, m1);
-	gsl_matrix_memcpy(&cat_subm2.matrix, m2);
+	MATRIX_TYPE* cat_m = MATRIX_ID(alloc)(m1->size1 + m2->size1, m1->size2);
+	MATRIX_ID(view) cat_subm1 = MATRIX_ID(submatrix)(cat_m, 0, 0, m1->size1, m1->size2);
+	MATRIX_ID(view) cat_subm2 = MATRIX_ID(submatrix)(cat_m, m1->size1, 0, m2->size1, m2->size2);
+	MATRIX_ID(memcpy)(&cat_subm1.matrix, m1);
+	MATRIX_ID(memcpy)(&cat_subm2.matrix, m2);
 	return cat_m;
 }
 
 /*
  * Emulates ([v1 v2]) for column vectors.
  */
-gsl_matrix* matlab::concatenate_rows(const gsl_vector* v1, const gsl_vector* v2) {
+MATRIX_TYPE* matlab::concatenate_rows(const VECTOR_TYPE* v1, const VECTOR_TYPE* v2) {
 	if (v1 == NULL && v2 == NULL) {
 		return NULL;
 	} else if (v1 == NULL) {
@@ -148,16 +146,16 @@ gsl_matrix* matlab::concatenate_rows(const gsl_vector* v1, const gsl_vector* v2)
 	} else if (v1->size != v2->size) {
 		return NULL;
 	}
-	gsl_matrix* cat_m = gsl_matrix_alloc(v1->size, 2);
-	gsl_matrix_set_col(cat_m, 0, v1);
-	gsl_matrix_set_col(cat_m, 1, v2);
+	MATRIX_TYPE* cat_m = MATRIX_ID(alloc)(v1->size, 2);
+	MATRIX_ID(set_col)(cat_m, 0, v1);
+	MATRIX_ID(set_col)(cat_m, 1, v2);
 	return cat_m;
 }
 
 /*
  * Emulates ([m v]) for a column vector.
  */
-gsl_matrix* matlab::concatenate_rows(const gsl_matrix* m, const gsl_vector* v) {
+MATRIX_TYPE* matlab::concatenate_rows(const MATRIX_TYPE* m, const VECTOR_TYPE* v) {
 	if (m == NULL && v == NULL) {
 		return NULL;
 	} else if (m == NULL) {
@@ -167,17 +165,17 @@ gsl_matrix* matlab::concatenate_rows(const gsl_matrix* m, const gsl_vector* v) {
 	} else if (m->size1 != v->size) {
 		return NULL;
 	}
-	gsl_matrix* cat_m = gsl_matrix_alloc(m->size1, m->size2 + 1);
-	gsl_matrix_view cat_subm = gsl_matrix_submatrix(cat_m, 0, 0, m->size1, m->size2);
-	gsl_matrix_memcpy(&cat_subm.matrix, m);
-	gsl_matrix_set_col(cat_m, m->size2, v);
+	MATRIX_TYPE* cat_m = MATRIX_ID(alloc)(m->size1, m->size2 + 1);
+	MATRIX_ID(view) cat_subm = MATRIX_ID(submatrix)(cat_m, 0, 0, m->size1, m->size2);
+	MATRIX_ID(memcpy)(&cat_subm.matrix, m);
+	MATRIX_ID(set_col)(cat_m, m->size2, v);
 	return cat_m;
 }
 
 /*
  * Emulates ([v m]) for a column vector.
  */
-gsl_matrix* matlab::concatenate_rows(const gsl_vector* v, const gsl_matrix* m) {
+MATRIX_TYPE* matlab::concatenate_rows(const VECTOR_TYPE* v, const MATRIX_TYPE* m) {
 	if (m == NULL && v == NULL) {
 		return NULL;
 	} else if (m == NULL) {
@@ -187,17 +185,17 @@ gsl_matrix* matlab::concatenate_rows(const gsl_vector* v, const gsl_matrix* m) {
 	} else if (m->size1 != v->size) {
 		return NULL;
 	}
-	gsl_matrix* cat_m = gsl_matrix_alloc(m->size1, m->size2 + 1);
-	gsl_matrix_set_col(cat_m, 0, v);
-	gsl_matrix_view cat_subm = gsl_matrix_submatrix(cat_m, 0, 1, m->size1, m->size2);
-	gsl_matrix_memcpy(&cat_subm.matrix, m);
+	MATRIX_TYPE* cat_m = MATRIX_ID(alloc)(m->size1, m->size2 + 1);
+	MATRIX_ID(set_col)(cat_m, 0, v);
+	MATRIX_ID(view) cat_subm = MATRIX_ID(submatrix)(cat_m, 0, 1, m->size1, m->size2);
+	MATRIX_ID(memcpy)(&cat_subm.matrix, m);
 	return cat_m;
 }
 
 /*
  * Emulates ([m1 m2]).
  */
-gsl_matrix* matlab::concatenate_rows(const gsl_matrix* m1, const gsl_matrix* m2) {
+MATRIX_TYPE* matlab::concatenate_rows(const MATRIX_TYPE* m1, const MATRIX_TYPE* m2) {
 	if (m1 == NULL && m2 == NULL) {
 		return NULL;
 	} else if (m1 == NULL) {
@@ -207,77 +205,44 @@ gsl_matrix* matlab::concatenate_rows(const gsl_matrix* m1, const gsl_matrix* m2)
 	} else if (m1->size1 != m2->size1) {
 		return NULL;
 	}
-	gsl_matrix* cat_m = gsl_matrix_alloc(m1->size1, m1->size2 + m2->size2);
-	gsl_matrix_view cat_subm1 = gsl_matrix_submatrix(cat_m, 0, 0, m1->size1, m1->size2);
-	gsl_matrix_view cat_subm2 = gsl_matrix_submatrix(cat_m, 0, m1->size2, m2->size1, m2->size2);
-	gsl_matrix_memcpy(&cat_subm1.matrix, m1);
-	gsl_matrix_memcpy(&cat_subm2.matrix, m2);
+	MATRIX_TYPE* cat_m = MATRIX_ID(alloc)(m1->size1, m1->size2 + m2->size2);
+	MATRIX_ID(view) cat_subm1 = MATRIX_ID(submatrix)(cat_m, 0, 0, m1->size1, m1->size2);
+	MATRIX_ID(view) cat_subm2 = MATRIX_ID(submatrix)(cat_m, 0, m1->size2, m2->size1, m2->size2);
+	MATRIX_ID(memcpy)(&cat_subm1.matrix, m1);
+	MATRIX_ID(memcpy)(&cat_subm2.matrix, m2);
 	return cat_m;
 }
 
 /*
  * Emulates copy assignment.
  */
-gsl_vector* matlab::copy(const gsl_vector* v) {
-	gsl_vector* copy_v = gsl_vector_alloc(v->size);
-	gsl_vector_memcpy(copy_v, v);
+VECTOR_TYPE* matlab::copy(const VECTOR_TYPE* v) {
+	VECTOR_TYPE* copy_v = VECTOR_ID(alloc)(v->size);
+	VECTOR_ID(memcpy)(copy_v, v);
 	return copy_v;
 }
 
 /*
  * Emulates copy assignment.
  */
-gsl_matrix* matlab::copy(const gsl_matrix* m) {
-	gsl_matrix* copy_m = gsl_matrix_alloc(m->size1, m->size2);
-	gsl_matrix_memcpy(copy_m, m);
+MATRIX_TYPE* matlab::copy(const MATRIX_TYPE* m) {
+	MATRIX_TYPE* copy_m = MATRIX_ID(alloc)(m->size1, m->size2);
+	MATRIX_ID(memcpy)(copy_m, m);
 	return copy_m;
-}
-
-/*
- * Emulates (m1 \ m2) = (inv(m1) * m2).
- */
-gsl_matrix* matlab::div_left(const gsl_matrix* m1, const gsl_matrix* m2) {
-	if (m1->size1 != m1->size2 || m2->size1 != m2->size2 || m1->size1 != m2->size1) {
-		return NULL;
-	}
-	gsl_matrix* inv_m1 = inv(m1);
-	gsl_matrix* div_m = mul(inv_m1, m2);
-	gsl_matrix_free(inv_m1);
-	return div_m;
-}
-
-/*
- * Emulates (m1 / m2) = ((inv(m2') * m1')').
- */
-gsl_matrix* matlab::div_right(const gsl_matrix* m1, const gsl_matrix* m2) {
-	if (m1->size1 != m1->size2 || m2->size1 != m2->size2 || m1->size1 != m2->size1) {
-		return NULL;
-	}
-	gsl_matrix* m2_transpose = gsl_matrix_alloc(m2->size2, m2->size1);
-	gsl_matrix_transpose_memcpy(m2_transpose, m2);
-	gsl_matrix* inv_m2_transpose = inv(m2_transpose);
-	gsl_matrix_free(m2_transpose);
-	gsl_matrix* m1_transpose = gsl_matrix_alloc(m1->size2, m1->size1);
-	gsl_matrix_transpose_memcpy(m1_transpose, m1);
-	gsl_matrix* div_m = mul(inv_m2_transpose, m1_transpose);
-	gsl_matrix_free(inv_m2_transpose);
-	gsl_matrix_free(m1_transpose);
-	gsl_matrix_transpose(div_m);
-	return div_m;
 }
 
 /*
  * Emulates (v1 & v2).
  */
-gsl_vector* matlab::logical_and(const gsl_vector* v1, const gsl_vector* v2) {
+VECTOR_TYPE* matlab::logical_and(const VECTOR_TYPE* v1, const VECTOR_TYPE* v2) {
 	if (v1->size != v2->size) {
 		return NULL;
 	}
-	gsl_vector* and_v = gsl_vector_alloc(v1->size);
+	VECTOR_TYPE* and_v = VECTOR_ID(alloc)(v1->size);
 	for (int i = 0; i < (int)v1->size; i++) {
-		bool nz1 = fp_nonzero(gsl_vector_get(v1, i));
-		bool nz2 = fp_nonzero(gsl_vector_get(v2, i));
-		gsl_vector_set(and_v, i, (double)(nz1 && nz2));
+		bool nz1 = fp_nonzero(VECTOR_ID(get)(v1, i));
+		bool nz2 = fp_nonzero(VECTOR_ID(get)(v2, i));
+		VECTOR_ID(set)(and_v, i, (FP_TYPE)(nz1 && nz2));
 	}
 	return and_v;
 }
@@ -285,16 +250,16 @@ gsl_vector* matlab::logical_and(const gsl_vector* v1, const gsl_vector* v2) {
 /*
  * Emulates (m1 & m2).
  */
-gsl_matrix* matlab::logical_and(const gsl_matrix* m1, const gsl_matrix* m2) {
+MATRIX_TYPE* matlab::logical_and(const MATRIX_TYPE* m1, const MATRIX_TYPE* m2) {
 	if (m1->size1 != m2->size1 || m1->size2 != m2->size2) {
 		return NULL;
 	}
-	gsl_matrix* and_m = gsl_matrix_alloc(m1->size1, m1->size2);
+	MATRIX_TYPE* and_m = MATRIX_ID(alloc)(m1->size1, m1->size2);
 	for (int i = 0; i < (int)m1->size1; i++) {
 		for (int j = 0; j < (int)m1->size2; j++) {
-			bool nz1 = fp_nonzero(gsl_matrix_get(m1, i, j));
-			bool nz2 = fp_nonzero(gsl_matrix_get(m2, i, j));
-			gsl_matrix_set(and_m, i, j, (double)(nz1 && nz2));
+			bool nz1 = fp_nonzero(MATRIX_ID(get)(m1, i, j));
+			bool nz2 = fp_nonzero(MATRIX_ID(get)(m2, i, j));
+			MATRIX_ID(set)(and_m, i, j, (FP_TYPE)(nz1 && nz2));
 		}
 	}
 	return and_m;
@@ -303,11 +268,11 @@ gsl_matrix* matlab::logical_and(const gsl_matrix* m1, const gsl_matrix* m2) {
 /*
  * Emulates (~v).
  */
-gsl_vector* matlab::logical_not(const gsl_vector* v) {
-	gsl_vector* not_v = gsl_vector_alloc(v->size);
+VECTOR_TYPE* matlab::logical_not(const VECTOR_TYPE* v) {
+	VECTOR_TYPE* not_v = VECTOR_ID(alloc)(v->size);
 	for (int i = 0; i < (int)v->size; i++) {
-		bool z = fp_zero(gsl_vector_get(v, i));
-		gsl_vector_set(not_v, i, (double)z);
+		bool z = fp_zero(VECTOR_ID(get)(v, i));
+		VECTOR_ID(set)(not_v, i, (FP_TYPE)z);
 	}
 	return not_v;
 }
@@ -315,12 +280,12 @@ gsl_vector* matlab::logical_not(const gsl_vector* v) {
 /*
  * Emulates (~m)
  */
-gsl_matrix* matlab::logical_not(const gsl_matrix* m) {
-	gsl_matrix* not_m = gsl_matrix_alloc(m->size1, m->size2);
+MATRIX_TYPE* matlab::logical_not(const MATRIX_TYPE* m) {
+	MATRIX_TYPE* not_m = MATRIX_ID(alloc)(m->size1, m->size2);
 	for (int i = 0; i < (int)m->size1; i++) {
 		for (int j = 0; j < (int)m->size2; j++) {
-			bool z = fp_zero(gsl_matrix_get(m, i, j));
-			gsl_matrix_set(not_m, i, j, (double)z);
+			bool z = fp_zero(MATRIX_ID(get)(m, i, j));
+			MATRIX_ID(set)(not_m, i, j, (FP_TYPE)z);
 		}
 	}
 	return not_m;
@@ -329,15 +294,15 @@ gsl_matrix* matlab::logical_not(const gsl_matrix* m) {
 /*
  * Emulates (v1 | v2).
  */
-gsl_vector* matlab::logical_or(const gsl_vector* v1, const gsl_vector* v2) {
+VECTOR_TYPE* matlab::logical_or(const VECTOR_TYPE* v1, const VECTOR_TYPE* v2) {
 	if (v1->size != v2->size) {
 		return NULL;
 	}
-	gsl_vector* or_v = gsl_vector_alloc(v1->size);
+	VECTOR_TYPE* or_v = VECTOR_ID(alloc)(v1->size);
 	for (int i = 0; i < (int)v1->size; i++) {
-		bool nz1 = fp_nonzero(gsl_vector_get(v1, i));
-		bool nz2 = fp_nonzero(gsl_vector_get(v2, i));
-		gsl_vector_set(or_v, i, (double)(nz1 || nz2));
+		bool nz1 = fp_nonzero(VECTOR_ID(get)(v1, i));
+		bool nz2 = fp_nonzero(VECTOR_ID(get)(v2, i));
+		VECTOR_ID(set)(or_v, i, (FP_TYPE)(nz1 || nz2));
 	}
 	return or_v;
 }
@@ -345,54 +310,29 @@ gsl_vector* matlab::logical_or(const gsl_vector* v1, const gsl_vector* v2) {
 /*
  * Emulates (m1 | m2).
  */
-gsl_matrix* matlab::logical_or(const gsl_matrix* m1, const gsl_matrix* m2) {
+MATRIX_TYPE* matlab::logical_or(const MATRIX_TYPE* m1, const MATRIX_TYPE* m2) {
 	if (m1->size1 != m2->size1 || m1->size2 != m2->size2) {
 		return NULL;
 	}
-	gsl_matrix* or_m = gsl_matrix_alloc(m1->size1, m1->size2);
+	MATRIX_TYPE* or_m = MATRIX_ID(alloc)(m1->size1, m1->size2);
 	for(int i = 0; i < (int)m1->size1; i++) {
 		for(int j = 0; j < (int)m1->size2; j++) {
-			bool nz1 = fp_nonzero(gsl_matrix_get(m1, i, j));
-			bool nz2 = fp_nonzero(gsl_matrix_get(m2, i, j));
-			gsl_matrix_set(or_m, i, j, (double)(nz1 || nz2));
+			bool nz1 = fp_nonzero(MATRIX_ID(get)(m1, i, j));
+			bool nz2 = fp_nonzero(MATRIX_ID(get)(m2, i, j));
+			MATRIX_ID(set)(or_m, i, j, (FP_TYPE)(nz1 || nz2));
 		}
 	}
 	return or_m;
 }
 
 /*
- * Emulates (m1 * m2).
- */
-gsl_matrix* matlab::mul(const gsl_matrix* m1, const gsl_matrix* m2) {
-	gsl_matrix* mul_m = gsl_matrix_alloc(m1->size1, m2->size2);
-	gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, m1, m2, 0.0, mul_m);
-	return mul_m;
-}
-
-/*
- * Emulates (m ^ power).
- */
-gsl_matrix* matlab::pow(const gsl_matrix* m, int power) {
-	if (m->size1 != m->size2 || power < 1) {
-		return NULL;
-	}
-	gsl_matrix* pow_m = copy(m);
-	for (int i = 2; i <= power; i++) {
-		gsl_matrix* temp_m = mul(pow_m, m);
-		gsl_matrix_free(pow_m);
-		pow_m = temp_m;
-	}
-	return pow_m;
-}
-
-/*
  * Emulates (v .^ power).
  */
-gsl_vector* matlab::pow_elements(const gsl_vector* v, double power) {
-	gsl_vector* pow_v = gsl_vector_alloc(v->size);
+VECTOR_TYPE* matlab::pow_elements(const VECTOR_TYPE* v, FP_TYPE power) {
+	VECTOR_TYPE* pow_v = VECTOR_ID(alloc)(v->size);
 	for (int i = 0; i < (int)v->size; i++) {
-		double value = std::pow(gsl_vector_get(v, i), power);
-		gsl_vector_set(pow_v, i, value);
+		FP_TYPE value = std::pow(VECTOR_ID(get)(v, i), power);
+		VECTOR_ID(set)(pow_v, i, value);
 	}
 	return pow_v;
 }
@@ -400,14 +340,14 @@ gsl_vector* matlab::pow_elements(const gsl_vector* v, double power) {
 /*
  * Emulates (v .^ powers).
  */
-gsl_vector* matlab::pow_elements(const gsl_vector* v, const gsl_vector* powers) {
+VECTOR_TYPE* matlab::pow_elements(const VECTOR_TYPE* v, const VECTOR_TYPE* powers) {
 	if (v->size != powers->size) {
 		return NULL;
 	}
-	gsl_vector* pow_v = gsl_vector_alloc(v->size);
+	VECTOR_TYPE* pow_v = VECTOR_ID(alloc)(v->size);
 	for (int i = 0; i < (int)v->size; i++) {
-		double value = std::pow(gsl_vector_get(v, i), gsl_vector_get(powers, i));
-		gsl_vector_set(pow_v, i, value);
+		FP_TYPE value = std::pow(VECTOR_ID(get)(v, i), VECTOR_ID(get)(powers, i));
+		VECTOR_ID(set)(pow_v, i, value);
 	}
 	return pow_v;
 }
@@ -415,12 +355,12 @@ gsl_vector* matlab::pow_elements(const gsl_vector* v, const gsl_vector* powers) 
 /*
  * Emulates (m .^ power).
  */
-gsl_matrix* matlab::pow_elements(const gsl_matrix* m, double power) {
-	gsl_matrix* pow_m = gsl_matrix_alloc(m->size1, m->size2);
+MATRIX_TYPE* matlab::pow_elements(const MATRIX_TYPE* m, FP_TYPE power) {
+	MATRIX_TYPE* pow_m = MATRIX_ID(alloc)(m->size1, m->size2);
 	for (int i = 0; i < (int)m->size1; i++) {
 		for (int j = 0; j < (int)m->size2; j++) {
-			double value = std::pow(gsl_matrix_get(m, i, j), power);
-			gsl_matrix_set(pow_m, i, j, value);
+			FP_TYPE value = std::pow(MATRIX_ID(get)(m, i, j), power);
+			MATRIX_ID(set)(pow_m, i, j, value);
 		}
 	}
 	return pow_m;
@@ -429,15 +369,15 @@ gsl_matrix* matlab::pow_elements(const gsl_matrix* m, double power) {
 /*
  * Emulates (m .^ powers).
  */
-gsl_matrix* matlab::pow_elements(const gsl_matrix* m, const gsl_matrix* powers) {
+MATRIX_TYPE* matlab::pow_elements(const MATRIX_TYPE* m, const MATRIX_TYPE* powers) {
 	if (m->size1 != powers->size1 || m->size2 != powers->size2) {
 		return NULL;
 	}
-	gsl_matrix* pow_m = gsl_matrix_alloc(m->size1, m->size2);
+	MATRIX_TYPE* pow_m = MATRIX_ID(alloc)(m->size1, m->size2);
 	for (int i = 0; i < (int)m->size1; i++) {
 		for (int j = 0; j < (int)m->size2; j++) {
-			double value = std::pow(gsl_matrix_get(m, i, j), gsl_matrix_get(powers, i, j));
-			gsl_matrix_set(pow_m, i, j, value);
+			FP_TYPE value = std::pow(MATRIX_ID(get)(m, i, j), MATRIX_ID(get)(powers, i, j));
+			MATRIX_ID(set)(pow_m, i, j, value);
 		}
 	}
 	return pow_m;
@@ -446,21 +386,21 @@ gsl_matrix* matlab::pow_elements(const gsl_matrix* m, const gsl_matrix* powers) 
 /* 
  * Emulates (start:end).
  */
-gsl_vector* matlab::sequence(int start, int end) {
-	return sequence(start, 1, end);
+VECTOR_TYPE* matlab::FP_ID(sequence)(int start, int end) {
+	return FP_ID(sequence)(start, 1, end);
 }
 
 /*
  * Emulates (start:step:end).
  */
-gsl_vector* matlab::sequence(int start, int step, int end) {
+VECTOR_TYPE* matlab::FP_ID(sequence)(int start, int step, int end) {
 	int n_seq = (end - start) / step + 1;
 	if (n_seq <= 0) {
 		return NULL;
 	}
-	gsl_vector* seq_v = gsl_vector_alloc(n_seq);
+	VECTOR_TYPE* seq_v = VECTOR_ID(alloc)(n_seq);
 	for (int i = 0, value = start; i < n_seq; i++, value += step) {
-		gsl_vector_set(seq_v, i, value);
+		VECTOR_ID(set)(seq_v, i, value);
 	}
 	return seq_v;
 }

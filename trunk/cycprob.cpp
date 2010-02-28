@@ -9,7 +9,7 @@
 gsl_vector* bct::cycprob_fcyc(const std::vector<gsl_matrix*>& Pq) {
 	
 	// fcyc = zeros(1,size(Pq,3));
-	gsl_vector* fcyc = zeros_vector(Pq.size());
+	gsl_vector* fcyc = zeros_vector_double(Pq.size());
 	
 	// for q=1:size(Pq,3)
 	for (int q = 1; q < (int)Pq.size(); q++) {
@@ -37,7 +37,7 @@ gsl_vector* bct::cycprob_fcyc(const std::vector<gsl_matrix*>& Pq) {
 gsl_vector* bct::cycprob_pcyc(const std::vector<gsl_matrix*>& Pq) {
 	
 	// pcyc = zeros(1,size(Pq,3));
-	gsl_vector* pcyc = zeros_vector(Pq.size());
+	gsl_vector* pcyc = zeros_vector_double(Pq.size());
 	
 	// for q=2:size(Pq,3)
 	for (int q = 2; q < (int)Pq.size(); q++) {

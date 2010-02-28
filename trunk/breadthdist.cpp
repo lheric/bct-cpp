@@ -13,7 +13,7 @@ gsl_matrix* bct::breadthdist(const gsl_matrix* CIJ, gsl_matrix** D) {
 	int N = CIJ->size1;
 	
 	// D = zeros(N);
-	gsl_matrix* _D = zeros(N);
+	gsl_matrix* _D = zeros_double(N);
 	
 	// for i=1:N
 	for (int i = 0; i < N; i++) {

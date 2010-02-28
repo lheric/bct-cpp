@@ -9,7 +9,7 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_permutation.h>
 #include <gsl/gsl_vector.h>
-#include "matlab/matlab.h"
+#include "matlab/matlab_double.h"
 #include <vector>
 
 #ifdef BCT_SWIG

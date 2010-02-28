@@ -21,16 +21,16 @@ gsl_matrix* bct::motif3struct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matri
 	
 	// I=zeros(13,n);
 	if (I != NULL) {
-		*I = zeros(13, n);
+		*I = zeros_double(13, n);
 	}
 	
 	// Q=zeros(13,n);
 	if (Q != NULL) {
-		*Q = zeros(13, n);
+		*Q = zeros_double(13, n);
 	}
 	
 	// F=zeros(13,n);
-	gsl_matrix* F = zeros(13, n);
+	gsl_matrix* F = zeros_double(13, n);
 	
 	// A=1*(W~=0);
 	gsl_matrix* A = compare_elements(W, fp_not_equal, 0.0);

@@ -1,42 +1,41 @@
 #include <cmath>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
-#include "matlab.h"
 
 /*
  * Compares two floating-point numbers.
  */
-int matlab::fp_compare(double x, double y) {
+int matlab::fp_compare(FP_TYPE x, FP_TYPE y) {
 	
 	// gsl_fcmp is not suitable for testing whether a value is approximately zero
 	if (fp_zero(x) && fp_zero(y)) {
 		return 0;
 	} else {
-		return gsl_fcmp(x, y, EPSILON);
+		return gsl_fcmp((double)x, (double)y, EPSILON);
 	}
 }
 
-bool matlab::fp_zero(double x) { return std::abs(x) < EPSILON; }
-bool matlab::fp_nonzero(double x) { return std::abs(x) > EPSILON; }
-bool matlab::fp_positive(double x) { return x > EPSILON; }
-bool matlab::fp_negative(double x) { return x < -EPSILON; }
-bool matlab::fp_equal(double x, double y) { return fp_compare(x, y) == 0; }
-bool matlab::fp_not_equal(double x, double y) { return fp_compare(x, y) != 0; }
-bool matlab::fp_less(double x, double y) { return fp_compare(x, y) == -1; }
-bool matlab::fp_less_or_equal(double x, double y) { return fp_compare(x, y) <= 0; }
-bool matlab::fp_greater(double x, double y) { return fp_compare(x, y) == 1; }
-bool matlab::fp_greater_or_equal(double x, double y) { return fp_compare(x, y) >= 0; }
+bool matlab::fp_zero(FP_TYPE x) { return std::abs(x) < EPSILON; }
+bool matlab::fp_nonzero(FP_TYPE x) { return std::abs(x) > EPSILON; }
+bool matlab::fp_positive(FP_TYPE x) { return x > EPSILON; }
+bool matlab::fp_negative(FP_TYPE x) { return x < -EPSILON; }
+bool matlab::fp_equal(FP_TYPE x, FP_TYPE y) { return fp_compare(x, y) == 0; }
+bool matlab::fp_not_equal(FP_TYPE x, FP_TYPE y) { return fp_compare(x, y) != 0; }
+bool matlab::fp_less(FP_TYPE x, FP_TYPE y) { return fp_compare(x, y) == -1; }
+bool matlab::fp_less_or_equal(FP_TYPE x, FP_TYPE y) { return fp_compare(x, y) <= 0; }
+bool matlab::fp_greater(FP_TYPE x, FP_TYPE y) { return fp_compare(x, y) == 1; }
+bool matlab::fp_greater_or_equal(FP_TYPE x, FP_TYPE y) { return fp_compare(x, y) >= 0; }
 
 /*
  * Compares two vectors lexicographically, returning -1, 0, or 1 if the first
  * vector is less than, equal to, or greater than the second.
  */
-int matlab::compare_vectors(const gsl_vector* v1, const gsl_vector* v2) {
+int matlab::compare_vectors(const VECTOR_TYPE* v1, const VECTOR_TYPE* v2) {
 	for (int i = 0; i < (int)v1->size; i++) {
 		if (i >= (int)v2->size) {
 			return 1;
 		}
-		int result = fp_compare(gsl_vector_get(v1, i), gsl_vector_get(v2, i));
+		int result = fp_compare((FP_TYPE)VECTOR_ID(get)(v1, i), (FP_TYPE)VECTOR_ID(get)(v2, i));
 		if (result != 0) {
 			return result;
 		}
@@ -52,7 +51,7 @@ int matlab::compare_vectors(const gsl_vector* v1, const gsl_vector* v2) {
  * Returns whether the first vector comes before the second vector in a strict
  * weak ordering.
  */
-bool matlab::vector_less(gsl_vector* v1, gsl_vector* v2) {
+bool matlab::vector_less(VECTOR_TYPE* v1, VECTOR_TYPE* v2) {
 	return compare_vectors(v1, v2) == -1;
 }
 
@@ -60,14 +59,14 @@ bool matlab::vector_less(gsl_vector* v1, gsl_vector* v2) {
  * Compares two matrices lexicographically, returning -1, 0, or 1 if the first
  * matrix is less than, equal to, or greater than the second.
  */
-int matlab::compare_matrices(const gsl_matrix* m1, const gsl_matrix* m2) {
+int matlab::compare_matrices(const MATRIX_TYPE* m1, const MATRIX_TYPE* m2) {
 	int size1 = (int)m1->size1 * (int)m1->size2;
 	int size2 = (int)m2->size1 * (int)m2->size2;
 	for (int i = 0; i < size1; i++) {
 		if (i >= size2) {
 			return 1;
 		}
-		int result = fp_compare(ordinal_index(m1, i), ordinal_index(m2, i));
+		int result = fp_compare((FP_TYPE)ordinal_index(m1, i), (FP_TYPE)ordinal_index(m2, i));
 		if (result != 0) {
 			return result;
 		}
@@ -83,18 +82,18 @@ int matlab::compare_matrices(const gsl_matrix* m1, const gsl_matrix* m2) {
  * Returns whether the first matrix comes before the second matrix in a strict
  * weak ordering.
  */
-bool matlab::matrix_less(gsl_matrix* m1, gsl_matrix* m2) {
+bool matlab::matrix_less(MATRIX_TYPE* m1, MATRIX_TYPE* m2) {
 	return compare_matrices(m1, m2) == -1;
 }
 
 /*
  * Emulates (v op x), where op is a binary comparison operator.
  */
-gsl_vector* matlab::compare_elements(const gsl_vector* v, fp_cmp_fn compare, double x) {
-	gsl_vector* cmp_v = gsl_vector_alloc(v->size);
+VECTOR_TYPE* matlab::compare_elements(const VECTOR_TYPE* v, FP_ID(fp_cmp_fn) compare, FP_TYPE x) {
+	VECTOR_TYPE* cmp_v = VECTOR_ID(alloc)(v->size);
 	for (int i = 0; i < (int)v->size; i++) {
-		double value = gsl_vector_get(v, i);
-		gsl_vector_set(cmp_v, i, (double)compare(value, x));
+		FP_TYPE value = VECTOR_ID(get)(v, i);
+		VECTOR_ID(set)(cmp_v, i, (FP_TYPE)compare((FP_TYPE)value, (FP_TYPE)x));
 	}
 	return cmp_v;
 }
@@ -102,15 +101,15 @@ gsl_vector* matlab::compare_elements(const gsl_vector* v, fp_cmp_fn compare, dou
 /*
  * Emulates (v1 op v2), where op is a binary comparison operator.
  */
-gsl_vector* matlab::compare_elements(const gsl_vector* v1, fp_cmp_fn compare, const gsl_vector* v2) {
+VECTOR_TYPE* matlab::compare_elements(const VECTOR_TYPE* v1, FP_ID(fp_cmp_fn) compare, const VECTOR_TYPE* v2) {
 	if (v1->size != v2->size) {
 		return NULL;
 	}
-	gsl_vector* cmp_v = gsl_vector_alloc(v1->size);
+	VECTOR_TYPE* cmp_v = VECTOR_ID(alloc)(v1->size);
 	for (int i = 0; i < (int)v1->size; i++) {
-		double value1 = gsl_vector_get(v1, i);
-		double value2 = gsl_vector_get(v2, i);
-		gsl_vector_set(cmp_v, i, (double)compare(value1, value2));
+		FP_TYPE value1 = VECTOR_ID(get)(v1, i);
+		FP_TYPE value2 = VECTOR_ID(get)(v2, i);
+		VECTOR_ID(set)(cmp_v, i, (FP_TYPE)compare((FP_TYPE)value1, (FP_TYPE)value2));
 	}
 	return cmp_v;
 }
@@ -118,12 +117,12 @@ gsl_vector* matlab::compare_elements(const gsl_vector* v1, fp_cmp_fn compare, co
 /*
  * Emulates (m op x), where op is a binary comparison operator.
  */
-gsl_matrix* matlab::compare_elements(const gsl_matrix* m, fp_cmp_fn compare, double x) {
-	gsl_matrix* cmp_m = gsl_matrix_alloc(m->size1, m->size2);
+MATRIX_TYPE* matlab::compare_elements(const MATRIX_TYPE* m, FP_ID(fp_cmp_fn) compare, FP_TYPE x) {
+	MATRIX_TYPE* cmp_m = MATRIX_ID(alloc)(m->size1, m->size2);
 	for (int i = 0; i < (int)m->size1; i++) {
 		for (int j = 0; j < (int)m->size2; j++) {
-			double value = gsl_matrix_get(m, i, j);
-			gsl_matrix_set(cmp_m, i, j, (double)compare(value, x));
+			FP_TYPE value = MATRIX_ID(get)(m, i, j);
+			MATRIX_ID(set)(cmp_m, i, j, (FP_TYPE)compare((FP_TYPE)value, (FP_TYPE)x));
 		}
 	}
 	return cmp_m;
@@ -132,16 +131,16 @@ gsl_matrix* matlab::compare_elements(const gsl_matrix* m, fp_cmp_fn compare, dou
 /*
  * Emulates (m1 op m2), where op is a binary comparison operator.
  */
-gsl_matrix* matlab::compare_elements(const gsl_matrix* m1, fp_cmp_fn compare, const gsl_matrix* m2) {
+MATRIX_TYPE* matlab::compare_elements(const MATRIX_TYPE* m1, FP_ID(fp_cmp_fn) compare, const MATRIX_TYPE* m2) {
 	if (m1->size1 != m2->size1 || m1->size2 != m2->size2) {
 		return NULL;
 	}
-	gsl_matrix* cmp_m = gsl_matrix_alloc(m1->size1, m1->size2);
+	MATRIX_TYPE* cmp_m = MATRIX_ID(alloc)(m1->size1, m1->size2);
 	for (int i = 0; i < (int)m1->size1; i++) {
 		for (int j = 0; j < (int)m1->size2; j++) {
-			double value1 = gsl_matrix_get(m1, i, j);
-			double value2 = gsl_matrix_get(m2, i, j);
-			gsl_matrix_set(cmp_m, i, j, (double)compare(value1, value2));
+			FP_TYPE value1 = MATRIX_ID(get)(m1, i, j);
+			FP_TYPE value2 = MATRIX_ID(get)(m2, i, j);
+			MATRIX_ID(set)(cmp_m, i, j, (FP_TYPE)compare((FP_TYPE)value1, (FP_TYPE)value2));
 		}
 	}
 	return cmp_m;

@@ -28,18 +28,18 @@ std::vector<gsl_matrix*> bct::findpaths(const gsl_matrix* CIJ, const gsl_vector*
 	// Pq = zeros(N,N,qmax);
 	std::vector<gsl_matrix*> Pq(qmax + 1);
 	for (int i = 1; i <= qmax; i++) {
-		Pq[i] = zeros(N, N);
+		Pq[i] = zeros_double(N, N);
 	}
 	
 	// util = zeros(N,qmax);
 	if (util != NULL) {
-		*util = zeros(N, qmax + 1);
+		*util = zeros_double(N, qmax + 1);
 	}
 	
 	// q = 1;
 	int q = 1;
 	
-	gsl_vector* _CIJ_cols = sequence(0, N - 1);
+	gsl_vector* _CIJ_cols = sequence_double(0, N - 1);
 	gsl_matrix* _CIJ_idx = ordinal_index(_CIJ, sources, _CIJ_cols);
 	gsl_vector_free(_CIJ_cols);
 	gsl_matrix* _CIJ_idx_ij = find_ij(_CIJ_idx);
@@ -57,7 +57,7 @@ std::vector<gsl_matrix*> bct::findpaths(const gsl_matrix* CIJ, const gsl_vector*
 	// util(1:N,q) = util(1:N,q)+hist(reshape(pths,1,size(pths,1)*size(pths,2)),1:N)';
 	if (util != NULL) {
 		gsl_vector* reshape_pths = to_vector(pths);
-		gsl_vector* centers = sequence(0, N - 1);
+		gsl_vector* centers = sequence_double(0, N - 1);
 		gsl_vector* hist_reshape_pths = hist(reshape_pths, centers);
 		gsl_vector_free(reshape_pths);
 		gsl_vector_free(centers);
@@ -124,7 +124,7 @@ std::vector<gsl_matrix*> bct::findpaths(const gsl_matrix* CIJ, const gsl_vector*
 						int j = (int)gsl_vector_get(nendp, jj);
 						
 						// pb_temp = pb(sum(j==pths(2:q,pb),1)==0);
-						gsl_vector* pths_rows = sequence(1, q - 1);
+						gsl_vector* pths_rows = sequence_double(1, q - 1);
 						gsl_matrix* pths_idx = ordinal_index(pths, pths_rows, pb);
 						gsl_vector_free(pths_rows);
 						gsl_matrix* pths_idx_eq_j = compare_elements(pths_idx, fp_equal, (double)j);
@@ -138,7 +138,7 @@ std::vector<gsl_matrix*> bct::findpaths(const gsl_matrix* CIJ, const gsl_vector*
 						if (pb_temp != NULL) {
 						
 							// npths(:,npthscnt+1:npthscnt+length(pb_temp)) = [pths(:,pb_temp)' ones(length(pb_temp),1)*j]';
-							pths_rows = sequence(0, pths->size1 - 1);
+							pths_rows = sequence_double(0, pths->size1 - 1);
 							pths_idx = ordinal_index(pths, pths_rows, pb_temp);
 							gsl_vector_free(pths_rows);
 							gsl_matrix* temp = gsl_matrix_alloc(pths_idx->size1 + 1, pths_idx->size2);
@@ -151,7 +151,7 @@ std::vector<gsl_matrix*> bct::findpaths(const gsl_matrix* CIJ, const gsl_vector*
 							gsl_matrix_set_row(pths_idx, pths_idx->size1 - 1, last_row);
 							gsl_vector_free(last_row);
 							for (int i = 0; i < length(pb_temp); i++) {
-								npths_v.push_back(zeros_vector(q + 1));
+								npths_v.push_back(zeros_vector_double(q + 1));
 								gsl_vector_view pths_idx_col_i = gsl_matrix_column(pths_idx, i);
 								gsl_vector_view npths_v_i_subv = gsl_vector_subvector(npths_v[npthscnt + i], 0, pths_idx->size1);
 								gsl_vector_memcpy(&npths_v_i_subv.vector, &pths_idx_col_i.vector);
@@ -165,7 +165,7 @@ std::vector<gsl_matrix*> bct::findpaths(const gsl_matrix* CIJ, const gsl_vector*
 							gsl_vector_view pths_row_0 = gsl_matrix_row(pths, 0);
 							gsl_vector* pths_row_0_idx = ordinal_index(&pths_row_0.vector, pb_temp);
 							gsl_vector_free(pb_temp);
-							gsl_vector* centers = sequence(0, N - 1);
+							gsl_vector* centers = sequence_double(0, N - 1);
 							gsl_vector* hist_pths_idx = hist(pths_row_0_idx, centers);
 							gsl_vector_free(pths_row_0_idx);
 							gsl_vector_free(centers);
@@ -208,7 +208,7 @@ std::vector<gsl_matrix*> bct::findpaths(const gsl_matrix* CIJ, const gsl_vector*
 		// util(1:N,q) = util(1:N,q) + hist(reshape(npths,1,size(npths,1)*size(npths,2)),1:N)' - diag(Pq(:,:,q));
 		if (util != NULL) {
 			gsl_vector* reshape_npths = to_vector(npths);
-			gsl_vector* centers = sequence(0, N - 1);
+			gsl_vector* centers = sequence_double(0, N - 1);
 			gsl_vector* hist_reshape_npths = hist(reshape_npths, centers);
 			gsl_vector_free(reshape_npths);
 			gsl_vector_free(centers);
@@ -220,7 +220,7 @@ std::vector<gsl_matrix*> bct::findpaths(const gsl_matrix* CIJ, const gsl_vector*
 		}
 		
 		// pths = npths(:,npths(1,:)~=npths(q+1,:));
-		gsl_vector* npths_rows = sequence(0, npths->size1 - 1);
+		gsl_vector* npths_rows = sequence_double(0, npths->size1 - 1);
 		gsl_vector_view npths_row_0 = gsl_matrix_row(npths, 0);
 		gsl_vector_view npths_row_q = gsl_matrix_row(npths, q);
 		gsl_vector* npths_cols = compare_elements(&npths_row_0.vector, fp_not_equal, &npths_row_q.vector);
