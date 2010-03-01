@@ -20,8 +20,6 @@ namespace matlab {
 	// Operators
 	gsl_matrix* div_left(const gsl_matrix*, const gsl_matrix*);
 	gsl_matrix* div_right(const gsl_matrix*, const gsl_matrix*);
-	gsl_matrix* mul(const gsl_matrix*, const gsl_matrix*);
-	gsl_matrix* pow(const gsl_matrix*, int);
 #endif
 	
 	// Functions
@@ -93,6 +91,8 @@ namespace matlab {
 	MATRIX_TYPE* logical_not(const MATRIX_TYPE*);
 	VECTOR_TYPE* logical_or(const VECTOR_TYPE*, const VECTOR_TYPE*);
 	MATRIX_TYPE* logical_or(const MATRIX_TYPE*, const MATRIX_TYPE*);
+	MATRIX_TYPE* mul(const MATRIX_TYPE*, const MATRIX_TYPE*);
+	MATRIX_TYPE* pow(const MATRIX_TYPE*, int);
 	VECTOR_TYPE* pow_elements(const VECTOR_TYPE*, FP_TYPE);
 	VECTOR_TYPE* pow_elements(const VECTOR_TYPE*, const VECTOR_TYPE*);
 	MATRIX_TYPE* pow_elements(const MATRIX_TYPE*, FP_TYPE);

@@ -10,6 +10,8 @@
 #include <gsl/gsl_permutation.h>
 #include <gsl/gsl_vector.h>
 #include "matlab/matlab_double.h"
+#include "matlab/matlab_float.h"
+#include "matlab/matlab_long_double.h"
 #include <vector>
 
 #ifdef BCT_SWIG
