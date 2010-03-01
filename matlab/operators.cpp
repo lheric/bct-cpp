@@ -1,4 +1,5 @@
 #include <cmath>
+#include <gsl/gsl_blas.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 
@@ -323,6 +324,66 @@ MATRIX_TYPE* matlab::logical_or(const MATRIX_TYPE* m1, const MATRIX_TYPE* m2) {
 		}
 	}
 	return or_m;
+}
+
+/*
+ * Emulates (m1 * m2).
+ */
+#ifdef GSL_FLOAT
+gsl_matrix_float* matlab::mul(const gsl_matrix_float* m1, const gsl_matrix_float* m2) {
+	if (m1->size2 != m2->size1) {
+		return NULL;
+	}
+	gsl_matrix_float* mul_m = gsl_matrix_float_alloc(m1->size1, m2->size2);
+	gsl_blas_sgemm(CblasNoTrans, CblasNoTrans, 1.0, m1, m2, 0.0, mul_m);
+	return mul_m;
+}
+#endif
+#ifdef GSL_DOUBLE
+gsl_matrix* matlab::mul(const gsl_matrix* m1, const gsl_matrix* m2) {
+	if (m1->size2 != m2->size1) {
+		return NULL;
+	}
+	gsl_matrix* mul_m = gsl_matrix_alloc(m1->size1, m2->size2);
+	gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, m1, m2, 0.0, mul_m);
+	return mul_m;
+}
+#endif
+#ifdef GSL_LONG_DOUBLE
+gsl_matrix_long_double* matlab::mul(const gsl_matrix_long_double* m1, const gsl_matrix_long_double* m2) {
+	if (m1->size2 != m2->size1) {
+		return NULL;
+	}
+	gsl_matrix_long_double* mul_m = gsl_matrix_long_double_alloc(m1->size1, m2->size2);
+	for (int i = 0; i < (int)m1->size1; i++) {
+		gsl_vector_long_double_const_view row = gsl_matrix_long_double_const_row(m1, i);
+		for (int j = 0; j < (int)m2->size2; j++) {
+			gsl_vector_long_double_const_view col = gsl_matrix_long_double_const_column(m2, j);
+			long double value = 0.0L;
+			for (int k = 0; k < (int)m1->size2; k++) {
+				value += gsl_vector_long_double_get(&row.vector, k) * gsl_vector_long_double_get(&col.vector, k);
+			}
+			gsl_matrix_long_double_set(mul_m, i, j, value);
+		}
+	}
+	return mul_m;
+}
+#endif
+
+/*
+ * Emulates (m ^ power).
+ */
+MATRIX_TYPE* matlab::pow(const MATRIX_TYPE* m, int power) {
+	if (m->size1 != m->size2 || power < 1) {
+		return NULL;
+	}
+	MATRIX_TYPE* pow_m = copy(m);
+	for (int i = 2; i <= power; i++) {
+		MATRIX_TYPE* temp_m = mul(pow_m, m);
+		MATRIX_ID(free)(pow_m);
+		pow_m = temp_m;
+	}
+	return pow_m;
 }
 
 /*

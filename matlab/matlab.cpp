@@ -4,7 +4,6 @@
 #include <cmath>
 #include <cstring>
 #include <ctime>
-#include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_randist.h>
@@ -117,29 +116,4 @@ gsl_matrix* matlab::div_right(const gsl_matrix* m1, const gsl_matrix* m2) {
 	gsl_matrix_free(m1_transpose);
 	gsl_matrix_transpose(div_m);
 	return div_m;
-}
-
-/*
- * Emulates (m1 * m2).
- */
-gsl_matrix* matlab::mul(const gsl_matrix* m1, const gsl_matrix* m2) {
-	gsl_matrix* mul_m = gsl_matrix_alloc(m1->size1, m2->size2);
-	gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, m1, m2, 0.0, mul_m);
-	return mul_m;
-}
-
-/*
- * Emulates (m ^ power).
- */
-gsl_matrix* matlab::pow(const gsl_matrix* m, int power) {
-	if (m->size1 != m->size2 || power < 1) {
-		return NULL;
-	}
-	gsl_matrix* pow_m = copy(m);
-	for (int i = 2; i <= power; i++) {
-		gsl_matrix* temp_m = mul(pow_m, m);
-		gsl_matrix_free(pow_m);
-		pow_m = temp_m;
-	}
-	return pow_m;
 }
