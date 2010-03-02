@@ -2,6 +2,7 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_permutation.h>
 #include <gsl/gsl_vector.h>
+#include <limits>
 #include "sort.h"
 
 namespace matlab {
@@ -9,7 +10,6 @@ namespace matlab {
 	// Precision-independent definitions
 #ifndef MATLAB_H
 #define MATLAB_H
-	const double EPSILON = 1e-6;
 	
 	// Functions
 	void dec2bin(int, char*);
@@ -21,6 +21,8 @@ namespace matlab {
 	gsl_matrix* div_left(const gsl_matrix*, const gsl_matrix*);
 	gsl_matrix* div_right(const gsl_matrix*, const gsl_matrix*);
 #endif
+	
+	const FP_TYPE FP_ID(epsilon) = std::numeric_limits<FP_TYPE>::epsilon();
 	
 	// Functions
 	VECTOR_TYPE* abs(const VECTOR_TYPE*);

@@ -6,19 +6,28 @@
  * Compares two floating-point numbers.
  */
 int matlab::fp_compare(FP_TYPE x, FP_TYPE y) {
-	
-	// gsl_fcmp is not suitable for testing whether a value is approximately zero
 	if (fp_zero(x) && fp_zero(y)) {
 		return 0;
 	} else {
-		return gsl_fcmp((double)x, (double)y, EPSILON);
+		int exponent;
+		FP_TYPE max = std::abs(x) > std::abs(y) ? x : y;
+		std::frexp(max, &exponent);
+		FP_TYPE delta = std::ldexp(FP_ID(epsilon), exponent);
+		FP_TYPE difference = x - y;
+		if (difference > delta) {
+			return 1;
+		} else if (difference < -delta) {
+			return -1;
+		} else {
+			return 0;
+		}
 	}
 }
 
-bool matlab::fp_zero(FP_TYPE x) { return std::abs(x) < EPSILON; }
-bool matlab::fp_nonzero(FP_TYPE x) { return std::abs(x) > EPSILON; }
-bool matlab::fp_positive(FP_TYPE x) { return x > EPSILON; }
-bool matlab::fp_negative(FP_TYPE x) { return x < -EPSILON; }
+bool matlab::fp_zero(FP_TYPE x) { return std::abs(x) < FP_ID(epsilon); }
+bool matlab::fp_nonzero(FP_TYPE x) { return std::abs(x) > FP_ID(epsilon); }
+bool matlab::fp_positive(FP_TYPE x) { return x > FP_ID(epsilon); }
+bool matlab::fp_negative(FP_TYPE x) { return x < -FP_ID(epsilon); }
 bool matlab::fp_equal(FP_TYPE x, FP_TYPE y) { return fp_compare(x, y) == 0; }
 bool matlab::fp_not_equal(FP_TYPE x, FP_TYPE y) { return fp_compare(x, y) != 0; }
 bool matlab::fp_less(FP_TYPE x, FP_TYPE y) { return fp_compare(x, y) == -1; }
