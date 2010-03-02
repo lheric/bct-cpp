@@ -172,7 +172,13 @@ namespace matlab {
 	void to_array(const VECTOR_TYPE*, FP_TYPE*);
 	bool to_bool(const VECTOR_TYPE*);
 	bool to_bool(const MATRIX_TYPE*);
+	gsl_vector_float* to_vector_float(const VECTOR_TYPE*);
+	gsl_vector* to_vector_double(const VECTOR_TYPE*);
+	gsl_vector_long_double* to_vector_long_double(const VECTOR_TYPE*);
 	VECTOR_TYPE* to_vector(const MATRIX_TYPE*);
+	gsl_matrix_float* to_matrix_float(const MATRIX_TYPE*);
+	gsl_matrix* to_matrix_double(const MATRIX_TYPE*);
+	gsl_matrix_long_double* to_matrix_long_double(const MATRIX_TYPE*);
 	MATRIX_TYPE* to_column_matrix(const VECTOR_TYPE*);
 	MATRIX_TYPE* to_row_matrix(const VECTOR_TYPE*);
 	gsl_permutation* to_permutation(const VECTOR_TYPE*);
