@@ -30,6 +30,39 @@ bool matlab::to_bool(const MATRIX_TYPE* m) {
 }
 
 /*
+ * Converts a vector to float precision.
+ */
+gsl_vector_float* matlab::to_vector_float(const VECTOR_TYPE* v) {
+	gsl_vector_float* float_v = gsl_vector_float_alloc(v->size);
+	for (int i = 0; i < (int)v->size; i++) {
+		gsl_vector_float_set(float_v, i, (float)VECTOR_ID(get)(v, i));
+	}
+	return float_v;
+}
+
+/*
+ * Converts a vector to double precision.
+ */
+gsl_vector* matlab::to_vector_double(const VECTOR_TYPE* v) {
+	gsl_vector* double_v = gsl_vector_alloc(v->size);
+	for (int i = 0; i < (int)v->size; i++) {
+		gsl_vector_set(double_v, i, (double)VECTOR_ID(get)(v, i));
+	}
+	return double_v;
+}
+
+/*
+ * Converts a vector to long double precision.
+ */
+gsl_vector_long_double* matlab::to_vector_long_double(const VECTOR_TYPE* v) {
+	gsl_vector_long_double* long_double_v = gsl_vector_long_double_alloc(v->size);
+	for (int i = 0; i < (int)v->size; i++) {
+		gsl_vector_long_double_set(long_double_v, i, (long double)VECTOR_ID(get)(v, i));
+	}
+	return long_double_v;
+}
+
+/*
  * Converts a matrix to a vector.  The vector is constructed by consecutively
  * appending columns.
  */
@@ -42,6 +75,45 @@ VECTOR_TYPE* matlab::to_vector(const MATRIX_TYPE* m) {
 		}
 	}
 	return v;
+}
+
+/*
+ * Converts a matrix to float precision.
+ */
+gsl_matrix_float* matlab::to_matrix_float(const MATRIX_TYPE* m) {
+	gsl_matrix_float* float_m = gsl_matrix_float_alloc(m->size1, m->size2);
+	for (int i = 0; i < (int)m->size1; i++) {
+		for (int j = 0; j < (int)m->size2; j++) {
+			gsl_matrix_float_set(float_m, i, j, (float)MATRIX_ID(get)(m, i, j));
+		}
+	}
+	return float_m;
+}
+
+/*
+ * Converts a matrix to float precision.
+ */
+gsl_matrix* matlab::to_matrix_double(const MATRIX_TYPE* m) {
+	gsl_matrix* double_m = gsl_matrix_alloc(m->size1, m->size2);
+	for (int i = 0; i < (int)m->size1; i++) {
+		for (int j = 0; j < (int)m->size2; j++) {
+			gsl_matrix_set(double_m, i, j, (double)MATRIX_ID(get)(m, i, j));
+		}
+	}
+	return double_m;
+}
+
+/*
+ * Converts a matrix to float precision.
+ */
+gsl_matrix_long_double* matlab::to_matrix_long_double(const MATRIX_TYPE* m) {
+	gsl_matrix_long_double* long_double_m = gsl_matrix_long_double_alloc(m->size1, m->size2);
+	for (int i = 0; i < (int)m->size1; i++) {
+		for (int j = 0; j < (int)m->size2; j++) {
+			gsl_matrix_long_double_set(long_double_m, i, j, (long double)MATRIX_ID(get)(m, i, j));
+		}
+	}
+	return long_double_m;
 }
 
 /*
