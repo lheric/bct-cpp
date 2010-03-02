@@ -108,7 +108,7 @@ gsl_matrix* bct::edge_betweenness_wei(const gsl_matrix* G, gsl_vector** BC) {
 							gsl_matrix_set(P, w, v, 1.0);
 							
 							// elseif Duw==D(w)
-						} else if (Duw == gsl_vector_get(D, w)) {
+						} else if (fp_equal(Duw, gsl_vector_get(D, w))) {
 							
 							// NP(w)=NP(w)+NP(v);
 							gsl_vector_set(NP, w, gsl_vector_get(NP, w) + gsl_vector_get(NP, v));
