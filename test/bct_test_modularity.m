@@ -10,9 +10,9 @@ for i = 1:size(m)(2)
 		result = 1;
 		map = zeros(max(Ci), 1);
 		for j = 1:length(Ci)
-			if ~map(Ci(i))
-				map(Ci(i)) = Ci_cpp(i);
-			elseif map(Ci(i)) ~= Ci_cpp(i)
+			if ~map(Ci(j))
+				map(Ci(j)) = Ci_cpp(j);
+			elseif map(Ci(j)) ~= Ci_cpp(j)
 				result = 0;
 				break
 			end
@@ -33,9 +33,9 @@ for i = 1:size(m)(2)
 		result = 1;
 		map = zeros(max(Ci), 1);
 		for j = 1:length(Ci)
-			if ~map(Ci(i))
-				map(Ci(i)) = Ci_cpp(i);
-			elseif map(Ci(i)) ~= Ci_cpp(i)
+			if ~map(Ci(j))
+				map(Ci(j)) = Ci_cpp(j);
+			elseif map(Ci(j)) ~= Ci_cpp(j)
 				result = 0;
 				break
 			end
