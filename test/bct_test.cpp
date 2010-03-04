@@ -88,6 +88,9 @@ gsl_matrix* bct_test::to_gslm(const Matrix m, int start_row, int start_col) {
  */
 std::vector<gsl_matrix*> bct_test::to_gsl(const NDArray m, int start) {
 	std::vector<gsl_matrix*> gslm(m.dims()(2) + start);
+	for (int k = 0; k < start; k++) {
+		gslm[k] = NULL;
+	}
 	for (int k = 0; k < m.dims()(2); k++) {
 		gslm[k + start] = gsl_matrix_alloc(m.dims()(0), m.dims()(1));
 		for (int i = 0; i < m.dims()(0); i++) {
