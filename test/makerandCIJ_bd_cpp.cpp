@@ -3,14 +3,14 @@
 #include <gsl/gsl_matrix.h>
 #include <octave/oct.h>
 
-DEFUN_DLD(makerandCIJ_und_cpp, args, , "Wrapper for C++ function.") {
+DEFUN_DLD(makerandCIJ_bd_cpp, args, , "Wrapper for C++ function.") {
 	if (args.length() != 2) {
 		return octave_value_list();
 	}
 	int N = args(0).int_value();
 	int K = args(1).int_value();
 	if (!error_state) {
-		gsl_matrix* CIJ = bct::makerandCIJ_und(N, K);
+		gsl_matrix* CIJ = bct::makerandCIJ_bd(N, K);
 		octave_value ret = bct_test::from_gsl(CIJ);
 		gsl_matrix_free(CIJ);
 		return ret;

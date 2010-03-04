@@ -92,8 +92,8 @@ namespace bct {
 	double modularity_und(const gsl_matrix*, gsl_vector** = NULL);
 	
 	// Synthetic connection networks
-	gsl_matrix* makerandCIJ_dir(int, int);
-	gsl_matrix* makerandCIJ_und(int, int);
+	gsl_matrix* makerandCIJ_bd(int, int);
+	gsl_matrix* makerandCIJ_bu(int, int);
 	
 	// Graph randomization
 	gsl_matrix* latmio_dir(const gsl_matrix*, int);
