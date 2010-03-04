@@ -33,8 +33,8 @@ objects = \
 	latmio_und_connected.o \
 	macaque.o \
 	make_motif34lib.o \
-	makerandCIJ_dir.o \
-	makerandCIJ_und.o \
+	makerandCIJ_bd.o \
+	makerandCIJ_bu.o \
 	matching_ind.o \
 	matlab/matlab.o \
 	matlab/matlab_double.o \
