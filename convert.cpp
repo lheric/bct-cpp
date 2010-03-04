@@ -4,10 +4,21 @@
 #include <gsl/gsl_vector.h>
 
 /*
- * Returns a copy of the given matrix with each element inverted.
+ * Returns a copy of the given matrix with each nonzero element inverted.
  */
 gsl_matrix* bct::invert_elements(const gsl_matrix* m) {
-	return pow_elements(m, -1.0);
+	gsl_matrix* inv_m = gsl_matrix_alloc(m->size1, m->size2);
+	for (int i = 0; i < (int)m->size1; i++) {
+		for (int j = 0; j < (int)m->size2; j++) {
+			double value = gsl_matrix_get(m, i, j);
+			if (fp_nonzero(value)) {
+				gsl_matrix_set(inv_m, i, j, 1.0 / value);
+			} else {
+				gsl_matrix_set(inv_m, i, j, 0.0);
+			}
+		}
+	}
+	return inv_m;
 }
 
 /*
