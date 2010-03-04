@@ -19,6 +19,14 @@ void bct::gsl_error_handler(const char* reason, const char* file, int line, int 
  */
 void bct::gsl_free(gsl_vector* v) { gsl_vector_free(v); }
 void bct::gsl_free(gsl_matrix* m) { gsl_matrix_free(m); }
+void bct::gsl_free(std::vector<gsl_matrix*>& m) {
+	for (int i = 0; i < (int)m.size(); i++) {
+		if (m[i] != NULL) {
+			gsl_matrix_free(m[i]);
+			m[i] = NULL;
+		}
+	}
+}
 
 /*
  * Initializes the BCT library for external use.

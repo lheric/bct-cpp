@@ -18,6 +18,7 @@ std::vector<gsl_matrix*> bct::findwalks(const gsl_matrix* CIJ, gsl_vector** wlq)
 	
 	// Wq = zeros(N,N,N);
 	std::vector<gsl_matrix*> Wq(N + 1);
+	Wq[0] = NULL;
 	for (int i = 1; i <= N; i++) {
 		Wq[i] = zeros_double(N, N);
 	}

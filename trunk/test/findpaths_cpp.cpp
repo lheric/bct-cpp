@@ -33,9 +33,7 @@ DEFUN_DLD(findpaths_cpp, args, , "Wrapper for C++ function.") {
 		gsl_vector_free(plq);
 		gsl_matrix_free(allpths);
 		gsl_matrix_free(util);
-		for (int i = 1; i < (int)Pq.size(); i++) {
-			gsl_matrix_free(Pq[i]);
-		}
+		bct::gsl_free(Pq);
 		return ret;
 	} else {
 		return octave_value_list();

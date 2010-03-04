@@ -19,9 +19,7 @@ DEFUN_DLD(findwalks_cpp, args, , "Wrapper for C++ function.") {
 		ret(1) = octave_value(bct_test::from_gsl(wlq, 1));
 		gsl_matrix_free(CIJ_gsl);
 		gsl_vector_free(wlq);
-		for (int i = 1; i < (int)Wq.size(); i++) {
-			gsl_matrix_free(Wq[i]);
-		}
+		bct::gsl_free(Wq);
 		return ret;
 	} else {
 		return octave_value_list();

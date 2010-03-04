@@ -27,6 +27,7 @@ std::vector<gsl_matrix*> bct::findpaths(const gsl_matrix* CIJ, const gsl_vector*
 	
 	// Pq = zeros(N,N,qmax);
 	std::vector<gsl_matrix*> Pq(qmax + 1);
+	Pq[0] = NULL;
 	for (int i = 1; i <= qmax; i++) {
 		Pq[i] = zeros_double(N, N);
 	}

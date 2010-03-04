@@ -146,6 +146,7 @@ namespace bct {
 	void gsl_error_handler(const char*, const char*, int, int);
 	void gsl_free(gsl_vector*);
 	void gsl_free(gsl_matrix*);
+	void gsl_free(std::vector<gsl_matrix*>&);
 	void init();
 	
 	// Debugging
