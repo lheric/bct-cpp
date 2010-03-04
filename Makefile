@@ -35,6 +35,8 @@ objects = \
 	make_motif34lib.o \
 	makerandCIJ_bd.o \
 	makerandCIJ_bu.o \
+	makerandCIJ_wd.o \
+	makerandCIJ_wu.o \
 	matching_ind.o \
 	matlab/matlab.o \
 	matlab/matlab_double.o \

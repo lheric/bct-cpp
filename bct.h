@@ -94,6 +94,8 @@ namespace bct {
 	// Synthetic connection networks
 	gsl_matrix* makerandCIJ_bd(int, int);
 	gsl_matrix* makerandCIJ_bu(int, int);
+	gsl_matrix* makerandCIJ_wd(int, int, double, double);
+	gsl_matrix* makerandCIJ_wu(int, int, double, double);
 	
 	// Graph randomization
 	gsl_matrix* latmio_dir(const gsl_matrix*, int);
