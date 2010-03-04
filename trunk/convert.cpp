@@ -4,6 +4,13 @@
 #include <gsl/gsl_vector.h>
 
 /*
+ * Returns a copy of the given matrix with each element inverted.
+ */
+gsl_matrix* bct::invert_elements(const gsl_matrix* m) {
+	return pow_elements(m, -1.0);
+}
+
+/*
  * Returns a copy of the given matrix with no loops.
  */
 gsl_matrix* bct::remove_loops(const gsl_matrix* m) {
