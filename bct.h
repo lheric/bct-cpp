@@ -136,6 +136,7 @@ namespace bct {
 	bool has_no_loops(const gsl_matrix*);
 	
 	// Matrix conversion
+	gsl_matrix* invert_elements(const gsl_matrix*);
 	gsl_matrix* remove_loops(const gsl_matrix*);
 	gsl_matrix* to_binary(const gsl_matrix*);
 	gsl_matrix* to_positive(const gsl_matrix*);
