@@ -1,4 +1,5 @@
 #include <gsl/gsl_matrix.h>
+#include <gsl/gsl_permutation.h>
 #include <gsl/gsl_vector.h>
 
 /*
@@ -33,33 +34,33 @@ bool matlab::to_bool(const MATRIX_TYPE* m) {
  * Converts a vector to float precision.
  */
 gsl_vector_float* matlab::to_vector_float(const VECTOR_TYPE* v) {
-	gsl_vector_float* float_v = gsl_vector_float_alloc(v->size);
+	gsl_vector_float* v_f = gsl_vector_float_alloc(v->size);
 	for (int i = 0; i < (int)v->size; i++) {
-		gsl_vector_float_set(float_v, i, (float)VECTOR_ID(get)(v, i));
+		gsl_vector_float_set(v_f, i, (float)VECTOR_ID(get)(v, i));
 	}
-	return float_v;
+	return v_f;
 }
 
 /*
  * Converts a vector to double precision.
  */
 gsl_vector* matlab::to_vector_double(const VECTOR_TYPE* v) {
-	gsl_vector* double_v = gsl_vector_alloc(v->size);
+	gsl_vector* v_d = gsl_vector_alloc(v->size);
 	for (int i = 0; i < (int)v->size; i++) {
-		gsl_vector_set(double_v, i, (double)VECTOR_ID(get)(v, i));
+		gsl_vector_set(v_d, i, (double)VECTOR_ID(get)(v, i));
 	}
-	return double_v;
+	return v_d;
 }
 
 /*
  * Converts a vector to long double precision.
  */
 gsl_vector_long_double* matlab::to_vector_long_double(const VECTOR_TYPE* v) {
-	gsl_vector_long_double* long_double_v = gsl_vector_long_double_alloc(v->size);
+	gsl_vector_long_double* v_ld = gsl_vector_long_double_alloc(v->size);
 	for (int i = 0; i < (int)v->size; i++) {
-		gsl_vector_long_double_set(long_double_v, i, (long double)VECTOR_ID(get)(v, i));
+		gsl_vector_long_double_set(v_ld, i, (long double)VECTOR_ID(get)(v, i));
 	}
-	return long_double_v;
+	return v_ld;
 }
 
 /*
@@ -81,39 +82,39 @@ VECTOR_TYPE* matlab::to_vector(const MATRIX_TYPE* m) {
  * Converts a matrix to float precision.
  */
 gsl_matrix_float* matlab::to_matrix_float(const MATRIX_TYPE* m) {
-	gsl_matrix_float* float_m = gsl_matrix_float_alloc(m->size1, m->size2);
+	gsl_matrix_float* m_f = gsl_matrix_float_alloc(m->size1, m->size2);
 	for (int i = 0; i < (int)m->size1; i++) {
 		for (int j = 0; j < (int)m->size2; j++) {
-			gsl_matrix_float_set(float_m, i, j, (float)MATRIX_ID(get)(m, i, j));
+			gsl_matrix_float_set(m_f, i, j, (float)MATRIX_ID(get)(m, i, j));
 		}
 	}
-	return float_m;
+	return m_f;
 }
 
 /*
  * Converts a matrix to float precision.
  */
 gsl_matrix* matlab::to_matrix_double(const MATRIX_TYPE* m) {
-	gsl_matrix* double_m = gsl_matrix_alloc(m->size1, m->size2);
+	gsl_matrix* m_d = gsl_matrix_alloc(m->size1, m->size2);
 	for (int i = 0; i < (int)m->size1; i++) {
 		for (int j = 0; j < (int)m->size2; j++) {
-			gsl_matrix_set(double_m, i, j, (double)MATRIX_ID(get)(m, i, j));
+			gsl_matrix_set(m_d, i, j, (double)MATRIX_ID(get)(m, i, j));
 		}
 	}
-	return double_m;
+	return m_d;
 }
 
 /*
  * Converts a matrix to float precision.
  */
 gsl_matrix_long_double* matlab::to_matrix_long_double(const MATRIX_TYPE* m) {
-	gsl_matrix_long_double* long_double_m = gsl_matrix_long_double_alloc(m->size1, m->size2);
+	gsl_matrix_long_double* m_ld = gsl_matrix_long_double_alloc(m->size1, m->size2);
 	for (int i = 0; i < (int)m->size1; i++) {
 		for (int j = 0; j < (int)m->size2; j++) {
-			gsl_matrix_long_double_set(long_double_m, i, j, (long double)MATRIX_ID(get)(m, i, j));
+			gsl_matrix_long_double_set(m_ld, i, j, (long double)MATRIX_ID(get)(m, i, j));
 		}
 	}
-	return long_double_m;
+	return m_ld;
 }
 
 /*

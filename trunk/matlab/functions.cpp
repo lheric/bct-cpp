@@ -3,7 +3,6 @@
 #include <cstddef>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
-#include <gsl/gsl_permutation.h>
 #include <gsl/gsl_vector.h>
 
 /*
@@ -108,8 +107,8 @@ VECTOR_TYPE* matlab::diag(const MATRIX_TYPE* m, int k) {
 	int j0;
 	if (k >= 0) { i0 = 0; j0 = k; }
 	else { i0 = -k; j0 = 0; }
-	int n_rows = (int)m->size1 - i0;
-	int n_cols = (int)m->size2 - j0;
+	int n_rows = m->size1 - i0;
+	int n_cols = m->size2 - j0;
 	int n = n_rows < n_cols ? n_rows : n_cols;
 	VECTOR_TYPE* diag_v = VECTOR_ID(alloc)(n);
 	for (int i = 0; i < n; i++) {
@@ -423,8 +422,8 @@ VECTOR_TYPE* matlab::prod(const MATRIX_TYPE* m, int dim) {
 
 VECTOR_TYPE* matlab::reverse(const VECTOR_TYPE* v) {
 	VECTOR_TYPE* rev_v = VECTOR_ID(alloc)(v->size);
-	for(int i = (v->size-1),j = 0;i >= 0;i--,j++) {
-		VECTOR_ID(set)(rev_v, j, VECTOR_ID(get)(v, i));
+	for (int i = 0; i < (int)v->size; i++) {
+		VECTOR_ID(set)(rev_v, i, VECTOR_ID(get)(v, v->size - 1 - i));
 	}
 	return rev_v;
 }
