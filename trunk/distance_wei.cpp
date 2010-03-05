@@ -4,10 +4,10 @@
 #include <gsl/gsl_vector.h>
 
 /*
- * Computes the distance matrix for a weighted directed graph.
+ * Computes the distance matrix for a weighted graph.
  */
 gsl_matrix* bct::distance_wei(const gsl_matrix* G) {
-	if (safe_mode) check_status(G, WEIGHTED | DIRECTED, "distance_wei");
+	if (safe_mode) check_status(G, WEIGHTED, "distance_wei");
 	if (G->size1 != G->size2) throw size_exception();
 	
 	// n=length(G);

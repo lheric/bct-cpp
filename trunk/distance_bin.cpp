@@ -4,10 +4,10 @@
 #include <gsl/gsl_vector.h>
 
 /*
- * Computes the distance matrix for a binary undirected graph.
+ * Computes the distance matrix for a binary graph.
  */
 gsl_matrix* bct::distance_bin(const gsl_matrix* G) {
-	if (safe_mode) check_status(G, BINARY | UNDIRECTED, "distance_bin");
+	if (safe_mode) check_status(G, BINARY, "distance_bin");
 	if (G->size1 != G->size2) throw size_exception();
 	
 	// D=eye(length(G));

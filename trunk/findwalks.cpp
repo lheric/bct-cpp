@@ -9,6 +9,7 @@
  * therefore contain no valid data at index 0.
  */
 std::vector<gsl_matrix*> bct::findwalks(const gsl_matrix* CIJ, gsl_vector** wlq) {
+	if (CIJ->size1 != CIJ->size2) throw size_exception();
 	
 	// CIJ = double(CIJ~=0);
 	gsl_matrix* _CIJ = compare_elements(CIJ, fp_not_equal, 0.0);

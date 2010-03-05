@@ -6,6 +6,7 @@
  */
 double bct::density_und(const gsl_matrix* CIJ) {
 	if (safe_mode) check_status(CIJ, UNDIRECTED, "density_und");
+	if (CIJ->size1 != CIJ->size2) throw size_exception();
 	
 	// N = size(CIJ,1);
 	int N = CIJ->size1;
