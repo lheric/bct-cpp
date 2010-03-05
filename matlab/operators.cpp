@@ -316,8 +316,8 @@ MATRIX_TYPE* matlab::logical_or(const MATRIX_TYPE* m1, const MATRIX_TYPE* m2) {
 		return NULL;
 	}
 	MATRIX_TYPE* or_m = MATRIX_ID(alloc)(m1->size1, m1->size2);
-	for(int i = 0; i < (int)m1->size1; i++) {
-		for(int j = 0; j < (int)m1->size2; j++) {
+	for (int i = 0; i < (int)m1->size1; i++) {
+		for (int j = 0; j < (int)m1->size2; j++) {
 			bool nz1 = fp_nonzero(MATRIX_ID(get)(m1, i, j));
 			bool nz2 = fp_nonzero(MATRIX_ID(get)(m2, i, j));
 			MATRIX_ID(set)(or_m, i, j, (FP_TYPE)(nz1 || nz2));
