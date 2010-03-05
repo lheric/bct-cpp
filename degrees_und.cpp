@@ -7,6 +7,7 @@
  */
 gsl_vector* bct::degrees_und(const gsl_matrix* CIJ) {
 	if (safe_mode) check_status(CIJ, UNDIRECTED, "degrees_und");
+	if (CIJ->size1 != CIJ->size2) throw size_exception();
 	
 	// CIJ = double(CIJ~=0);
 	// deg = sum(CIJ);

@@ -10,6 +10,7 @@
  * GSL_POSINF to differentiate between these two cases.
  */
 gsl_vector* bct::breadth(const gsl_matrix* CIJ, int source, gsl_vector** branch) {
+	if (CIJ->size1 != CIJ->size2) throw size_exception();
 	
 	// N = size(CIJ,1);
 	int N = CIJ->size1;

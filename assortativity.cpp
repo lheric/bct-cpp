@@ -9,6 +9,7 @@ double assortativity(const gsl_vector*, const gsl_matrix*);
  */
 double bct::assortativity_dir(const gsl_matrix* CIJ) {
 	if (safe_mode) check_status(CIJ, DIRECTED, "assortativity_dir");
+	if (CIJ->size1 != CIJ->size2) throw size_exception();
 	
 	// [id,od,deg] = degrees_dir(CIJ);
 	gsl_vector* deg = degrees_dir(CIJ);
@@ -30,6 +31,7 @@ double bct::assortativity_dir(const gsl_matrix* CIJ) {
  */
 double bct::assortativity_und(const gsl_matrix* CIJ) {
 	if (safe_mode) check_status(CIJ, UNDIRECTED, "assortativity_und");
+	if (CIJ->size1 != CIJ->size2) throw size_exception();
 	
 	// [deg] = degrees_und(m);
 	gsl_vector* deg = degrees_und(CIJ);

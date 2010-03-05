@@ -9,6 +9,7 @@ gsl_matrix* distance_inv(const gsl_matrix*);
  * Computes global efficiency for a binary undirected graph.
  */
 gsl_matrix* bct::efficiency_global(const gsl_matrix* G) {
+	if (G->size1 != G->size2) throw size_exception();
 	
 	// E=distance_inv(G);
 	return distance_inv(G);
@@ -18,6 +19,7 @@ gsl_matrix* bct::efficiency_global(const gsl_matrix* G) {
  * Computes local efficiency for a binary undirected graph.
  */
 gsl_vector* bct::efficiency_local(const gsl_matrix* G) {
+	if (G->size1 != G->size2) throw size_exception();
 	
 	// N=length(G);
 	int N = length(G);
