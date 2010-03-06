@@ -35,3 +35,28 @@ void bct::gsl_free(std::vector<gsl_matrix*>& m) {
 void bct::init() {
 	gsl_set_error_handler(gsl_error_handler);
 }
+
+/*
+ * Returns the number of links in a directed graph.
+ */
+int bct::number_of_links_dir(const gsl_matrix* m) {
+	return nnz(m);
+}
+
+/*
+ * Returns the number of links in an undirected graph.
+ */
+int bct::number_of_links_und(const gsl_matrix* m) {
+	gsl_matrix* triu_m = triu(m);
+	int ret = nnz(triu_m);
+	gsl_matrix_free(triu_m);
+	return ret;
+}
+
+/*
+ * Returns the number of nodes in a graph, assuming the given connection matrix
+ * is square.
+ */
+int bct::number_of_nodes(const gsl_matrix* m) {
+	return (int)m->size1;
+}
