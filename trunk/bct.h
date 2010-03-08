@@ -95,7 +95,9 @@ namespace bct {
 	gsl_matrix* makerandCIJ_bd(int, int);
 	gsl_matrix* makerandCIJ_bu(int, int);
 	gsl_matrix* makerandCIJ_wd(int, int, double, double);
+	gsl_matrix* makerandCIJ_wd(const gsl_matrix*);
 	gsl_matrix* makerandCIJ_wu(int, int, double, double);
+	gsl_matrix* makerandCIJ_wu(const gsl_matrix*);
 	
 	// Graph randomization
 	gsl_matrix* latmio_dir(const gsl_matrix*, int);
