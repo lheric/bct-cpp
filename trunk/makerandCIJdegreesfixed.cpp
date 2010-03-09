@@ -155,3 +155,20 @@ gsl_matrix* bct::makerandCIJdegreesfixed(const gsl_vector* in, const gsl_vector*
 	
 	return cij;
 }
+
+/*
+ * Generates a random directed binary graph with the same in-degree and out-
+ * degree sequences of the given graph.  Since the degree sequences are
+ * necessarily valid, this function should not return NULL unless the given
+ * matrix contains nonzero entries on the main diagonal.
+ */
+gsl_matrix* bct::makerandCIJdegreesfixed(const gsl_matrix* m) {
+	gsl_vector* id;
+	gsl_vector* od;
+	gsl_vector* deg = degrees_dir(m, &id, &od);
+	gsl_vector_free(deg);
+	gsl_matrix* ret = makerandCIJdegreesfixed(id, od);
+	gsl_vector_free(id);
+	gsl_vector_free(od);
+	return ret;
+}
