@@ -144,7 +144,8 @@ namespace bct {
 	gsl_matrix* remove_loops(const gsl_matrix*);
 	gsl_matrix* to_binary(const gsl_matrix*);
 	gsl_matrix* to_positive(const gsl_matrix*);
-	gsl_matrix* to_undirected(const gsl_matrix*);
+	gsl_matrix* to_undirected_bin(const gsl_matrix*);
+	gsl_matrix* to_undirected_wei(const gsl_matrix*);
 	
 	// Utility
 	void gsl_error_handler(const char*, const char*, int, int);
