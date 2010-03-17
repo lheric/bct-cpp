@@ -3,7 +3,7 @@
 #include <gsl/gsl_vector.h>
 #include <iostream>
 
-bool bct::safe_mode = false;
+bool bct::safe_mode = true;
 
 bool bct::get_safe_mode() { return safe_mode; }
 void bct::set_safe_mode(bool safe_mode) { bct::safe_mode = safe_mode; }
