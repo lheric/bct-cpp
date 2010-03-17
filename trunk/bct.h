@@ -153,6 +153,7 @@ namespace bct {
 	void gsl_free(gsl_matrix*);
 	void gsl_free(std::vector<gsl_matrix*>&);
 	void init();
+	double mean(const gsl_vector*);
 	int number_of_links_dir(const gsl_matrix*);
 	int number_of_links_und(const gsl_matrix*);
 	int number_of_nodes(const gsl_matrix*);

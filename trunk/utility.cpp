@@ -36,6 +36,15 @@ void bct::init() {
 	gsl_set_error_handler(gsl_error_handler);
 }
 
+// TODO: This belongs in matlab/functions.cpp...move it when SWIG-accessible
+double bct::mean(const gsl_vector* v) {
+	double sum = 0.0;
+	for (int i = 0; i < (int)v->size; i++) {
+		sum += gsl_vector_get(v, i);
+	}
+	return sum / (double)v->size;
+}
+
 /*
  * Returns the number of links in a directed graph.
  */
