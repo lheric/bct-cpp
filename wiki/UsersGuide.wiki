@@ -23,6 +23,11 @@ gsl_free(sum_triu_m);
 }}}
 
 
+= Status Checking =
+
+By default, bct-cpp checks the status of any connection matrix passed to a specialized function (i.e., one such as `bct::clustering_coef_bu` which is only intended to work on binary undirected matrices).  If this status check fails, a message is printed to `stderr`.  To disable this behavior and avoid the minor computational overhead, call `bct::set_safe_mode(false)`.
+
+
 = Error Handling =
 
 By default, GSL aborts program execution when an error is encountered.  BCT can override this behavior by setting a custom GSL error handler.  This handler converts a GSL error to one of two possible exceptions: `bct::out_of_memory_exception` for failed allocations and `bct::gsl_exception` for other errors.
