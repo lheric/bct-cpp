@@ -12,6 +12,8 @@ objects = \
 	clustering_coef_bu.o \
 	clustering_coef_wd.o \
 	clustering_coef_wu.o \
+	connectivity_length_bin.o \
+	connectivity_length_wei.o \
 	convert.o \
 	cycprob.o \
 	debug.o \
