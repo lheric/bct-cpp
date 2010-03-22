@@ -57,6 +57,8 @@ namespace bct {
 	gsl_matrix* breadthdist(const gsl_matrix*, gsl_matrix** = NULL);
 	gsl_vector* charpath_ecc(const gsl_matrix*, double* = NULL, double* = NULL);
 	double charpath_lambda(const gsl_matrix*);
+	double connectivity_length_bin(const gsl_matrix*);
+	double connectivity_length_wei(const gsl_matrix*);
 	gsl_vector* cycprob_fcyc(const std::vector<gsl_matrix*>&);
 	gsl_vector* cycprob_pcyc(const std::vector<gsl_matrix*>&);
 	gsl_matrix* distance_bin(const gsl_matrix*);
