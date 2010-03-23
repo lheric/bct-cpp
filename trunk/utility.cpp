@@ -2,17 +2,14 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
+#include <string>
 #include <vector>
 
 /*
  * Catches GSL errors and throws BCT exceptions.
  */
 void bct::gsl_error_handler(const char* reason, const char* file, int line, int gsl_errno) {
-	if (gsl_errno == GSL_ENOMEM) {
-		throw out_of_memory_exception();
-	} else {
-		throw gsl_exception();
-	}
+	throw bct_exception(std::string(reason));
 }
 
 /*
@@ -63,8 +60,7 @@ int bct::number_of_links_und(const gsl_matrix* m) {
 }
 
 /*
- * Returns the number of nodes in a graph, assuming the given connection matrix
- * is square.
+ * Returns the number of nodes in a graph.
  */
 int bct::number_of_nodes(const gsl_matrix* m) {
 	return (int)m->size1;

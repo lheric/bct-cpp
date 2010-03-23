@@ -6,8 +6,7 @@
  * Computes Marchiori and Latora's connectivity length for a binary graph.
  */
 double bct::connectivity_length_bin(const gsl_matrix* m) {
-	if (safe_mode) check_status(m, BINARY, "connectivity_length_bin");
-	if (m->size1 != m->size2) throw size_exception();
+	if (safe_mode) check_status(m, SQUARE | BINARY, "connectivity_length_bin");
 	int N = m->size1;
 	gsl_matrix* D = distance_bin(m);
 	double sum = 0.0;

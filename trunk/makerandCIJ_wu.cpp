@@ -65,7 +65,7 @@ gsl_matrix* bct::makerandCIJ_wu(int N, int K, double wmin, double wmax) {
  * nonzero entries on the main diagonal.
  */
 gsl_matrix* bct::makerandCIJ_wu(const gsl_matrix* m) {
-	if (m->size1 != m->size2) throw size_exception();
+	if (safe_mode) check_status(m, SQUARE | NO_LOOPS, "makerandCIJ_wu");
 	int N = m->size1;
 	int K = (N * N - N) / 2;
 	double* w = new double[K];

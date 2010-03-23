@@ -8,8 +8,7 @@
  * Optionally returns intensity and coherence.
  */
 gsl_matrix* bct::motif3struct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matrix** Q) {
-	if (safe_mode) check_status(W, WEIGHTED, "motif3struct_wei");
-	if (W->size1 != W->size2) throw size_exception();
+	if (safe_mode) check_status(W, SQUARE | WEIGHTED, "motif3struct_wei");
 	
 	// load motif34lib M3 M3n ID3 N3
 	gsl_vector* ID3;

@@ -10,7 +10,7 @@ void reachdist2(const gsl_matrix*, gsl_matrix**, gsl_matrix**, gsl_matrix**, int
  * adjacency matrix.
  */
 gsl_matrix* bct::reachdist(const gsl_matrix* CIJ, gsl_matrix** D) {
-	if (CIJ->size1 != CIJ->size2) throw size_exception();
+	if (safe_mode) check_status(CIJ, SQUARE, "reachdist");
 	
 	// R = CIJ;
 	gsl_matrix* R = copy(CIJ);

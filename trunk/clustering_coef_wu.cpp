@@ -7,8 +7,7 @@
  * Computes the clustering coefficient for a weighted undirected graph.
  */
 gsl_vector* bct::clustering_coef_wu(const gsl_matrix* W) {
-	if (safe_mode) check_status(W, WEIGHTED | UNDIRECTED, "clustering_coef_wu");
-	if (W->size1 != W->size2) throw size_exception();
+	if (safe_mode) check_status(W, SQUARE | WEIGHTED | UNDIRECTED, "clustering_coef_wu");
 	
 	// K=sum(W~=0,2);
 	gsl_matrix* W_neq_0 = compare_elements(W, fp_not_equal, 0.0);

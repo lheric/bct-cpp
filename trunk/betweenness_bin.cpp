@@ -16,8 +16,7 @@ gsl_vector* bct::betweenness_bin(const gsl_matrix* G) {
  * Computes node and edge betweenness for a binary graph.
  */
 gsl_matrix* bct::edge_betweenness_bin(const gsl_matrix* G, gsl_vector** BC) {
-	if (safe_mode) check_status(G, BINARY, "edge_betweenness_bin");
-	if (G->size1 != G->size2) throw size_exception();
+	if (safe_mode) check_status(G, SQUARE | BINARY, "edge_betweenness_bin");
 	
 	// n=length(G);
 	int n = length(G);

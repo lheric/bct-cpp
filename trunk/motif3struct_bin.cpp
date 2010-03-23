@@ -6,8 +6,7 @@
  * Counts occurrences of three-node structural motifs in a binary graph.
  */
 gsl_matrix* bct::motif3struct_bin(const gsl_matrix* A, gsl_vector** f) {
-	if (safe_mode) check_status(A, BINARY, "motif3struct_bin");
-	if (A->size1 != A->size2) throw size_exception();
+	if (safe_mode) check_status(A, SQUARE | BINARY, "motif3struct_bin");
 	
 	// load motif34lib M3n ID3
 	gsl_vector* ID3;

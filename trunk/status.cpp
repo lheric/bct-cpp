@@ -14,6 +14,8 @@ void bct::set_safe_mode(bool safe_mode) { bct::safe_mode = safe_mode; }
  */
 bool bct::check_status(const gsl_matrix* m, int flags, const char* text) {
 	bool ret = true;
+	if (flags & SQUARE) ret = ret && is_square(m);
+	if (flags & RECTANGULAR) ret = ret && is_rectangular(m);
 	if (flags & UNDIRECTED) ret = ret && is_undirected(m);
 	if (flags & DIRECTED) ret = ret && is_directed(m);
 	if (flags & BINARY) ret = ret && is_binary(m);
@@ -30,6 +32,20 @@ bool bct::check_status(const gsl_matrix* m, int flags, const char* text) {
 }
 
 /*
+ * Returns whether the given matrix is square.
+ */
+bool bct::is_square(const gsl_matrix* m) {
+	return m->size1 == m->size2;
+}
+
+/*
+ * Returns whether the given matrix is rectangular.
+ */
+bool bct::is_rectangular(const gsl_matrix* m) {
+	return m->size1 != m->size2;
+}
+
+/*
  * Returns whether the given matrix is undirected.
  */
 bool bct::is_undirected(const gsl_matrix* m) {
@@ -40,7 +56,6 @@ bool bct::is_undirected(const gsl_matrix* m) {
  * Returns whether the given matrix is directed.
  */
 bool bct::is_directed(const gsl_matrix* m) {
-	if (m->size1 != m->size2) throw size_exception();
 	for (int i = 0; i < (int)m->size1; i++) {
 		for (int j = 0; j < (int)m->size2; j++) {
 			if (fp_not_equal(gsl_matrix_get(m, i, j), gsl_matrix_get(m, j, i))) {

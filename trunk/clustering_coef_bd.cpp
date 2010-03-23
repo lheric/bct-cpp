@@ -7,8 +7,7 @@
  * Computes clustering coefficient for a binary directed graph.
  */
 gsl_vector* bct::clustering_coef_bd(const gsl_matrix* A) {
-	if (safe_mode) check_status(A, BINARY | DIRECTED, "clustering_coef_bd");
-	if (A->size1 != A->size2) throw size_exception();
+	if (safe_mode) check_status(A, SQUARE | BINARY | DIRECTED, "clustering_coef_bd");
 	
 	// S=A+A.';
 	gsl_matrix* S = gsl_matrix_alloc(A->size2, A->size1);

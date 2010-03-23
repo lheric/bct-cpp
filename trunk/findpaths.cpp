@@ -14,7 +14,7 @@
  * elements and contain no valid data at index 0.
  */
 std::vector<gsl_matrix*> bct::findpaths(const gsl_matrix* CIJ, const gsl_vector* sources, int qmax, gsl_vector** plq, int* qstop, gsl_matrix** allpths, gsl_matrix** util) {
-	if (CIJ->size1 != CIJ->size2) throw size_exception();
+	if (safe_mode) check_status(CIJ, SQUARE, "findpaths");
 	
 	// CIJ = double(CIJ~=0);
 	gsl_matrix* _CIJ = compare_elements(CIJ, fp_not_equal, 0.0);

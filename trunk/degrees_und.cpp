@@ -6,8 +6,7 @@
  * Computes degree for an undirected graph.  Connection weights are ignored.
  */
 gsl_vector* bct::degrees_und(const gsl_matrix* CIJ) {
-	if (safe_mode) check_status(CIJ, UNDIRECTED, "degrees_und");
-	if (CIJ->size1 != CIJ->size2) throw size_exception();
+	if (safe_mode) check_status(CIJ, SQUARE | UNDIRECTED, "degrees_und");
 	
 	// CIJ = double(CIJ~=0);
 	// deg = sum(CIJ);

@@ -5,8 +5,7 @@
  * Computes density for an undirected graph.  Connection weights are ignored.
  */
 double bct::density_und(const gsl_matrix* CIJ) {
-	if (safe_mode) check_status(CIJ, UNDIRECTED, "density_und");
-	if (CIJ->size1 != CIJ->size2) throw size_exception();
+	if (safe_mode) check_status(CIJ, SQUARE | UNDIRECTED, "density_und");
 	
 	// N = size(CIJ,1);
 	int N = CIJ->size1;

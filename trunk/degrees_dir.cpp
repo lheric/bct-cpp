@@ -7,8 +7,7 @@
  * weights are ignored.
  */
 gsl_vector* bct::degrees_dir(const gsl_matrix* CIJ, gsl_vector** id, gsl_vector** od) {
-	if (safe_mode) check_status(CIJ, DIRECTED, "degrees_dir");
-	if (CIJ->size1 != CIJ->size2) throw size_exception();
+	if (safe_mode) check_status(CIJ, SQUARE | DIRECTED, "degrees_dir");
 	
 	// CIJ = double(CIJ~=0);
 	// id = sum(CIJ,1);

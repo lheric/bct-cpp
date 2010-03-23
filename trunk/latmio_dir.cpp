@@ -11,8 +11,7 @@
  * strength is preserved for weighted graphs, while in-strength is not.
  */
 gsl_matrix* bct::latmio_dir(const gsl_matrix* R, int ITER) {
-	if (safe_mode) check_status(R, DIRECTED, "latmio_dir");
-	if (R->size1 != R->size2) throw size_exception();
+	if (safe_mode) check_status(R, SQUARE | DIRECTED, "latmio_dir");
 	
 	gsl_rng_default_seed = std::time(NULL);
 	gsl_rng* rng = gsl_rng_alloc(gsl_rng_default);

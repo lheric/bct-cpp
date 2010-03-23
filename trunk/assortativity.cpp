@@ -8,8 +8,7 @@ double assortativity(const gsl_vector*, const gsl_matrix*);
  * Computes assortativity for a directed graph.  Connection weights are ignored.
  */
 double bct::assortativity_dir(const gsl_matrix* CIJ) {
-	if (safe_mode) check_status(CIJ, DIRECTED, "assortativity_dir");
-	if (CIJ->size1 != CIJ->size2) throw size_exception();
+	if (safe_mode) check_status(CIJ, SQUARE | DIRECTED, "assortativity_dir");
 	
 	// [id,od,deg] = degrees_dir(CIJ);
 	gsl_vector* deg = degrees_dir(CIJ);
@@ -30,8 +29,7 @@ double bct::assortativity_dir(const gsl_matrix* CIJ) {
  * ignored.
  */
 double bct::assortativity_und(const gsl_matrix* CIJ) {
-	if (safe_mode) check_status(CIJ, UNDIRECTED, "assortativity_und");
-	if (CIJ->size1 != CIJ->size2) throw size_exception();
+	if (safe_mode) check_status(CIJ, SQUARE | UNDIRECTED, "assortativity_und");
 	
 	// [deg] = degrees_und(m);
 	gsl_vector* deg = degrees_und(CIJ);

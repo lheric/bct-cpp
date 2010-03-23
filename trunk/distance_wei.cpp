@@ -7,8 +7,7 @@
  * Computes the distance matrix for a weighted graph.
  */
 gsl_matrix* bct::distance_wei(const gsl_matrix* G) {
-	if (safe_mode) check_status(G, WEIGHTED, "distance_wei");
-	if (G->size1 != G->size2) throw size_exception();
+	if (safe_mode) check_status(G, SQUARE | WEIGHTED, "distance_wei");
 	
 	// n=length(G);
 	int n = length(G);

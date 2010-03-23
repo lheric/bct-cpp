@@ -8,7 +8,7 @@ double matching_ind(const gsl_vector*, const gsl_vector*, int, int, int);
  * Computes matching index for all connections.
  */
 gsl_matrix* bct::matching_ind(const gsl_matrix* CIJ) {
-	if (CIJ->size1 != CIJ->size2) throw size_exception();
+	if (safe_mode) check_status(CIJ, SQUARE, "matching_ind");
 	
 	// N = size(CIJ,1);
 	int N = CIJ->size1;
@@ -46,7 +46,7 @@ gsl_matrix* bct::matching_ind(const gsl_matrix* CIJ) {
  * Computes matching index for incoming connections.
  */
 gsl_matrix* bct::matching_ind_in(const gsl_matrix* CIJ) {
-	if (CIJ->size1 != CIJ->size2) throw size_exception();
+	if (safe_mode) check_status(CIJ, SQUARE, "matching_ind_in");
 	
 	// N = size(CIJ,1);
 	int N = CIJ->size1;
@@ -77,7 +77,7 @@ gsl_matrix* bct::matching_ind_in(const gsl_matrix* CIJ) {
  * Computes matching index for outgoing connections.
  */
 gsl_matrix* bct::matching_ind_out(const gsl_matrix* CIJ) {
-	if (CIJ->size1 != CIJ->size2) throw size_exception();
+	if (safe_mode) check_status(CIJ, SQUARE, "matching_ind_out");
 	
 	// N = size(CIJ,1);
 	int N = CIJ->size1;

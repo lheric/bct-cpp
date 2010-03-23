@@ -17,8 +17,7 @@ gsl_vector* bct::betweenness_wei(const gsl_matrix* G) {
  * Computes node and edge betweenness for a weighted graph.
  */
 gsl_matrix* bct::edge_betweenness_wei(const gsl_matrix* G, gsl_vector** BC) {
-	if (safe_mode) check_status(G, WEIGHTED, "edge_betweenness_bin");
-	if (G->size1 != G->size2) throw size_exception();
+	if (safe_mode) check_status(G, SQUARE | WEIGHTED, "edge_betweenness_wei");
 	
 	// n=length(G);
 	int n = length(G);

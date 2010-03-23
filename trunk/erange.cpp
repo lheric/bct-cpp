@@ -8,7 +8,7 @@
  * nodes it connects after the edge has been removed from the graph)
  */
 gsl_matrix* bct::erange(const gsl_matrix* CIJ, double* eta, gsl_matrix** Eshort, double* fs) {
-	if (CIJ->size1 != CIJ->size2) throw size_exception();
+	if (safe_mode) check_status(CIJ, SQUARE, "erange");
 	
 	// N = size(CIJ,1);
 	int N = CIJ->size1;

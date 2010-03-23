@@ -7,8 +7,7 @@
  * Computes the clustering coefficient for a weighted directed graph.
  */
 gsl_vector* bct::clustering_coef_wd(const gsl_matrix* W) {
-	if (safe_mode) check_status(W, WEIGHTED | DIRECTED, "clustering_coef_wd");
-	if (W->size1 != W->size2) throw size_exception();
+	if (safe_mode) check_status(W, SQUARE | WEIGHTED | DIRECTED, "clustering_coef_wd");
 	
 	// A=W~=0;
 	gsl_matrix* A = compare_elements(W, fp_not_equal, 0.0);

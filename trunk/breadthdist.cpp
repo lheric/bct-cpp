@@ -7,7 +7,7 @@
  * Computes reachability and distance matrices using breadth-first search.
  */
 gsl_matrix* bct::breadthdist(const gsl_matrix* CIJ, gsl_matrix** D) {
-	if (CIJ->size1 != CIJ->size2) throw size_exception();
+	if (safe_mode) check_status(CIJ, SQUARE, "breadthdist");
 	
 	// N = size(CIJ,1);
 	int N = CIJ->size1;

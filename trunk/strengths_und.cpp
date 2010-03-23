@@ -6,8 +6,7 @@
  * Computes strength for an undirected graph.
  */
 gsl_vector* bct::strengths_und(const gsl_matrix* CIJ) {
-	if (safe_mode) check_status(CIJ, UNDIRECTED, "strengths_und");
-	if (CIJ->size1 != CIJ->size2) throw size_exception();
+	if (safe_mode) check_status(CIJ, SQUARE | UNDIRECTED, "strengths_und");
 	
 	// str = sum(CIJ);
 	return sum(CIJ);
