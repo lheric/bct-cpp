@@ -30,7 +30,7 @@ By default, bct-cpp checks the status of any connection matrix passed to a speci
 
 = Error Handling =
 
-By default, GSL aborts program execution when an error is encountered.  BCT can override this behavior by setting a custom GSL error handler.  This handler converts a GSL error to one of two possible exceptions: `bct::out_of_memory_exception` for failed allocations and `bct::gsl_exception` for other errors.
+By default, GSL aborts program execution when an error is encountered.  BCT can override this behavior by setting a custom GSL error handler.  This handler converts a GSL error to a `bct::bct_exception`.
 
 `bct::init` must be called to enable this functionality.
 
