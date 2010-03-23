@@ -50,8 +50,8 @@ objects = \
 	motif3funct_wei.o \
 	motif3struct_bin.o \
 	motif3struct_wei.o \
-	norm_avr_shortest_path_length_bin.o \
-	norm_avr_shortest_path_length_wei.o \
+	normalized_path_length_bin.o \
+	normalized_path_length_wei.o \
 	randmio_dir.o \
 	randmio_dir_connected.o \
 	randmio_und.o \
