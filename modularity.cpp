@@ -13,8 +13,7 @@ gsl_vector* modularity(const gsl_matrix* B, int N, double m);
  * may be numbered differently.
  */
 double bct::modularity_dir(const gsl_matrix* A, gsl_vector** Ci) {
-	if (safe_mode) check_status(A, DIRECTED, "modularity_dir");
-	if (A->size1 != A->size2) throw size_exception();
+	if (safe_mode) check_status(A, SQUARE | DIRECTED, "modularity_dir");
 	
 	// Ki=sum(A,1);
 	gsl_vector* Ki = sum(A, 1);
@@ -84,8 +83,7 @@ double bct::modularity_dir(const gsl_matrix* A, gsl_vector** Ci) {
  * may be numbered differently.
  */
 double bct::modularity_und(const gsl_matrix* A, gsl_vector** Ci) {
-	if (safe_mode) check_status(A, UNDIRECTED, "modularity_und");
-	if (A->size1 != A->size2) throw size_exception();
+	if (safe_mode) check_status(A, SQUARE | UNDIRECTED, "modularity_und");
 	
 	// K=sum(A);
 	gsl_vector* K = sum(A);

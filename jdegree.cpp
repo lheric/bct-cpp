@@ -8,7 +8,7 @@
  * incoming connections.
  */
 gsl_matrix* bct::jdegree(const gsl_matrix* CIJ) {
-	if (CIJ->size1 != CIJ->size2) throw size_exception();
+	if (safe_mode) check_status(CIJ, SQUARE, "jdegree");
 	
 	// CIJ = double(CIJ~=0);
 	gsl_matrix* _CIJ = compare_elements(CIJ, fp_not_equal, 0.0);

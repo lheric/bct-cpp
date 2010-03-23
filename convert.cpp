@@ -57,7 +57,6 @@ gsl_matrix* bct::to_positive(const gsl_matrix* m) {
  * are set to one.  Otherwise, both are set to zero.
  */
 gsl_matrix* bct::to_undirected_bin(const gsl_matrix* m) {
-	if (m->size1 != m->size2) throw size_exception();
 	gsl_matrix* und_m = gsl_matrix_calloc(m->size1, m->size2);
 	for (int i = 0; i < (int)m->size1; i++) {
 		for (int j = i; j < (int)m->size2; j++) {
@@ -77,7 +76,6 @@ gsl_matrix* bct::to_undirected_bin(const gsl_matrix* m) {
  * nodes, m(i, j) and m(j, i) are both set to the average of their two values.
  */
 gsl_matrix* bct::to_undirected_wei(const gsl_matrix* m) {
-	if (m->size1 != m->size2) throw size_exception();
 	gsl_matrix* und_m = gsl_matrix_calloc(m->size1, m->size2);
 	for (int i = 0; i < (int)m->size1; i++) {
 		for (int j = i; j < (int)m->size2; j++) {

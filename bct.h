@@ -12,6 +12,8 @@
 #include "matlab/matlab_double.h"
 #include "matlab/matlab_float.h"
 #include "matlab/matlab_long_double.h"
+#include <stdexcept>
+#include <string>
 #include <vector>
 
 #ifdef BCT_SWIG
@@ -23,10 +25,10 @@ namespace bct {
 	using namespace matlab;
 #endif
 	
-	class bct_exception { };
-	class gsl_exception : public bct_exception { };
-	class out_of_memory_exception : public bct_exception { };
-	class size_exception : public bct_exception { };
+	class bct_exception : public std::runtime_error {
+	public:
+		bct_exception(const std::string& what_arg) : std::runtime_error(what_arg) { }
+	};
 
 	// Density, degree, and assortativity
 	double assortativity_dir(const gsl_matrix*);
@@ -123,15 +125,18 @@ namespace bct {
 	
 	// Matrix status checking
 	enum status {
-		UNDIRECTED = 1, DIRECTED = 2,
-		BINARY = 4, WEIGHTED = 8,
-		POSITIVE = 16, SIGNED = 32,
-		NO_LOOPS = 64, LOOPS = 128
+		SQUARE = 1, RECTANGULAR = 2,
+		UNDIRECTED = 4, DIRECTED = 8,
+		BINARY = 16, WEIGHTED = 32,
+		POSITIVE = 64, SIGNED = 128,
+		NO_LOOPS = 256, LOOPS = 512
 	};
 	extern bool safe_mode;
 	bool get_safe_mode();
 	void set_safe_mode(bool);
 	bool check_status(const gsl_matrix*, int, const char* = NULL);
+	bool is_square(const gsl_matrix*);
+	bool is_rectangular(const gsl_matrix*);
 	bool is_undirected(const gsl_matrix*);
 	bool is_directed(const gsl_matrix*);
 	bool is_binary(const gsl_matrix*);

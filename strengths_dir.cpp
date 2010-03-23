@@ -6,8 +6,7 @@
  * Computes strength, in-strength, and out-strength for a directed graph.
  */
 gsl_vector* bct::strengths_dir(const gsl_matrix* CIJ, gsl_vector** is, gsl_vector** os) {
-	if (safe_mode) check_status(CIJ, DIRECTED, "strengths_dir");
-	if (CIJ->size1 != CIJ->size2) throw size_exception();
+	if (safe_mode) check_status(CIJ, SQUARE | DIRECTED, "strengths_dir");
 	
 	// is = sum(CIJ,1);
 	gsl_vector* _is = sum(CIJ, 1);

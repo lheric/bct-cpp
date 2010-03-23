@@ -6,8 +6,7 @@
  * Counts occurrences of three-node functional motifs in a binary graph.
  */
 gsl_matrix* bct::motif3funct_bin(const gsl_matrix* W, gsl_vector** f) {
-	if (safe_mode) check_status(W, BINARY, "motif3funct_bin");
-	if (W->size1 != W->size2) throw size_exception();
+	if (safe_mode) check_status(W, SQUARE | BINARY, "motif3funct_bin");
 	
 	// load motif34lib M3 ID3 N3
 	gsl_vector* ID3;

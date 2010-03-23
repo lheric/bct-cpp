@@ -7,8 +7,7 @@
  * Computes the distance matrix for a binary graph.
  */
 gsl_matrix* bct::distance_bin(const gsl_matrix* G) {
-	if (safe_mode) check_status(G, BINARY, "distance_bin");
-	if (G->size1 != G->size2) throw size_exception();
+	if (safe_mode) check_status(G, SQUARE | BINARY, "distance_bin");
 	
 	// D=eye(length(G));
 	gsl_matrix* D = eye_double(length(G));

@@ -6,8 +6,7 @@
  * Computes the clustering coefficient for a binary undirected graph.
  */
 gsl_vector* bct::clustering_coef_bu(const gsl_matrix* G) {
-	if (safe_mode) check_status(G, BINARY | UNDIRECTED, "clustering_coef_bu");
-	if (G->size1 != G->size2) throw size_exception();
+	if (safe_mode) check_status(G, SQUARE | BINARY | UNDIRECTED, "clustering_coef_bu");
 	
 	// n=length(G);
 	int n = length(G);

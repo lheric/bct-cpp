@@ -163,6 +163,7 @@ gsl_matrix* bct::makerandCIJdegreesfixed(const gsl_vector* in, const gsl_vector*
  * matrix contains nonzero entries on the main diagonal.
  */
 gsl_matrix* bct::makerandCIJdegreesfixed(const gsl_matrix* m) {
+	if (safe_mode) check_status(m, SQUARE | NO_LOOPS, "makerandCIJdegreesfixed");
 	gsl_vector* id;
 	gsl_vector* od;
 	gsl_vector* deg = degrees_dir(m, &id, &od);

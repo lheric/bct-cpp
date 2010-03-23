@@ -10,8 +10,7 @@
  * Strength distributions are not preserved for weighted graphs.
  */
 gsl_matrix* bct::randmio_und(const gsl_matrix* R, int ITER) {
-	if (safe_mode) check_status(R, UNDIRECTED, "randmio_und");
-	if (R->size1 != R->size2) throw size_exception();
+	if (safe_mode) check_status(R, SQUARE | UNDIRECTED, "randmio_und");
 	
 	gsl_rng_default_seed = std::time(NULL);
 	gsl_rng* rng = gsl_rng_alloc(gsl_rng_default);
