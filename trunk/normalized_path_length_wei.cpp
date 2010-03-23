@@ -5,7 +5,7 @@
 /*
  * Computes the normalized average shortest path length for a weighted graph.
  */
-double bct::norm_avr_shortest_path_length_wei(const gsl_matrix* m, double wmax) {
+double bct::normalized_path_length_wei(const gsl_matrix* m, double wmax) {
 	if (safe_mode) check_status(m, WEIGHTED, "norm_avr_shortest_path_length_wei");
 	if (m->size1 != m->size2) throw size_exception();
 	int N = m->size1;

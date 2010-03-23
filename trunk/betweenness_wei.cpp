@@ -132,7 +132,7 @@ gsl_matrix* bct::edge_betweenness_wei(const gsl_matrix* G, gsl_vector** BC) {
 				gsl_vector_free(D_S);
 				
 				// elseif isinf(minD),
-				if (gsl_isinf(minD)) {
+				if (gsl_isinf(minD) == 1) {
 					
 					// Q(1:q)=find(isinf(D)); break
 					gsl_vector* isinf_D = compare_elements(D, fp_equal, GSL_POSINF);

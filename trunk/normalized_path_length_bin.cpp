@@ -5,7 +5,7 @@
 /*
  * Computes the normalized average shortest path length for a binary graph.
  */
-double bct::norm_avr_shortest_path_length_bin(const gsl_matrix* m) {
+double bct::normalized_path_length_bin(const gsl_matrix* m) {
 	if (safe_mode) check_status(m, BINARY, "norm_avr_shortest_path_length_bin");
 	if (m->size1 != m->size2) throw size_exception();
 	int N = m->size1;
