@@ -35,6 +35,7 @@ objects = \
 	latmio_und_connected.o \
 	macaque.o \
 	make_motif34lib.o \
+	makeevenCIJ.o \
 	makerandCIJ_bd.o \
 	makerandCIJ_bu.o \
 	makerandCIJ_wd.o \

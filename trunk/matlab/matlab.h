@@ -183,6 +183,7 @@ namespace matlab {
 	gsl_matrix_long_double* to_matrix_long_double(const MATRIX_TYPE*);
 	MATRIX_TYPE* to_column_matrix(const VECTOR_TYPE*);
 	MATRIX_TYPE* to_row_matrix(const VECTOR_TYPE*);
+	VECTOR_TYPE* FP_ID(to_vector)(const gsl_permutation*);
 	gsl_permutation* to_permutation(const VECTOR_TYPE*);
 	
 	// Utility
