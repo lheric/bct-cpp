@@ -92,7 +92,7 @@ gsl_matrix_float* matlab::to_matrix_float(const MATRIX_TYPE* m) {
 }
 
 /*
- * Converts a matrix to float precision.
+ * Converts a matrix to double precision.
  */
 gsl_matrix* matlab::to_matrix_double(const MATRIX_TYPE* m) {
 	gsl_matrix* m_d = gsl_matrix_alloc(m->size1, m->size2);
@@ -105,7 +105,7 @@ gsl_matrix* matlab::to_matrix_double(const MATRIX_TYPE* m) {
 }
 
 /*
- * Converts a matrix to float precision.
+ * Converts a matrix to long double precision.
  */
 gsl_matrix_long_double* matlab::to_matrix_long_double(const MATRIX_TYPE* m) {
 	gsl_matrix_long_double* m_ld = gsl_matrix_long_double_alloc(m->size1, m->size2);
@@ -137,6 +137,17 @@ MATRIX_TYPE* matlab::to_row_matrix(const VECTOR_TYPE* v) {
 		MATRIX_ID(set)(m, 0, i, VECTOR_ID(get)(v, i));
 	}
 	return m;
+}
+
+/*
+ * Converts a permutation to a vector.
+ */
+VECTOR_TYPE* matlab::FP_ID(to_vector)(const gsl_permutation* p) {
+	VECTOR_TYPE* v = VECTOR_ID(alloc)(p->size);
+	for (int i = 0; i < (int)p->size; i++) {
+		VECTOR_ID(set)(v, i, (FP_TYPE)gsl_permutation_get(p, i));
+	}
+	return v;
 }
 
 /*

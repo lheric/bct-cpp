@@ -1,7 +1,15 @@
 bct_test_setup
 
-N = floor(91 * rand()) + 10;
-Kdir = floor((N * N - N + 1) * rand());
+N = 2 ^ (4 + floor(4 * rand()));
+sz_cl = log2(N) - 2;
+K = (N * (N - 1) + 4 * (2 ^ sz_cl * (2 ^ sz_cl - 1))) / 2;
+
+% makeevenCIJ
+CIJ = makeevenCIJ(N, K, sz_cl);
+bct_test("makeevenCIJ", size(CIJ) == [N N] && sum(degrees_dir(CIJ)) == K)
+
+N = 10 + floor(91 * rand());
+Kdir = floor((N * (N - 1) + 1) * rand());
 Kund = floor(Kdir / 2);
 
 % makerandCIJ_bd

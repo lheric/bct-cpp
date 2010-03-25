@@ -96,6 +96,7 @@ namespace bct {
 	double modularity_und(const gsl_matrix*, gsl_vector** = NULL);
 	
 	// Synthetic connection networks
+	gsl_matrix* makeevenCIJ(int, int, int);
 	gsl_matrix* makerandCIJ_bd(int, int);
 	gsl_matrix* makerandCIJ_bu(int, int);
 	gsl_matrix* makerandCIJ_wd(int, int, double, double);
