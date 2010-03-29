@@ -43,16 +43,16 @@ double bct::mean(const gsl_vector* v) {
 }
 
 /*
- * Returns the number of links in a directed graph.
+ * Returns the number of edges in a directed graph.
  */
-int bct::number_of_links_dir(const gsl_matrix* m) {
+int bct::number_of_edges_dir(const gsl_matrix* m) {
 	return nnz(m);
 }
 
 /*
- * Returns the number of links in an undirected graph.
+ * Returns the number of edges in an undirected graph.
  */
-int bct::number_of_links_und(const gsl_matrix* m) {
+int bct::number_of_edges_und(const gsl_matrix* m) {
 	gsl_matrix* triu_m = triu(m);
 	int ret = nnz(triu_m);
 	gsl_matrix_free(triu_m);

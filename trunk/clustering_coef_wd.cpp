@@ -43,6 +43,7 @@ gsl_vector* bct::clustering_coef_wd(const gsl_matrix* W) {
 	gsl_vector* K_sub_1 = copy(K);
 	gsl_vector_add_constant(K_sub_1, -1.0);
 	gsl_matrix* A_pow_2_mul_2 = pow(A, 2);
+	gsl_matrix_free(A);
 	gsl_matrix_scale(A_pow_2_mul_2, 2.0);
 	gsl_vector_view diag_A_pow_2_mul_2 = gsl_matrix_diagonal(A_pow_2_mul_2);
 	gsl_vector* CYC3 = K;

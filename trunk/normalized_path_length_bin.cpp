@@ -19,5 +19,5 @@ double bct::normalized_path_length_bin(const gsl_matrix* m) {
 		}
 	}
 	gsl_matrix_free(D);
-	return ((sum / (double)(N*(N - 1))) - 1.0) / (double)(N - 1);
+	return ((sum / (double)(N * (N - 1))) - 1.0) / (double)(N - 1);
 }
