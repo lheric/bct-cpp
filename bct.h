@@ -100,9 +100,9 @@ namespace bct {
 	gsl_matrix* makerandCIJ_bd(int, int);
 	gsl_matrix* makerandCIJ_bu(int, int);
 	gsl_matrix* makerandCIJ_wd(int, int, double, double);
-	gsl_matrix* makerandCIJ_wd(const gsl_matrix*);
+	gsl_matrix* makerandCIJ_wd_wp(const gsl_matrix*);
 	gsl_matrix* makerandCIJ_wu(int, int, double, double);
-	gsl_matrix* makerandCIJ_wu(const gsl_matrix*);
+	gsl_matrix* makerandCIJ_wu_wp(const gsl_matrix*);
 	gsl_matrix* makerandCIJdegreesfixed(const gsl_vector*, const gsl_vector*);
 	gsl_matrix* makerandCIJdegreesfixed(const gsl_matrix*);
 	
@@ -162,8 +162,8 @@ namespace bct {
 	void gsl_free(std::vector<gsl_matrix*>&);
 	void init();
 	double mean(const gsl_vector*);
-	int number_of_links_dir(const gsl_matrix*);
-	int number_of_links_und(const gsl_matrix*);
+	int number_of_edges_dir(const gsl_matrix*);
+	int number_of_edges_und(const gsl_matrix*);
 	int number_of_nodes(const gsl_matrix*);
 	
 	// Debugging

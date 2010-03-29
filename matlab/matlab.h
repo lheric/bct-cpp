@@ -35,9 +35,9 @@ namespace matlab {
 	VECTOR_TYPE* diag(const MATRIX_TYPE*, int = 0);
 	MATRIX_TYPE* FP_ID(eye)(int);
 	MATRIX_TYPE* FP_ID(eye)(int, int);
-	VECTOR_TYPE* find(const VECTOR_TYPE*, int = GSL_POSINF, const char* = "first");
-	VECTOR_TYPE* find(const MATRIX_TYPE*, int = GSL_POSINF, const char* = "first");
-	MATRIX_TYPE* find_ij(const MATRIX_TYPE*, int = GSL_POSINF, const char* = "first");
+	VECTOR_TYPE* find(const VECTOR_TYPE*, int = std::numeric_limits<int>::max(), const char* = "first");
+	VECTOR_TYPE* find(const MATRIX_TYPE*, int = std::numeric_limits<int>::max(), const char* = "first");
+	MATRIX_TYPE* find_ij(const MATRIX_TYPE*, int = std::numeric_limits<int>::max(), const char* = "first");
 	VECTOR_TYPE* hist(const VECTOR_TYPE*, int = 10);
 	VECTOR_TYPE* hist(const VECTOR_TYPE*, const VECTOR_TYPE*);
 	int length(const VECTOR_TYPE*);

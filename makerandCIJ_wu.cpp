@@ -64,8 +64,8 @@ gsl_matrix* bct::makerandCIJ_wu(int N, int K, double wmin, double wmax) {
  * placed on the main diagonal.  The given matrix should therefore not contain
  * nonzero entries on the main diagonal.
  */
-gsl_matrix* bct::makerandCIJ_wu(const gsl_matrix* m) {
-	if (safe_mode) check_status(m, SQUARE | NO_LOOPS, "makerandCIJ_wu");
+gsl_matrix* bct::makerandCIJ_wu_wp(const gsl_matrix* m) {
+	if (safe_mode) check_status(m, SQUARE | NO_LOOPS, "makerandCIJ_wu_wp");
 	int N = m->size1;
 	int K = (N * N - N) / 2;
 	double* w = new double[K];
