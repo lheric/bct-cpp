@@ -161,10 +161,12 @@ namespace bct {
 	void gsl_free(gsl_matrix*);
 	void gsl_free(std::vector<gsl_matrix*>&);
 	void init();
-	double mean(const gsl_vector*);
 	int number_of_edges_dir(const gsl_matrix*);
 	int number_of_edges_und(const gsl_matrix*);
 	int number_of_nodes(const gsl_matrix*);
+	// TODO: These belong in matlab/functions.cpp...move them when SWIG-accessible
+	double mean(const gsl_vector*, const char* = "a");
+	gsl_vector* mean(const gsl_matrix*, int = 1, const char* = "a");
 	
 	// Debugging
 	void printf(const gsl_vector*, const char*);
