@@ -1,8 +1,10 @@
 #include <cmath>
 #include <cstring>
 #include <cstddef>
+#include <ctime>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
+#include <gsl/gsl_rng.h>
 #include <gsl/gsl_vector.h>
 
 /*
@@ -418,6 +420,34 @@ VECTOR_TYPE* matlab::prod(const MATRIX_TYPE* m, int dim) {
 	} else {
 		return NULL;
 	}
+}
+
+MATRIX_TYPE* matlab::FP_ID(rand)(int size) {
+	return FP_ID(rand)(size, size);
+}
+
+MATRIX_TYPE* matlab::FP_ID(rand)(int size1, int size2) {
+	gsl_rng_default_seed = std::time(NULL);
+	gsl_rng* rng = gsl_rng_alloc(gsl_rng_default);
+	MATRIX_TYPE* rand_m = MATRIX_ID(alloc)(size1, size2);
+	for (int i = 0; i < size1; i++) {
+		for (int j = 0; j < size2; j++) {
+			MATRIX_ID(set)(rand_m, i, j, (FP_TYPE)gsl_rng_uniform(rng));
+		}
+	}
+	gsl_rng_free(rng);
+	return rand_m;
+}
+
+VECTOR_TYPE* matlab::FP_ID(rand_vector)(int size) {
+	gsl_rng_default_seed = std::time(NULL);
+	gsl_rng* rng = gsl_rng_alloc(gsl_rng_default);
+	VECTOR_TYPE* rand_v = VECTOR_ID(alloc)(size);
+	for (int i = 0; i < size; i++) {
+		VECTOR_ID(set)(rand_v, i, (FP_TYPE)gsl_rng_uniform(rng));
+	}
+	gsl_rng_free(rng);
+	return rand_v;
 }
 
 VECTOR_TYPE* matlab::reverse(const VECTOR_TYPE* v) {

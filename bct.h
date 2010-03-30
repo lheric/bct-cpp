@@ -97,6 +97,7 @@ namespace bct {
 	
 	// Synthetic connection networks
 	gsl_matrix* makeevenCIJ(int, int, int);
+	gsl_matrix* makefractalCIJ(int, double, int, int* = NULL);
 	gsl_matrix* makerandCIJ_bd(int, int);
 	gsl_matrix* makerandCIJ_bu(int, int);
 	gsl_matrix* makerandCIJ_wd(int, int, double, double);
@@ -164,7 +165,6 @@ namespace bct {
 	int number_of_edges_dir(const gsl_matrix*);
 	int number_of_edges_und(const gsl_matrix*);
 	int number_of_nodes(const gsl_matrix*);
-	// TODO: These belong in matlab/functions.cpp...move them when SWIG-accessible
 	double mean(const gsl_vector*, const char* = "a");
 	gsl_vector* mean(const gsl_matrix*, int = 1, const char* = "a");
 	

@@ -56,6 +56,9 @@ namespace matlab {
 	VECTOR_TYPE* FP_ID(ones_vector)(int);
 	FP_TYPE prod(const VECTOR_TYPE*);
 	VECTOR_TYPE* prod(const MATRIX_TYPE*, int = 1);
+	MATRIX_TYPE* FP_ID(rand)(int);
+	MATRIX_TYPE* FP_ID(rand)(int, int);
+	VECTOR_TYPE* FP_ID(rand_vector)(int);
 	VECTOR_TYPE* reverse(const VECTOR_TYPE*);
 	VECTOR_TYPE* setxor(const VECTOR_TYPE*, const VECTOR_TYPE*);
 	VECTOR_TYPE* sort(const VECTOR_TYPE*, const char* = "ascend", VECTOR_TYPE** = NULL);

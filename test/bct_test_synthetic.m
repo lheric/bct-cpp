@@ -8,6 +8,13 @@ K = (N * (N - 1) + 4 * (2 ^ sz_cl * (2 ^ sz_cl - 1))) / 2;
 CIJ = makeevenCIJ(N, K, sz_cl);
 bct_test("makeevenCIJ", size(CIJ) == [N N] && sum(degrees_dir(CIJ)) == K)
 
+mx_lvl = log2(N);
+E = 3;
+
+% makefractalCIJ
+[CIJ K] = makefractalCIJ(mx_lvl, E, sz_cl);
+bct_test("makefractalCIJ", size(CIJ) == [N N] && sum(degrees_dir(CIJ)) == K)
+
 N = 10 + floor(91 * rand());
 Kdir = floor((N * (N - 1) + 1) * rand());
 Kund = floor(Kdir / 2);
