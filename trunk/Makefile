@@ -36,6 +36,7 @@ objects = \
 	macaque.o \
 	make_motif34lib.o \
 	makeevenCIJ.o \
+	makefractalCIJ.o \
 	makerandCIJ_bd.o \
 	makerandCIJ_bu.o \
 	makerandCIJ_wd.o \

@@ -35,6 +35,7 @@ filenames = \
 	latmio_und_cpp \
 	latmio_und_connected_cpp \
 	makeevenCIJ_cpp \
+	makefractalCIJ_cpp \
 	makerandCIJ_bd_cpp \
 	makerandCIJ_bu_cpp \
 	makerandCIJdegreesfixed_cpp \
