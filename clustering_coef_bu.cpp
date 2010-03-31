@@ -21,19 +21,22 @@ gsl_vector* bct::clustering_coef_bu(const gsl_matrix* G) {
 		// k=length(V);
 		// if k>=2;
 		gsl_vector_const_view G_row_u = gsl_matrix_const_row(G, u);
-		int k = nnz(&G_row_u.vector);
-		if (k >= 2) {
-			gsl_vector* V = find(&G_row_u.vector);
+		gsl_vector* V = find(&G_row_u.vector);
+		if (V != NULL) {
+			int k = length(V);
+			if (k >= 2) {
+				
+				// S=G(V,V);
+				gsl_matrix* S = ordinal_index(G, V, V);
+				
+				// C(u)=sum(S(:))/(k^2-k);
+				gsl_vector* sum_S = sum(S);
+				gsl_matrix_free(S);
+				gsl_vector_set(C, u, sum(sum_S) / (double)(k * (k - 1)));
+				gsl_vector_free(sum_S);
+			}
 			
-			// S=G(V,V);
-			gsl_matrix* S = ordinal_index(G, V, V);
 			gsl_vector_free(V);
-			
-			// C(u)=sum(S(:))/(k^2-k);
-			gsl_vector* sum_S = sum(S);
-			gsl_matrix_free(S);
-			gsl_vector_set(C, u, sum(sum_S) / (double)(k * k - k));
-			gsl_vector_free(sum_S);
 		}
 	}
 	
