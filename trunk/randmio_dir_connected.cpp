@@ -13,8 +13,7 @@
 gsl_matrix* bct::randmio_dir_connected(const gsl_matrix* R, int ITER) {
 	if (safe_mode) check_status(R, SQUARE | DIRECTED, "randmio_dir_connected");
 	
-	gsl_rng_default_seed = std::time(NULL);
-	gsl_rng* rng = gsl_rng_alloc(gsl_rng_default);
+	gsl_rng* rng = get_gsl_rng();
 	
 	// [i j]=find(R);
 	gsl_matrix* find_R = find_ij(R);
@@ -213,7 +212,6 @@ gsl_matrix* bct::randmio_dir_connected(const gsl_matrix* R, int ITER) {
 		}
 	}
 	
-	gsl_rng_free(rng);
 	gsl_matrix_free(find_R);
 	return _R;
 }

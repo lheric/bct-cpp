@@ -13,13 +13,11 @@
  * the main diagonal.
  */
 gsl_matrix* bct::makerandCIJ_wu(int N, int K, double wmin, double wmax) {
-	gsl_rng_default_seed = std::time(NULL);
-	gsl_rng* rng = gsl_rng_alloc(gsl_rng_default);
+	gsl_rng* rng = get_gsl_rng();
 	gsl_vector* w = gsl_vector_alloc(K);
 	for (int i = 0; i < K; i++) {
 		gsl_vector_set(w, i, gsl_rng_uniform(rng) * (wmax - wmin) + wmin);
 	}
-	gsl_rng_free(rng);
 	
 	// ind = triu(~eye(N));
 	gsl_matrix* eye_N = eye_double(N);
@@ -74,10 +72,8 @@ gsl_matrix* bct::makerandCIJ_wu_wp(const gsl_matrix* m) {
 			w[k++] = gsl_matrix_get(m, i, j);
 		}
 	}
-	gsl_rng_default_seed = std::time(NULL);
-	gsl_rng* rng = gsl_rng_alloc(gsl_rng_default);
+	gsl_rng* rng = get_gsl_rng();
 	gsl_ran_shuffle(rng, w, K, sizeof(double));
-	gsl_rng_free(rng);
 	gsl_matrix* rand_m = gsl_matrix_alloc(m->size1, m->size2);
 	for (int i = 0, k = 0; i < (int)m->size1; i++) {
 		for (int j = i; j < (int)m->size2; j++) {

@@ -73,8 +73,7 @@ gsl_matrix* matlab::inv(const gsl_matrix* m) {
  * version uses the integers 1 to size.
  */
 gsl_permutation* matlab::randperm(int size) {
-	gsl_rng_default_seed = std::time(NULL);
-	gsl_rng* rng = gsl_rng_alloc(gsl_rng_default);
+	gsl_rng* rng = get_gsl_rng();
 	double values[size];
 	for (int i = 0; i < size; i++) {
 		values[i] = (double)i;
@@ -82,7 +81,6 @@ gsl_permutation* matlab::randperm(int size) {
 	gsl_ran_shuffle(rng, values, size, sizeof(double));
 	gsl_vector_view values_vv = gsl_vector_view_array(values, size);
 	gsl_permutation* values_p = to_permutation(&values_vv.vector);
-	gsl_rng_free(rng);
 	return values_p;
 }
 
@@ -117,4 +115,17 @@ gsl_matrix* matlab::div_right(const gsl_matrix* m1, const gsl_matrix* m2) {
 	gsl_matrix_free(m1_transpose);
 	gsl_matrix_transpose(div_m);
 	return div_m;
+}
+
+/*
+ * Returns a random number generator that is guaranteed to be seeded only once
+ * during program execution.  This generator should not be freed by the caller.
+ */
+gsl_rng* matlab::get_gsl_rng() {
+	static gsl_rng* rng = NULL;
+	if (rng == NULL) {
+		gsl_rng_default_seed = std::time(NULL);
+		rng = gsl_rng_alloc(gsl_rng_default);
+	}
+	return rng;
 }

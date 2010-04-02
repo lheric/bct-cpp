@@ -1,6 +1,7 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_permutation.h>
+#include <gsl/gsl_rng.h>
 #include <gsl/gsl_vector.h>
 #include <limits>
 #include "sort.h"
@@ -188,6 +189,7 @@ namespace matlab {
 	gsl_permutation* to_permutation(const VECTOR_TYPE*);
 	
 	// Utility
+	gsl_rng* get_gsl_rng();
 	MATRIX_TYPE* permute_columns(const gsl_permutation*, const MATRIX_TYPE*);
 	MATRIX_TYPE* permute_rows(const gsl_permutation*, const MATRIX_TYPE*);
 };
