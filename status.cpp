@@ -2,6 +2,7 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include <iostream>
+#include <string>
 #include <vector>
 
 bool bct::safe_mode = true;
@@ -13,7 +14,7 @@ void bct::set_safe_mode(bool safe_mode) { bct::safe_mode = safe_mode; }
  * Returns whether a matrix matches the given status flags.  If the check fails,
  * a message is printed to stderr starting with the given text.
  */
-bool bct::check_status(const gsl_matrix* m, int flags, const char* text) {
+bool bct::check_status(const gsl_matrix* m, int flags, const std::string& text) {
 	status prop[] = {
 		SQUARE, RECTANGULAR,
 		UNDIRECTED, DIRECTED,
@@ -21,7 +22,7 @@ bool bct::check_status(const gsl_matrix* m, int flags, const char* text) {
 		POSITIVE, SIGNED,
 		NO_LOOPS, LOOPS
 	};
-	const char* propstr[] = {
+	std::string propstr[] = {
 		"square", "rectangular",
 		"undirected", "directed",
 		"binary", "weighted",
@@ -36,7 +37,7 @@ bool bct::check_status(const gsl_matrix* m, int flags, const char* text) {
 		has_no_loops, has_loops
 	};
 	bool ret = true;
-	std::vector<const char*> failures;
+	std::vector<std::string> failures;
 	for (int i = 0; i < 10; i++) {
 		if (flags & (int)prop[i]) {
 			if (!propfn[i](m)) {
@@ -46,8 +47,7 @@ bool bct::check_status(const gsl_matrix* m, int flags, const char* text) {
 		}
 	}
 	if (!ret) {
-		if (text != NULL) std::cerr << text << ": ";
-		std::cerr << "Matrix status check failed (not ";
+		std::cerr << text << ": Matrix status check failed (not ";
 		for (int i = 0; i < (int)failures.size(); i++) {
 			std::cerr << failures[i];
 			if (i < (int)failures.size() - 1) {

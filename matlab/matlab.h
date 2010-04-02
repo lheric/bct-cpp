@@ -5,6 +5,7 @@
 #include <gsl/gsl_vector.h>
 #include <limits>
 #include "sort.h"
+#include <string>
 
 namespace matlab {
 	
@@ -13,8 +14,8 @@ namespace matlab {
 #define MATLAB_H
 	
 	// Functions
-	void dec2bin(int, char*);
-	void dec2bin(int, int, char*);
+	std::string dec2bin(int);
+	std::string dec2bin(int, int);
 	gsl_matrix* inv(const gsl_matrix*);
 	gsl_permutation* randperm(int);
 	
@@ -36,9 +37,9 @@ namespace matlab {
 	VECTOR_TYPE* diag(const MATRIX_TYPE*, int = 0);
 	MATRIX_TYPE* FP_ID(eye)(int);
 	MATRIX_TYPE* FP_ID(eye)(int, int);
-	VECTOR_TYPE* find(const VECTOR_TYPE*, int = std::numeric_limits<int>::max(), const char* = "first");
-	VECTOR_TYPE* find(const MATRIX_TYPE*, int = std::numeric_limits<int>::max(), const char* = "first");
-	MATRIX_TYPE* find_ij(const MATRIX_TYPE*, int = std::numeric_limits<int>::max(), const char* = "first");
+	VECTOR_TYPE* find(const VECTOR_TYPE*, int = std::numeric_limits<int>::max(), const std::string& = "first");
+	VECTOR_TYPE* find(const MATRIX_TYPE*, int = std::numeric_limits<int>::max(), const std::string& = "first");
+	MATRIX_TYPE* find_ij(const MATRIX_TYPE*, int = std::numeric_limits<int>::max(), const std::string& = "first");
 	VECTOR_TYPE* hist(const VECTOR_TYPE*, int = 10);
 	VECTOR_TYPE* hist(const VECTOR_TYPE*, const VECTOR_TYPE*);
 	int length(const VECTOR_TYPE*);
@@ -62,17 +63,17 @@ namespace matlab {
 	VECTOR_TYPE* FP_ID(rand_vector)(int);
 	VECTOR_TYPE* reverse(const VECTOR_TYPE*);
 	VECTOR_TYPE* setxor(const VECTOR_TYPE*, const VECTOR_TYPE*);
-	VECTOR_TYPE* sort(const VECTOR_TYPE*, const char* = "ascend", VECTOR_TYPE** = NULL);
-	MATRIX_TYPE* sort(const MATRIX_TYPE*, int = 1, const char* = "ascend", MATRIX_TYPE** = NULL);
+	VECTOR_TYPE* sort(const VECTOR_TYPE*, const std::string& = "ascend", VECTOR_TYPE** = NULL);
+	MATRIX_TYPE* sort(const MATRIX_TYPE*, int = 1, const std::string& = "ascend", MATRIX_TYPE** = NULL);
 	VECTOR_TYPE* sortrows(const VECTOR_TYPE*, VECTOR_TYPE** = NULL);
 	MATRIX_TYPE* sortrows(const MATRIX_TYPE*, VECTOR_TYPE** = NULL);
 	FP_TYPE sum(const VECTOR_TYPE*);
 	VECTOR_TYPE* sum(const MATRIX_TYPE*, int = 1);
 	MATRIX_TYPE* tril(const MATRIX_TYPE*, int = 0);
 	MATRIX_TYPE* triu(const MATRIX_TYPE*, int = 0);
-	VECTOR_TYPE* unique(const VECTOR_TYPE*, const char* = "last", VECTOR_TYPE** = NULL, VECTOR_TYPE** = NULL);
-	VECTOR_TYPE* unique(const MATRIX_TYPE*, const char* = "last", VECTOR_TYPE** = NULL, VECTOR_TYPE** = NULL);
-	MATRIX_TYPE* unique_rows(const MATRIX_TYPE*, const char* = "last", VECTOR_TYPE** = NULL, VECTOR_TYPE** = NULL);
+	VECTOR_TYPE* unique(const VECTOR_TYPE*, const std::string& = "last", VECTOR_TYPE** = NULL, VECTOR_TYPE** = NULL);
+	VECTOR_TYPE* unique(const MATRIX_TYPE*, const std::string& = "last", VECTOR_TYPE** = NULL, VECTOR_TYPE** = NULL);
+	MATRIX_TYPE* unique_rows(const MATRIX_TYPE*, const std::string& = "last", VECTOR_TYPE** = NULL, VECTOR_TYPE** = NULL);
 	MATRIX_TYPE* FP_ID(zeros)(int);
 	MATRIX_TYPE* FP_ID(zeros)(int, int);
 	VECTOR_TYPE* FP_ID(zeros_vector)(int);

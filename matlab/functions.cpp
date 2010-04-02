@@ -1,11 +1,11 @@
 #include <cmath>
-#include <cstring>
 #include <cstddef>
 #include <ctime>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_vector.h>
+#include <string>
 
 /*
  * See MATLAB documentation for descriptions of these functions.  We will
@@ -130,13 +130,13 @@ MATRIX_TYPE* matlab::FP_ID(eye)(int size1, int size2) {
 	return eye_m;
 }
 
-VECTOR_TYPE* matlab::find(const VECTOR_TYPE* v, int n, const char* direction) {
+VECTOR_TYPE* matlab::find(const VECTOR_TYPE* v, int n, const std::string& direction) {
 	int n_find = nnz(v);
 	if (n_find == 0 || n < 1) {
 		return NULL;
 	}
 	VECTOR_TYPE* find_v = VECTOR_ID(alloc)(n < n_find ? n : n_find);
-	if (std::strcmp(direction, "first") == 0) {
+	if (direction == "first") {
 		int position = 0;
 		for (int i = 0; i < (int)v->size && position < (int)find_v->size; i++) {
 			if (fp_nonzero(VECTOR_ID(get)(v, i))) {
@@ -145,7 +145,7 @@ VECTOR_TYPE* matlab::find(const VECTOR_TYPE* v, int n, const char* direction) {
 			}
 		}
 		return find_v;
-	} else if (std::strcmp(direction, "last") == 0) {
+	} else if (direction == "last") {
 		int position = find_v->size - 1;
 		for (int i = v->size - 1; i >= 0 && position >= 0; i--) {
 			if (fp_nonzero(VECTOR_ID(get)(v, i))) {
@@ -160,7 +160,7 @@ VECTOR_TYPE* matlab::find(const VECTOR_TYPE* v, int n, const char* direction) {
 	}
 }
 
-VECTOR_TYPE* matlab::find(const MATRIX_TYPE* m, int n, const char* direction) {
+VECTOR_TYPE* matlab::find(const MATRIX_TYPE* m, int n, const std::string& direction) {
 	VECTOR_TYPE* v = to_vector(m);
 	VECTOR_TYPE* find_v = find(v, n, direction);
 	VECTOR_ID(free)(v);
@@ -170,7 +170,7 @@ VECTOR_TYPE* matlab::find(const MATRIX_TYPE* m, int n, const char* direction) {
 /*
  * Emulates the two-return version of "find".
  */
-MATRIX_TYPE* matlab::find_ij(const MATRIX_TYPE* m, int n, const char* direction) {
+MATRIX_TYPE* matlab::find_ij(const MATRIX_TYPE* m, int n, const std::string& direction) {
 	VECTOR_TYPE* find_v = find(m, n, direction);
 	if (find_v == NULL) {
 		return NULL;
@@ -512,14 +512,14 @@ VECTOR_TYPE* matlab::setxor(const VECTOR_TYPE* v1, const VECTOR_TYPE* v2) {
 	}
 }
 
-VECTOR_TYPE* matlab::sort(const VECTOR_TYPE* v, const char* mode, VECTOR_TYPE** ind) {
-	if (std::strcmp(mode, "ascend") != 0 && std::strcmp(mode, "descend") != 0) {
+VECTOR_TYPE* matlab::sort(const VECTOR_TYPE* v, const std::string& mode, VECTOR_TYPE** ind) {
+	if (mode != "ascend" && mode != "descend") {
 		return NULL;
 	}
 	FP_TYPE elements[v->size];
 	to_array(v, elements);
 	std::size_t indices[v->size];
-	if (std::strcmp(mode, "ascend") == 0) {
+	if (mode == "ascend") {
 		stable_sort_index(indices, elements, v->size);
 	} else {
 		stable_sort_index(indices, elements, v->size, fp_greater);
@@ -538,8 +538,8 @@ VECTOR_TYPE* matlab::sort(const VECTOR_TYPE* v, const char* mode, VECTOR_TYPE** 
 	return sort_v;
 }
 
-MATRIX_TYPE* matlab::sort(const MATRIX_TYPE* m, int dim, const char* mode, MATRIX_TYPE** ind) {
-	if (std::strcmp(mode, "ascend") != 0 && std::strcmp(mode, "descend") != 0) {
+MATRIX_TYPE* matlab::sort(const MATRIX_TYPE* m, int dim, const std::string& mode, MATRIX_TYPE** ind) {
+	if (mode != "ascend" && mode != "descend") {
 		return NULL;
 	}
 	if (dim == 1) {
@@ -678,8 +678,8 @@ MATRIX_TYPE* matlab::triu(const MATRIX_TYPE* m, int k) {
 	return triu_m;
 }
 
-VECTOR_TYPE* matlab::unique(const VECTOR_TYPE* v, const char* first_or_last, VECTOR_TYPE** i, VECTOR_TYPE** j) {
-	if (std::strcmp(first_or_last, "first") != 0 && std::strcmp(first_or_last, "last") != 0) {
+VECTOR_TYPE* matlab::unique(const VECTOR_TYPE* v, const std::string& first_or_last, VECTOR_TYPE** i, VECTOR_TYPE** j) {
+	if (first_or_last != "first" && first_or_last != "last") {
 		return NULL;
 	}
 	VECTOR_TYPE* sort_v = sort(v);
@@ -704,7 +704,7 @@ VECTOR_TYPE* matlab::unique(const VECTOR_TYPE* v, const char* first_or_last, VEC
 			for (int y = 0; y < (int)v->size; y++) {
 				if (fp_equal(VECTOR_ID(get)(unique_v, x), VECTOR_ID(get)(v, y))) {
 					VECTOR_ID(set)(*i, x, y);
-					if (std::strcmp(first_or_last, "first") == 0) {
+					if (first_or_last == "first") {
 						break;
 					}
 				}
@@ -725,7 +725,7 @@ VECTOR_TYPE* matlab::unique(const VECTOR_TYPE* v, const char* first_or_last, VEC
 	return unique_v;
 }
 
-VECTOR_TYPE* matlab::unique(const MATRIX_TYPE* m, const char* first_or_last, VECTOR_TYPE** i, VECTOR_TYPE** j) {
+VECTOR_TYPE* matlab::unique(const MATRIX_TYPE* m, const std::string& first_or_last, VECTOR_TYPE** i, VECTOR_TYPE** j) {
 	VECTOR_TYPE* v = to_vector(m);
 	VECTOR_TYPE* unique_v = unique(v, first_or_last, i, j);
 	VECTOR_ID(free)(v);
@@ -735,8 +735,8 @@ VECTOR_TYPE* matlab::unique(const MATRIX_TYPE* m, const char* first_or_last, VEC
 /*
  * Emulates (unique(m, "rows", first_or_last)).
  */
-MATRIX_TYPE* matlab::unique_rows(const MATRIX_TYPE* m, const char* first_or_last, VECTOR_TYPE** i, VECTOR_TYPE** j) {
-	if (std::strcmp(first_or_last, "first") != 0 && std::strcmp(first_or_last, "last") != 0) {
+MATRIX_TYPE* matlab::unique_rows(const MATRIX_TYPE* m, const std::string& first_or_last, VECTOR_TYPE** i, VECTOR_TYPE** j) {
+	if (first_or_last != "first" && first_or_last != "last") {
 		return NULL;
 	}
 	MATRIX_TYPE* sort_m = sortrows(m);
@@ -764,7 +764,7 @@ MATRIX_TYPE* matlab::unique_rows(const MATRIX_TYPE* m, const char* first_or_last
 				VECTOR_ID(const_view) m_row_y = MATRIX_ID(const_row)(m, y);
 				if (compare_vectors(&unique_m_row_x.vector, &m_row_y.vector) == 0) {
 					VECTOR_ID(set)(*i, x, y);
-					if (std::strcmp(first_or_last, "first") == 0) {
+					if (first_or_last == "first") {
 						break;
 					}
 				}

@@ -2,7 +2,6 @@
 #include "macros.h"
 
 #include <cmath>
-#include <cstring>
 #include <ctime>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_matrix.h>
@@ -11,43 +10,31 @@
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_vector.h>
 #include "matlab.h"
+#include <string>
 
 /*
  * This file contains functions for MATLAB emulation that do not depend on the
  * desired floating-point precision.
  */
 
-void matlab::dec2bin(int n, char* bin) {
+std::string matlab::dec2bin(int n) {
+	return dec2bin(n, 0);
+}
+
+std::string matlab::dec2bin(int n, int len) {
 	if (n <= 0) {
-		bin[0] = '0';
-		bin[1] = '\0';
-		return;
+		return "0";
 	}
-	int strlen = (int)(std::floor(1.0 + std::log(n) / std::log(2)));
-	bin[strlen] = '\0';
-	for (int i = strlen - 1; i >= 0; i--) {
+	int binlen = (int)(std::floor(1.0 + std::log(n) / std::log(2)));
+	std::string bin(len > binlen ? len : binlen, '0');
+	for (int i = bin.size() - 1; i >= 0; i--) {
 		int remainder = n % 2;
 		if (remainder) {
 			bin[i] = '1';
-		} else {
-			bin[i] = '0';
 		}
 		n >>= 1;
 	}
-}
-
-void matlab::dec2bin(int n, int len, char* bin) {
-	dec2bin(n, bin);
-	int strlen = std::strlen(bin);
-	if (len > strlen) {
-		for (int i = strlen, j = len; j >= 0; i--, j--) {
-			if (i >= 0) {
-				bin[j] = bin[i];
-			} else {
-				bin[j] = '0';
-			}
-		}
-	}
+	return bin;
 }
 
 gsl_matrix* matlab::inv(const gsl_matrix* m) {

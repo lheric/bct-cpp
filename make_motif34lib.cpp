@@ -3,6 +3,7 @@
 #include <gsl/gsl_permutation.h>
 #include <gsl/gsl_permute_vector.h>
 #include <gsl/gsl_vector.h>
+#include <string>
 
 /*
  * Our implementation of the BCT motif library does not include Mn ("M as a
@@ -40,8 +41,7 @@ gsl_matrix* bct::motif3generate(gsl_vector** ID, gsl_vector** N) {
 		
 		// m=dec2bin(i);
 		// m=[num2str(zeros(1,6-length(m)), '%d') m];
-		char m[7];
-		dec2bin(i, 6, m);
+		std::string m = dec2bin(i, 6);
 		
 		// G=str2num ([ ...
 		// '0'   ' '  m(3)  ' '  m(5) ;
@@ -177,8 +177,7 @@ gsl_matrix* bct::motif4generate(gsl_vector** ID, gsl_vector** N) {
 		
 		// m=dec2bin(i);
 		// m=[num2str(zeros(1,12-length(m)), '%d') m];
-		char m[13];
-		dec2bin(i, 12, m);
+		std::string m = dec2bin(i, 12);
 		
 		// G=str2num ([ ...
 		// '0'   ' '  m(4)  ' '  m(7)  ' '  m(10) ;

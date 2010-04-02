@@ -1,10 +1,10 @@
 #include "bct.h"
 #include <cmath>
-#include <cstring>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include <sstream>
+#include <string>
 #include <vector>
 
 /*
@@ -64,20 +64,20 @@ int bct::number_of_nodes(const gsl_matrix* m) {
 // TODO: These belong in matlab/functions.cpp
 // Move them and remove unnecessary #includes when SWIG-accessible
 
-double bct::mean(const gsl_vector* v, const char* opt) {
-	if (std::strcmp(opt, "a") == 0) {
+double bct::mean(const gsl_vector* v, const std::string& opt) {
+	if (opt == "a") {
 		double sum = 0.0;
 		for (int i = 0; i < (int)v->size; i++) {
 			sum += gsl_vector_get(v, i);
 		}
 		return sum / (double)v->size;
-	} else if (std::strcmp(opt, "g") == 0) {
+	} else if (opt == "g") {
 		double product = 1.0;
 		for (int i = 0; i < (int)v->size; i++) {
 			product *= gsl_vector_get(v, i);
 		}
 		return std::pow(product, 1.0 / (double)v->size);
-	} else if (std::strcmp(opt, "h") == 0) {
+	} else if (opt == "h") {
 		double sum = 0.0;
 		for (int i = 0; i < (int)v->size; i++) {
 			sum += 1.0 / gsl_vector_get(v, i);
@@ -89,7 +89,7 @@ double bct::mean(const gsl_vector* v, const char* opt) {
 	}
 }
 
-gsl_vector* bct::mean(const gsl_matrix* m, int dim, const char* opt) {
+gsl_vector* bct::mean(const gsl_matrix* m, int dim, const std::string& opt) {
 	if (dim == 1) {
 		gsl_vector* mean_v = gsl_vector_alloc(m->size2);
 		for (int i = 0; i < (int)m->size2; i++) {

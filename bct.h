@@ -135,7 +135,7 @@ namespace bct {
 	extern bool safe_mode;
 	bool get_safe_mode();
 	void set_safe_mode(bool);
-	bool check_status(const gsl_matrix*, int, const char* = NULL);
+	bool check_status(const gsl_matrix*, int, const std::string&);
 	bool is_square(const gsl_matrix*);
 	bool is_rectangular(const gsl_matrix*);
 	bool is_undirected(const gsl_matrix*);
@@ -164,13 +164,13 @@ namespace bct {
 	int number_of_edges_dir(const gsl_matrix*);
 	int number_of_edges_und(const gsl_matrix*);
 	int number_of_nodes(const gsl_matrix*);
-	double mean(const gsl_vector*, const char* = "a");
-	gsl_vector* mean(const gsl_matrix*, int = 1, const char* = "a");
+	double mean(const gsl_vector*, const std::string& = "a");
+	gsl_vector* mean(const gsl_matrix*, int = 1, const std::string& = "a");
 	
 	// Debugging
-	void printf(const gsl_vector*, const char*);
-	void printf(const gsl_matrix*, const char*);
-	void printf(const gsl_permutation*, const char*);
+	void printf(const gsl_vector*, const std::string&);
+	void printf(const gsl_matrix*, const std::string&);
+	void printf(const gsl_permutation*, const std::string&);
 	
 	// SWIG
 #ifdef BCT_SWIG

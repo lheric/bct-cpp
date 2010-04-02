@@ -2,6 +2,12 @@ bct_test_setup
 
 load motif34lib
 
+% motif3generate
+[M ID N] = motif3generate_cpp;
+bct_test("motif3generate M3", M3 == M)
+bct_test("motif3generate ID3", ID3 == ID')
+bct_test("motif3generate N3", N3 == N')
+
 % motif3funct_bin
 for i = 1:size(m)(2)
 	[f F] = motif3funct_bin(m{i});
@@ -18,12 +24,6 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("motif3funct_wei %s Q", mname{i}), Q == Q_cpp)
 	bct_test(sprintf("motif3funct_wei %s F", mname{i}), F == F_cpp)
 end
-
-% motif3generate
-[M ID N] = motif3generate_cpp;
-bct_test("motif3generate M3", M3 == M)
-bct_test("motif3generate ID3", ID3 == ID')
-bct_test("motif3generate N3", N3 == N')
 
 % motif3struct_bin
 for i = 1:size(m)(2)
