@@ -13,8 +13,7 @@
  * satisfying the given degree sequences.
  */
 gsl_matrix* bct::makerandCIJdegreesfixed(const gsl_vector* in, const gsl_vector* out) {
-	gsl_rng_default_seed = std::time(NULL);
-	gsl_rng* rng = gsl_rng_alloc(gsl_rng_default);
+	gsl_rng* rng = get_gsl_rng();
 	
 	// n = length(in);
 	int n = length(in);
@@ -139,7 +138,6 @@ gsl_matrix* bct::makerandCIJdegreesfixed(const gsl_vector* in, const gsl_vector*
 		}
 	}
 
-	gsl_rng_free(rng);
 	gsl_matrix_free(edges);
 	
 	// flag = 1;

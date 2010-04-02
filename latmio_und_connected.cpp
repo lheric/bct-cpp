@@ -14,8 +14,7 @@
 gsl_matrix* bct::latmio_und_connected(const gsl_matrix* R, int ITER) {
 	if (safe_mode) check_status(R, SQUARE | UNDIRECTED, "latmio_und_connected");
 	
-	gsl_rng_default_seed = std::time(NULL);
-	gsl_rng* rng = gsl_rng_alloc(gsl_rng_default);
+	gsl_rng* rng = get_gsl_rng();
 	
 	// n=length(R);
 	int n = length(R);
@@ -270,7 +269,6 @@ gsl_matrix* bct::latmio_und_connected(const gsl_matrix* R, int ITER) {
 		}
 	}
 	
-	gsl_rng_free(rng);
 	gsl_matrix_free(D);
 	gsl_matrix_free(find_tril_R);
 	return _R;

@@ -40,7 +40,7 @@ for i = 1:size(m)(2)
 	[Ci Q] = modularity_und_louvain(ms);
 	result = 0;
 	tries = 0;
-	while (~result && tries < 10)
+	while (~result && tries < 50)
 		[Ci_cpp Q_cpp] = modularity_und_louvain_cpp(ms);
 		if (mapmatch(Ci{end}, Ci_cpp) && abs(Q{end} - Q_cpp) < 1e-6)
 			result = 1;

@@ -22,11 +22,11 @@ bool bct::check_status(const gsl_matrix* m, int flags, const char* text) {
 		NO_LOOPS, LOOPS
 	};
 	const char* propstr[] = {
-		"SQUARE", "RECTANGULAR",
-		"UNDIRECTED", "DIRECTED",
-		"BINARY", "WEIGHTED",
-		"POSITIVE", "SIGNED",
-		"NO_LOOPS", "LOOPS"
+		"square", "rectangular",
+		"undirected", "directed",
+		"binary", "weighted",
+		"positive", "signed",
+		"no_loops", "loops"
 	};
 	bool (*propfn[])(const gsl_matrix*) = {
 		is_square, is_rectangular,
