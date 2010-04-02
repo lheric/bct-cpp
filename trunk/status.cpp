@@ -2,6 +2,7 @@
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include <iostream>
+#include <vector>
 
 bool bct::safe_mode = true;
 
@@ -13,20 +14,47 @@ void bct::set_safe_mode(bool safe_mode) { bct::safe_mode = safe_mode; }
  * a message is printed to stderr starting with the given text.
  */
 bool bct::check_status(const gsl_matrix* m, int flags, const char* text) {
+	status prop[] = {
+		SQUARE, RECTANGULAR,
+		UNDIRECTED, DIRECTED,
+		BINARY, WEIGHTED,
+		POSITIVE, SIGNED,
+		NO_LOOPS, LOOPS
+	};
+	const char* propstr[] = {
+		"SQUARE", "RECTANGULAR",
+		"UNDIRECTED", "DIRECTED",
+		"BINARY", "WEIGHTED",
+		"POSITIVE", "SIGNED",
+		"NO_LOOPS", "LOOPS"
+	};
+	bool (*propfn[])(const gsl_matrix*) = {
+		is_square, is_rectangular,
+		is_undirected, is_directed,
+		is_binary, is_weighted,
+		is_positive, is_signed,
+		has_no_loops, has_loops
+	};
 	bool ret = true;
-	if (flags & SQUARE) ret = ret && is_square(m);
-	if (flags & RECTANGULAR) ret = ret && is_rectangular(m);
-	if (flags & UNDIRECTED) ret = ret && is_undirected(m);
-	if (flags & DIRECTED) ret = ret && is_directed(m);
-	if (flags & BINARY) ret = ret && is_binary(m);
-	if (flags & WEIGHTED) ret = ret && is_weighted(m);
-	if (flags & POSITIVE) ret = ret && is_positive(m);
-	if (flags & SIGNED) ret = ret && is_signed(m);
-	if (flags & NO_LOOPS) ret = ret && has_no_loops(m);
-	if (flags & LOOPS) ret = ret && has_loops(m);
+	std::vector<const char*> failures;
+	for (int i = 0; i < 10; i++) {
+		if (flags & (int)prop[i]) {
+			if (!propfn[i](m)) {
+				ret = false;
+				failures.push_back(propstr[i]);
+			}
+		}
+	}
 	if (!ret) {
 		if (text != NULL) std::cerr << text << ": ";
-		std::cerr << "Matrix status check failed." << std::endl;
+		std::cerr << "Matrix status check failed (not ";
+		for (int i = 0; i < (int)failures.size(); i++) {
+			std::cerr << failures[i];
+			if (i < (int)failures.size() - 1) {
+				std::cerr << ", ";
+			}
+		}
+		std::cerr << ")." << std::endl;
 	}
 	return ret;
 }
@@ -101,7 +129,7 @@ bool bct::is_positive(const gsl_matrix* m) {
 bool bct::is_signed(const gsl_matrix* m) {
 	for (int i = 0; i < (int)m->size1; i++) {
 		for (int j = 0; j < (int)m->size2; j++) {
-			if (fp_negative(gsl_matrix_get(m, i, j))) {
+			if (gsl_matrix_get(m, i, j) < 0.0) {
 				return true;
 			}
 		}

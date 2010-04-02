@@ -136,8 +136,8 @@ gsl_matrix* bct::latmio_und_connected(const gsl_matrix* R, int ITER) {
 			if (fp_zero(gsl_matrix_get(_R, a, d)) && fp_zero(gsl_matrix_get(_R, c, b))) {
 				
 				// if (D(a,b)+D(c,d))>=(D(a,d)+D(c,b))
-				if (gsl_matrix_get(D, a, b) + gsl_matrix_get(D, c, d) >=
-					gsl_matrix_get(D, a, d) + gsl_matrix_get(D, c, b)) {
+				if (fp_greater_or_equal(gsl_matrix_get(D, a, b) + gsl_matrix_get(D, c, d),
+										gsl_matrix_get(D, a, d) + gsl_matrix_get(D, c, b))) {
 					
 					// if ~(R(a,c) || R(b,d))
 					if (fp_zero(gsl_matrix_get(_R, a, c)) && fp_zero(gsl_matrix_get(_R, b, d))) {
