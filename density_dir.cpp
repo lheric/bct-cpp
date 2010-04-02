@@ -14,5 +14,5 @@ double bct::density_dir(const gsl_matrix* CIJ) {
 	int K = nnz(CIJ);
 	
 	// kden = K/(N^2-N);
-	return (double)K / (double)(N * N - N);
+	return (double)K / (double)(N * (N - 1));
 }

@@ -57,7 +57,7 @@ gsl_matrix* bct::makerandCIJ_wd(int N, int K, double wmin, double wmax) {
 gsl_matrix* bct::makerandCIJ_wd_wp(const gsl_matrix* m) {
 	if (safe_mode) check_status(m, SQUARE | NO_LOOPS, "makerandCIJ_wd_wp");
 	int N = m->size1;
-	int K = N * N - N;
+	int K = N * (N - 1);
 	double* w = new double[K];
 	for (int i = 0, k = 0; i < (int)m->size1; i++) {
 		for (int j = 0; j < (int)m->size2; j++) {

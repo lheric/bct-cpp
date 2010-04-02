@@ -16,5 +16,5 @@ double bct::density_und(const gsl_matrix* CIJ) {
 	gsl_matrix_free(triu_CIJ);
 	
 	// kden = K/((N^2-N)/2);
-	return (double)K / ((double)(N * N - N) / 2.0);
+	return (double)K / ((double)(N * (N - 1)) / 2.0);
 }
