@@ -59,8 +59,7 @@ namespace bct {
 	gsl_matrix* breadthdist(const gsl_matrix*, gsl_matrix** = NULL);
 	gsl_vector* charpath_ecc(const gsl_matrix*, double* = NULL, double* = NULL);
 	double charpath_lambda(const gsl_matrix*);
-	double connectivity_length_bin(const gsl_matrix*);
-	double connectivity_length_wei(const gsl_matrix*);
+	double connectivity_length(const gsl_matrix*);
 	gsl_vector* cycprob_fcyc(const std::vector<gsl_matrix*>&);
 	gsl_vector* cycprob_pcyc(const std::vector<gsl_matrix*>&);
 	gsl_matrix* distance_bin(const gsl_matrix*);
@@ -68,8 +67,7 @@ namespace bct {
 	gsl_matrix* efficiency_global(const gsl_matrix*);
 	std::vector<gsl_matrix*> findpaths(const gsl_matrix*, const gsl_vector*, int, gsl_vector** = NULL, int* = NULL, gsl_matrix** = NULL, gsl_matrix** = NULL);
 	std::vector<gsl_matrix*> findwalks(const gsl_matrix*, gsl_vector** = NULL);
-	double normalized_path_length_bin(const gsl_matrix*);
-	double normalized_path_length_wei(const gsl_matrix*, double = 1.0);
+	double normalized_path_length(const gsl_matrix*, double = 1.0);
 	gsl_matrix* reachdist(const gsl_matrix*, gsl_matrix** = NULL);
 
 	// Centrality

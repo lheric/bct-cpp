@@ -3,12 +3,10 @@
 #include <gsl/gsl_matrix.h>
 
 /*
- * Computes Marchiori and Latora's connectivity length for a binary graph.
+ * Given a distance matrix, computes Marchiori and Latora's connectivity length.
  */
-double bct::connectivity_length_bin(const gsl_matrix* m) {
-	if (safe_mode) check_status(m, SQUARE | BINARY, "connectivity_length_bin");
-	int N = m->size1;
-	gsl_matrix* D = distance_bin(m);
+double bct::connectivity_length(const gsl_matrix* D) {
+	int N = D->size1;
 	double sum = 0.0;
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
@@ -18,7 +16,6 @@ double bct::connectivity_length_bin(const gsl_matrix* m) {
 			}
 		}
 	}
-	gsl_matrix_free(D);
 	if (fp_zero(sum)) {
 		return GSL_POSINF;
 	} else {
