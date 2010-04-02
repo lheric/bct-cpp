@@ -215,7 +215,7 @@ VECTOR_TYPE* matlab::hist(const VECTOR_TYPE* v, const VECTOR_TYPE* centers) {
 				break;
 			} else if (value < right) {
 				FP_TYPE middle = (left + right) / 2.0;
-				if (fp_compare(value, middle) <= 0) {
+				if (fp_less_or_equal(value, middle)) {
 					index = j;
 				} else {
 					index = j + 1;
@@ -693,7 +693,7 @@ VECTOR_TYPE* matlab::unique(const VECTOR_TYPE* v, const char* first_or_last, VEC
 	for (int x = 1; x < (int)v->size; x++) {
 		FP_TYPE prev_value = VECTOR_ID(get)(sort_v, x - 1);
 		FP_TYPE value = VECTOR_ID(get)(sort_v, x);
-		if (fp_compare(prev_value, value) != 0) {
+		if (fp_not_equal(prev_value, value)) {
 			VECTOR_ID(set)(unsized_v, n++, value);
 		}
 	}
@@ -706,7 +706,7 @@ VECTOR_TYPE* matlab::unique(const VECTOR_TYPE* v, const char* first_or_last, VEC
 		*i = VECTOR_ID(alloc)(n);
 		for (int x = 0; x < n; x++) {
 			for (int y = 0; y < (int)v->size; y++) {
-				if (fp_compare(VECTOR_ID(get)(unique_v, x), VECTOR_ID(get)(v, y)) == 0) {
+				if (fp_equal(VECTOR_ID(get)(unique_v, x), VECTOR_ID(get)(v, y))) {
 					VECTOR_ID(set)(*i, x, y);
 					if (std::strcmp(first_or_last, "first") == 0) {
 						break;
@@ -719,7 +719,7 @@ VECTOR_TYPE* matlab::unique(const VECTOR_TYPE* v, const char* first_or_last, VEC
 		*j = VECTOR_ID(alloc)(v->size);
 		for (int x = 0; x < (int)v->size; x++) {
 			for (int y = 0; y < n; y++) {
-				if (fp_compare(VECTOR_ID(get)(v, x), VECTOR_ID(get)(unique_v, y)) == 0) {
+				if (fp_equal(VECTOR_ID(get)(v, x), VECTOR_ID(get)(unique_v, y))) {
 					VECTOR_ID(set)(*j, x, y);
 					break;
 				}

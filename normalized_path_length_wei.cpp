@@ -23,7 +23,7 @@ double bct::normalized_path_length_wei(const gsl_matrix* m, double wmax) {
 	}
 	gsl_matrix_free(D);
 	double npl = ((sum / (double)(N * (N - 1))) - dmin) / (dmax - dmin);
-	if (fp_negative(npl)) {
+	if (npl < 0.0) {
 		std::cerr << "Negative NPL (" << npl << ")." << std::endl;
 	}
 	return std::abs(npl);

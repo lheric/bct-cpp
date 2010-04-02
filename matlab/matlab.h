@@ -110,8 +110,6 @@ namespace matlab {
 	typedef bool (*FP_ID(fp_cmp_fn))(FP_TYPE, FP_TYPE);
 	bool fp_zero(FP_TYPE);
 	bool fp_nonzero(FP_TYPE);
-	bool fp_positive(FP_TYPE);
-	bool fp_negative(FP_TYPE);
 	bool fp_equal(FP_TYPE, FP_TYPE);
 	bool fp_not_equal(FP_TYPE, FP_TYPE);
 	bool fp_less(FP_TYPE, FP_TYPE);

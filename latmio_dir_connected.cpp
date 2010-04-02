@@ -122,8 +122,8 @@ gsl_matrix* bct::latmio_dir_connected(const gsl_matrix* R, int ITER) {
 			if (fp_zero(gsl_matrix_get(_R, a, d)) && fp_zero(gsl_matrix_get(_R, c, b))) {
 				
 				// if (D(a,b)+D(c,d))>=(D(a,d)+D(c,b))
-				if (gsl_matrix_get(D, a, b) + gsl_matrix_get(D, c, d) >=
-					gsl_matrix_get(D, a, d) + gsl_matrix_get(D, c, b)) {
+				if (fp_greater_or_equal(gsl_matrix_get(D, a, b) + gsl_matrix_get(D, c, d),
+										gsl_matrix_get(D, a, d) + gsl_matrix_get(D, c, b))) {
 					
 					// if ~(any([R(a,c) R(d,b) R(d,c)]) && any([R(c,a) R(b,d) R(b,a)]))
 					gsl_vector* _R_idx_1 = gsl_vector_alloc(3);

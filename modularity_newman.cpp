@@ -8,9 +8,9 @@
 gsl_vector* modularity(const gsl_matrix* B, int N, double m);
 
 /*
- * Computes Newman modularity and community structure for a directed graph.
- * Since GSL solves eigensystems differently from MATLAB, network communities
- * may be numbered differently.
+ * Detects communities in a directed graph via Newman modularity.  Since GSL
+ * solves eigensystems differently from MATLAB, communities may be numbered
+ * differently.
  */
 double bct::modularity_dir(const gsl_matrix* A, gsl_vector** Ci) {
 	if (safe_mode) check_status(A, SQUARE | DIRECTED, "modularity_dir");
@@ -78,9 +78,9 @@ double bct::modularity_dir(const gsl_matrix* A, gsl_vector** Ci) {
 }
 
 /*
- * Computes Newman modularity and community structure for an undirected graph.
- * Since GSL solves eigensystems differently from MATLAB, network communities
- * may be numbered differently.
+ * Detects communities in an undirected graph via Newman modularity.  Since GSL
+ * solves eigensystems differently from MATLAB, communities may be numbered
+ * differently.
  */
 double bct::modularity_und(const gsl_matrix* A, gsl_vector** Ci) {
 	if (safe_mode) check_status(A, SQUARE | UNDIRECTED, "modularity_und");

@@ -47,7 +47,8 @@ objects = \
 	matlab/matlab_double.o \
 	matlab/matlab_float.o \
 	matlab/matlab_long_double.o \
-	modularity.o \
+	modularity_louvain.o \
+	modularity_newman.o \
 	motif3funct_bin.o \
 	motif3funct_wei.o \
 	motif3struct_bin.o \

@@ -4,14 +4,16 @@
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
-#include <string>
+#include <sstream>
 #include <vector>
 
 /*
  * Catches GSL errors and throws BCT exceptions.
  */
 void bct::gsl_error_handler(const char* reason, const char* file, int line, int gsl_errno) {
-	throw bct_exception(std::string(reason));
+	std::stringstream what;
+	what << reason << " in " << file << ", line " << line << ".";
+	throw bct_exception(what.str());
 }
 
 /*

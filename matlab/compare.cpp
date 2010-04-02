@@ -26,8 +26,6 @@ int matlab::fp_compare(FP_TYPE x, FP_TYPE y) {
 
 bool matlab::fp_zero(FP_TYPE x) { return std::abs(x) < FP_ID(epsilon); }
 bool matlab::fp_nonzero(FP_TYPE x) { return std::abs(x) > FP_ID(epsilon); }
-bool matlab::fp_positive(FP_TYPE x) { return x > FP_ID(epsilon); }
-bool matlab::fp_negative(FP_TYPE x) { return x < -FP_ID(epsilon); }
 bool matlab::fp_equal(FP_TYPE x, FP_TYPE y) { return fp_compare(x, y) == 0; }
 bool matlab::fp_not_equal(FP_TYPE x, FP_TYPE y) { return fp_compare(x, y) != 0; }
 bool matlab::fp_less(FP_TYPE x, FP_TYPE y) { return fp_compare(x, y) == -1; }
