@@ -50,7 +50,7 @@ gsl_vector* bct::efficiency_local(const gsl_matrix* G) {
 				gsl_vector* e_v = to_vector(e);
 				double sum_e = sum(e_v);
 				gsl_vector_free(e_v);
-				gsl_vector_set(E, u, sum_e / (double)(k * k - k));
+				gsl_vector_set(E, u, sum_e / (double)(k * (k - 1)));
 			}
 			
 			gsl_vector_free(V);
