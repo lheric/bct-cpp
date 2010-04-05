@@ -4,6 +4,7 @@
 #ifdef SWIG
 #define BCT_SWIG
 %module bct
+%include stl.i
 #endif
 
 #include <gsl/gsl_matrix.h>
@@ -93,12 +94,11 @@ namespace bct {
 	double modularity_dir(const gsl_matrix*, gsl_vector** = NULL);
 	double modularity_und(const gsl_matrix*, gsl_vector** = NULL);
 	double modularity_und_louvain(const gsl_matrix*, gsl_vector** = NULL);
-	bool _modularity_und_louvain(const gsl_matrix*, gsl_vector**, double*);
-
 	
 	// Synthetic connection networks
 	gsl_matrix* makeevenCIJ(int, int, int);
 	gsl_matrix* makefractalCIJ(int, double, int, int* = NULL);
+	gsl_matrix* makelatticeCIJ(int, int);
 	gsl_matrix* makerandCIJ_bd(int, int);
 	gsl_matrix* makerandCIJ_bu(int, int);
 	gsl_matrix* makerandCIJ_wd(int, int, double, double);
