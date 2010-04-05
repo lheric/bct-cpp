@@ -15,6 +15,10 @@ E = 3;
 [CIJ K] = makefractalCIJ(mx_lvl, E, sz_cl);
 bct_test("makefractalCIJ", size(CIJ) == [N N] && sum(degrees_dir(CIJ)) == K)
 
+% makelatticeCIJ
+CIJ = makelatticeCIJ(N, K);
+bct_test("makelatticeCIJ", size(CIJ) == [N N] && sum(degrees_dir(CIJ)) == K)
+
 N = 10 + floor(91 * rand());
 Kdir = floor((N * (N - 1) + 1) * rand());
 Kund = floor(Kdir / 2);

@@ -6,6 +6,8 @@
 #include <gsl/gsl_vector.h>
 #include <vector>
 
+bool modularity_und_louvain(const gsl_matrix*, gsl_vector**, double*);
+
 /*
  * Detects communities in an undirected graph via Louvain modularity.  While the
  * MATLAB version returns intermediate values for community numbering and
@@ -17,7 +19,7 @@ double bct::modularity_und_louvain(const gsl_matrix* W, gsl_vector** Ci) {
 	double modularity;
 	
 	while (true) {
-		bool success = bct::_modularity_und_louvain(W, Ci, &modularity);
+		bool success = modularity_und_louvain(W, Ci, &modularity);
 		if (success)
 			break;
 	}
@@ -25,7 +27,9 @@ double bct::modularity_und_louvain(const gsl_matrix* W, gsl_vector** Ci) {
 	return modularity;
 }
 
-bool bct::_modularity_und_louvain(const gsl_matrix* W, gsl_vector** Ci, double* modularity) {
+bool modularity_und_louvain(const gsl_matrix* W, gsl_vector** Ci, double* modularity) {
+	using namespace bct;
+	
 #if GatherLoopCountData
 	long outer_loop_count = 0;
 	static FILE* file = NULL;
