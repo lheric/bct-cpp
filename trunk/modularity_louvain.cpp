@@ -1,3 +1,6 @@
+#define GatherLoopCountData 0
+#define InnerLoopCountMax 30
+
 #include "bct.h"
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
@@ -10,7 +13,33 @@
  */
 double bct::modularity_und_louvain(const gsl_matrix* W, gsl_vector** Ci) {
 	if (safe_mode) check_status(W, SQUARE | UNDIRECTED, "modularity_und_louvain");
+
+	double modularity;
 	
+	while (true) {
+		bool success = bct::_modularity_und_louvain(W, Ci, &modularity);
+		if (success)
+			break;
+	}
+	
+	return modularity;
+}
+
+bool bct::_modularity_und_louvain(const gsl_matrix* W, gsl_vector** Ci, double* modularity) {
+#if GatherLoopCountData
+	long outer_loop_count = 0;
+	static FILE* file = NULL;
+	if (!file) {
+		file = fopen("louvain_loop_data.txt", "w");
+		if (!file) {
+			fprintf(stderr, "Unable to open louvain loop data file");
+			exit(1);
+		}
+	}
+#endif
+
+	long inner_loop_count_total = 0;
+
 	// n=length(W);
 	int n = length(W);
 	
@@ -38,6 +67,10 @@ double bct::modularity_und_louvain(const gsl_matrix* W, gsl_vector** Ci) {
 	// while true
 	while (true) {
 		
+	#if GatherLoopCountData
+		outer_loop_count++;
+	#endif
+	
 		// K=sum(W);
 		gsl_vector* K = sum(_W);
 		
@@ -59,6 +92,11 @@ double bct::modularity_und_louvain(const gsl_matrix* W, gsl_vector** Ci) {
 		// while flag
 		while (flag) {
 			
+			inner_loop_count_total++;
+			if (inner_loop_count_total > InnerLoopCountMax) {
+				return false;	// no success
+			}
+
 			// flag=false;
 			flag = false;
 			
@@ -217,7 +255,12 @@ double bct::modularity_und_louvain(const gsl_matrix* W, gsl_vector** Ci) {
 			break;
 		}
 	}
-	
+				
+#if GatherLoopCountData
+	fprintf(file, "%ld %ld\n", outer_loop_count, inner_loop_count_total);
+	fflush(file);
+#endif
+
 	gsl_matrix_free(_W);
 	
 	// Ci([1 end])=[];
@@ -233,5 +276,7 @@ double bct::modularity_und_louvain(const gsl_matrix* W, gsl_vector** Ci) {
 	} 
 	
 	// Q([1 end])=[];
-	return Q[Q.size() - 2];
+	*modularity = Q[Q.size() - 2];
+	
+	return true;	// success
 }
