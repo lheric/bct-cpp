@@ -4,9 +4,7 @@
 #include <gsl/gsl_vector.h>
 
 /*
- * Generates a lattice with N nodes and K edges by placing edges as close as
- * possible to the main diagonal without forming a ring.  In- and out-degree are
- * kept approximately constant at (K / N).
+ * Generates a random directed binary graph with a lattice organization.
  */
 gsl_matrix* bct::makelatticeCIJ(int N, int K) {
 	

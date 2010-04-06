@@ -15,13 +15,13 @@ E = 3;
 [CIJ K] = makefractalCIJ(mx_lvl, E, sz_cl);
 bct_test("makefractalCIJ", size(CIJ) == [N N] && sum(degrees_dir(CIJ)) == K)
 
-% makelatticeCIJ
-CIJ = makelatticeCIJ(N, K);
-bct_test("makelatticeCIJ", size(CIJ) == [N N] && sum(degrees_dir(CIJ)) == K)
-
 N = 10 + floor(91 * rand());
 Kdir = floor((N * (N - 1) + 1) * rand());
 Kund = floor(Kdir / 2);
+
+% makelatticeCIJ
+CIJ = makelatticeCIJ(N, Kdir);
+bct_test("makelatticeCIJ", size(CIJ) == [N N] && sum(degrees_dir(CIJ)) == Kdir)
 
 % makerandCIJ_bd
 CIJ = makerandCIJ_bd_cpp(N, Kdir);
@@ -53,5 +53,12 @@ end
 cij = makerandCIJdegreesfixed_cpp(in, out);
 [id od] = degrees_dir(cij);
 bct_test("makerandCIJdegreesfixed", in == id' && out == od')
+
+K = (N - 1) * 2;
+s = 0.1;
+
+% maketoeplitzCIJ
+CIJ = maketoeplitzCIJ(N, K, s);
+bct_test("maketoeplitzCIJ", size(CIJ) == [N N] && sum(degrees_dir(CIJ)) == K)
 
 bct_test_teardown

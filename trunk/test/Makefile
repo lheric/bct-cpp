@@ -40,6 +40,7 @@ filenames = \
 	makerandCIJ_bd_cpp \
 	makerandCIJ_bu_cpp \
 	makerandCIJdegreesfixed_cpp \
+	maketoeplitzCIJ_cpp \
 	matching_ind_cpp \
 	matching_ind_in_cpp \
 	matching_ind_out_cpp \

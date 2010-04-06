@@ -3,6 +3,7 @@
 #include <ctime>
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
+#include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_vector.h>
 #include <string>
@@ -373,6 +374,16 @@ VECTOR_TYPE* matlab::nonzeros(const MATRIX_TYPE* m) {
 	return nz_v;
 }
 
+VECTOR_TYPE* matlab::normpdf(const VECTOR_TYPE* v, FP_TYPE mean, FP_TYPE stdev) {
+	VECTOR_TYPE* pdf_v = VECTOR_ID(alloc)(v->size);
+	for (int i = 0; i < (int)v->size; i++) {
+		double x = (double)VECTOR_ID(get)(v, i);
+		double p = gsl_ran_gaussian_pdf(x - mean, stdev);
+		VECTOR_ID(set)(pdf_v, i, (FP_TYPE)p);
+	}
+	return pdf_v;
+}
+
 MATRIX_TYPE* matlab::FP_ID(ones)(int size) {
 	return FP_ID(ones)(size, size);
 }
@@ -646,6 +657,28 @@ VECTOR_TYPE* matlab::sum(const MATRIX_TYPE* m, int dim) {
 	} else {
 		return NULL;
 	}
+}
+
+MATRIX_TYPE* matlab::toeplitz(const VECTOR_TYPE* column, const VECTOR_TYPE* row) {
+	const VECTOR_TYPE* _row;
+	if (row == NULL) {
+		_row = column;
+	} else {
+		_row = row;
+	}
+	MATRIX_TYPE* toe_m = MATRIX_ID(alloc)(column->size, _row->size);
+	for (int i = 0; i < (int)column->size; i++) {
+		for (int j = 0; j < (int)_row->size; j++) {
+			FP_TYPE value;
+			if (i - j >= 0) {
+				value = VECTOR_ID(get)(column, i - j);
+			} else {
+				value = VECTOR_ID(get)(_row, j - i);
+			}
+			MATRIX_ID(set)(toe_m, i, j, value);
+		}
+	}
+	return toe_m;
 }
 
 MATRIX_TYPE* matlab::tril(const MATRIX_TYPE* m, int k) {
