@@ -53,6 +53,7 @@ namespace matlab {
 	int nnz(const VECTOR_TYPE*);
 	int nnz(const MATRIX_TYPE*);
 	VECTOR_TYPE* nonzeros(const MATRIX_TYPE*);
+	VECTOR_TYPE* normpdf(const VECTOR_TYPE*, FP_TYPE, FP_TYPE);
 	MATRIX_TYPE* FP_ID(ones)(int);
 	MATRIX_TYPE* FP_ID(ones)(int, int);
 	VECTOR_TYPE* FP_ID(ones_vector)(int);
@@ -69,6 +70,7 @@ namespace matlab {
 	MATRIX_TYPE* sortrows(const MATRIX_TYPE*, VECTOR_TYPE** = NULL);
 	FP_TYPE sum(const VECTOR_TYPE*);
 	VECTOR_TYPE* sum(const MATRIX_TYPE*, int = 1);
+	MATRIX_TYPE* toeplitz(const VECTOR_TYPE*, const VECTOR_TYPE* = NULL);
 	MATRIX_TYPE* tril(const MATRIX_TYPE*, int = 0);
 	MATRIX_TYPE* triu(const MATRIX_TYPE*, int = 0);
 	VECTOR_TYPE* unique(const VECTOR_TYPE*, const std::string& = "last", VECTOR_TYPE** = NULL, VECTOR_TYPE** = NULL);
