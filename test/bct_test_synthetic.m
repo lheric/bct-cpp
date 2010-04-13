@@ -54,6 +54,10 @@ cij = makerandCIJdegreesfixed_cpp(in, out);
 [id od] = degrees_dir(cij);
 bct_test("makerandCIJdegreesfixed", in == id' && out == od')
 
+% makeringlatticeCIJ
+CIJ = makeringlatticeCIJ(N, Kdir);
+bct_test("makeringlatticeCIJ", size(CIJ) == [N N] && sum(degrees_dir(CIJ)) == Kdir)
+
 K = (N - 1) * 2;
 s = 0.1;
 
