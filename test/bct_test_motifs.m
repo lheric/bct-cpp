@@ -48,4 +48,12 @@ bct_test("motif4generate M4", M4 == M)
 bct_test("motif4generate ID4", ID4 == ID')
 bct_test("motif4generate N4", N4 == N')
 
+% motif4struct_bin
+for i = 1:size(m)(2)
+	[f F] = motif4struct_bin(m{i});
+	[f_cpp F_cpp] = motif4struct_bin_cpp(m{i});
+	bct_test(sprintf("motif4struct_bin %s f", mname{i}), f == f_cpp')
+	bct_test(sprintf("motif4struct_bin %s F", mname{i}), F == F_cpp)
+end
+
 bct_test_teardown

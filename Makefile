@@ -55,6 +55,7 @@ objects = \
 	motif3funct_wei.o \
 	motif3struct_bin.o \
 	motif3struct_wei.o \
+	motif4struct_bin.o \
 	normalized_path_length.o \
 	randmio_dir.o \
 	randmio_dir_connected.o \
