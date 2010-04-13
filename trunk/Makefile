@@ -42,6 +42,7 @@ objects = \
 	makerandCIJ_wd.o \
 	makerandCIJ_wu.o \
 	makerandCIJdegreesfixed.o \
+	makeringlatticeCIJ.o \
 	maketoeplitzCIJ.o \
 	matching_ind.o \
 	matlab/matlab.o \

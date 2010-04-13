@@ -682,7 +682,7 @@ MATRIX_TYPE* matlab::toeplitz(const VECTOR_TYPE* column, const VECTOR_TYPE* row)
 }
 
 MATRIX_TYPE* matlab::tril(const MATRIX_TYPE* m, int k) {
-	if (k <= -(int)m->size1 || k >= (int)m->size2) {
+	if (k < -(int)m->size1 || k > (int)m->size2) {
 		return NULL;
 	}
 	MATRIX_TYPE* tril_m = copy(m);
@@ -697,7 +697,7 @@ MATRIX_TYPE* matlab::tril(const MATRIX_TYPE* m, int k) {
 }
 
 MATRIX_TYPE* matlab::triu(const MATRIX_TYPE* m, int k) {
-	if (k <= -(int)m->size1 || k >= (int)m->size2) {
+	if (k < -(int)m->size1 || k > (int)m->size2) {
 		return NULL;
 	}
 	MATRIX_TYPE* triu_m = copy(m);
