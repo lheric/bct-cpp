@@ -5,7 +5,7 @@
 /*
  * Counts occurrences of three-node functional motifs in a binary graph.
  */
-gsl_matrix* bct::motif3funct_bin(const gsl_matrix* W, gsl_vector** f) {
+gsl_vector* bct::motif3funct_bin(const gsl_matrix* W, gsl_matrix** F) {
 	if (safe_mode) check_status(W, SQUARE | BINARY, "motif3funct_bin");
 	
 	// load motif34lib M3 ID3 N3
@@ -17,12 +17,12 @@ gsl_matrix* bct::motif3funct_bin(const gsl_matrix* W, gsl_vector** f) {
 	int n = length(W);
 	
 	// f=zeros(13,1);
-	if (f != NULL) {
-		*f = zeros_vector_double(13);
-	}
+	gsl_vector* f = zeros_vector_double(13);
 	
 	// F=zeros(13,n);
-	gsl_matrix* F = zeros_double(13, n);
+	if (F != NULL) {
+		*F = zeros_double(13, n);
+	}
 	
 	// A=1*(W~=0);
 	gsl_matrix* A = compare_elements(W, fp_not_equal, 0.0);
@@ -128,25 +128,26 @@ gsl_matrix* bct::motif3funct_bin(const gsl_matrix* W, gsl_vector** f) {
 							gsl_vector_free(j);
 							
 							// f(idu)=f(idu)+f2;
-							if (f != NULL) {
-								gsl_vector* f_idu_add_f2 = ordinal_index(*f, idu);
-								gsl_vector_add(f_idu_add_f2, f2);
-								ordinal_index_assign(*f, idu, f_idu_add_f2);
-								gsl_vector_free(f_idu_add_f2);
-							}
+							gsl_vector* f_idu_add_f2 = ordinal_index(f, idu);
+							gsl_vector_add(f_idu_add_f2, f2);
+							ordinal_index_assign(f, idu, f_idu_add_f2);
+							gsl_vector_free(f_idu_add_f2);
 							
 							// if nargout==2; F(idu,[u v1 v2])=F(idu,[u v1 v2])+[f2 f2 f2]; end
-							double F_cols[] = { (double)u, (double)v1, (double)v2 };
-							gsl_vector_view F_cols_vv = gsl_vector_view_array(F_cols, 3);
-							gsl_matrix* F_idx = ordinal_index(F, idu, &F_cols_vv.vector);
-							for (int i = 0; i < 3; i++) {
-								gsl_vector_view F_idx_col_i = gsl_matrix_column(F_idx, i);
-								gsl_vector_add(&F_idx_col_i.vector, f2);
+							if (F != NULL) {
+								double F_cols[] = { (double)u, (double)v1, (double)v2 };
+								gsl_vector_view F_cols_vv = gsl_vector_view_array(F_cols, 3);
+								gsl_matrix* F_idx = ordinal_index(*F, idu, &F_cols_vv.vector);
+								for (int i = 0; i < 3; i++) {
+									gsl_vector_view F_idx_col_i = gsl_matrix_column(F_idx, i);
+									gsl_vector_add(&F_idx_col_i.vector, f2);
+								}
+								ordinal_index_assign(*F, idu, &F_cols_vv.vector, F_idx);
+								gsl_matrix_free(F_idx);
 							}
-							gsl_vector_free(f2);
-							ordinal_index_assign(F, idu, &F_cols_vv.vector, F_idx);
+							
 							gsl_vector_free(idu);
-							gsl_matrix_free(F_idx);
+							gsl_vector_free(f2);
 						}
 					}
 					
@@ -167,5 +168,5 @@ gsl_matrix* bct::motif3funct_bin(const gsl_matrix* W, gsl_vector** f) {
 	gsl_matrix_free(M3);
 	gsl_matrix_free(A);
 	gsl_matrix_free(As);
-	return F;
+	return f;
 }

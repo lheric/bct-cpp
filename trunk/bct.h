@@ -83,13 +83,13 @@ namespace bct {
 	extern motif_mode_enum motif_mode;
 	motif_mode_enum get_motif_mode();
 	void set_motif_mode(motif_mode_enum);
-	gsl_matrix* motif3funct_bin(const gsl_matrix*, gsl_vector** = NULL);
+	gsl_vector* motif3funct_bin(const gsl_matrix*, gsl_matrix** = NULL);
 	gsl_matrix* motif3funct_wei(const gsl_matrix*, gsl_matrix** = NULL, gsl_matrix** = NULL);
 	gsl_matrix* motif3generate(gsl_vector** = NULL, gsl_vector** = NULL);
-	gsl_matrix* motif3struct_bin(const gsl_matrix*, gsl_vector** = NULL);
+	gsl_vector* motif3struct_bin(const gsl_matrix*, gsl_matrix** = NULL);
 	gsl_matrix* motif3struct_wei(const gsl_matrix*, gsl_matrix** = NULL, gsl_matrix** = NULL);
 	gsl_matrix* motif4generate(gsl_vector** = NULL, gsl_vector** = NULL);
-	gsl_matrix* motif4struct_bin(const gsl_matrix*, gsl_vector** = NULL);
+	gsl_vector* motif4struct_bin(const gsl_matrix*, gsl_matrix** = NULL);
 	gsl_matrix* motif4struct_wei(const gsl_matrix*, gsl_matrix** = NULL, gsl_matrix** = NULL);
 
 	// Modularity and community structure
