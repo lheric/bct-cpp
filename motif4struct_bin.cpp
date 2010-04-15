@@ -5,7 +5,7 @@
 /*
  * Counts occurrences of four-node structural motifs in a binary graph.
  */
-gsl_matrix* bct::motif4struct_bin(const gsl_matrix* A, gsl_vector** f) {
+gsl_vector* bct::motif4struct_bin(const gsl_matrix* A, gsl_matrix** F) {
 	if (safe_mode) check_status(A, SQUARE | BINARY, "motif4struct_bin");
 	
 	// load motif34lib M4n ID4
@@ -16,12 +16,12 @@ gsl_matrix* bct::motif4struct_bin(const gsl_matrix* A, gsl_vector** f) {
 	int n = length(A);
 	
 	// F=zeros(199,n);
-	gsl_matrix* F = zeros_double(199, n);
+	if (F != NULL) {
+		*F = zeros_double(199, n);
+	}
 	
 	// f=zeros(199,1);
-	if (f != NULL) {
-		*f = zeros_vector_double(199);
-	}
+	gsl_vector* f = zeros_vector_double(199);
 	
 	// As=A|A.';
 	gsl_matrix* A_transpose = gsl_matrix_alloc(A->size2, A->size1);
@@ -137,15 +137,15 @@ gsl_matrix* bct::motif4struct_bin(const gsl_matrix* A, gsl_vector** f) {
 									int ind = (int)gsl_vector_get(ID4, i_M4) - 1;
 									
 									// if nargout==2; F(ind,[u v1 v2 v3])=F(ind,[u v1 v2 v3])+1; end
-									int F_cols[] = { u, v1, v2, v3 };
-									for (int i = 0; i < 4; i++) {
-										gsl_matrix_set(F, ind, F_cols[i], gsl_matrix_get(F, ind, F_cols[i]) + 1.0);
+									if (F != NULL) {
+										int F_cols[] = { u, v1, v2, v3 };
+										for (int i = 0; i < 4; i++) {
+											gsl_matrix_set(*F, ind, F_cols[i], gsl_matrix_get(*F, ind, F_cols[i]) + 1.0);
+										}
 									}
 									
 									// f(ind)=f(ind)+1;
-									if (f != NULL) {
-										gsl_vector_set(*f, ind, gsl_vector_get(*f, ind) + 1.0);
-									}
+									gsl_vector_set(f, ind, gsl_vector_get(f, ind) + 1.0);
 								}
 							}
 							
@@ -170,5 +170,5 @@ gsl_matrix* bct::motif4struct_bin(const gsl_matrix* A, gsl_vector** f) {
 	gsl_vector_free(ID4);
 	gsl_matrix_free(M4);
 	gsl_matrix_free(As);
-	return F;
+	return f;
 }

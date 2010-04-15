@@ -5,9 +5,9 @@
 
 /*
  * Counts occurrences of four-node structural motifs in a weighted graph.
- * Optionally returns intensity and coherence.
+ * Returns intensity and (optionally) coherence and motif counts.
  */
-gsl_matrix* bct::motif4struct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matrix** Q) {
+gsl_matrix* bct::motif4struct_wei(const gsl_matrix* W, gsl_matrix** Q, gsl_matrix** F) {
 	if (safe_mode) check_status(W, SQUARE | WEIGHTED, "motif4struct_wei");
 	
 	// load motif34lib M4 M4n ID4 N4
@@ -19,9 +19,7 @@ gsl_matrix* bct::motif4struct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matri
 	int n = length(W);
 	
 	// I=zeros(199,n);
-	if (I != NULL) {
-		*I = zeros_double(199, n);
-	}
+	gsl_matrix* I = zeros_double(199, n);
 	
 	// Q=zeros(199,n);
 	if (Q != NULL) {
@@ -29,7 +27,9 @@ gsl_matrix* bct::motif4struct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matri
 	}
 	
 	// F=zeros(199,n);
-	gsl_matrix* F = zeros_double(199, n);
+	if (F != NULL) {
+		*F = zeros_double(199, n);
+	}
 	
 	// A=1*(W~=0);
 	gsl_matrix* A = compare_elements(W, fp_not_equal, 0.0);
@@ -183,13 +183,13 @@ gsl_matrix* bct::motif4struct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matri
 									// F(id,[u v1 v2 v3])=F(id,[u v1 v2 v3])+[1 1 1 1];
 									int IQF_cols[] = { u, v1, v2, v3 };
 									for (int j = 0; j < 4; j++) {
-										if (I != NULL) {
-											gsl_matrix_set(*I, id, IQF_cols[j], gsl_matrix_get(*I, id, IQF_cols[j]) + i);
-										}
+										gsl_matrix_set(I, id, IQF_cols[j], gsl_matrix_get(I, id, IQF_cols[j]) + i);
 										if (Q != NULL) {
 											gsl_matrix_set(*Q, id, IQF_cols[j], gsl_matrix_get(*Q, id, IQF_cols[j]) + q);
 										}
-										gsl_matrix_set(F, id, IQF_cols[j], gsl_matrix_get(F, id, IQF_cols[j]) + 1.0);
+										if (F != NULL) {
+											gsl_matrix_set(*F, id, IQF_cols[j], gsl_matrix_get(*F, id, IQF_cols[j]) + 1.0);
+										}
 									}
 								}
 								
@@ -219,5 +219,5 @@ gsl_matrix* bct::motif4struct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matri
 	gsl_matrix_free(M4);
 	gsl_matrix_free(A);
 	gsl_matrix_free(As);
-	return F;
+	return I;
 }

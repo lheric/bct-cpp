@@ -4,9 +4,9 @@
 
 /*
  * Counts occurrences of three-node functional motifs in a weighted graph.
- * Optionally returns intensity and coherence.
+ * Returns intensity and (optionally) coherence and motif counts.
  */
-gsl_matrix* bct::motif3funct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matrix** Q) {
+gsl_matrix* bct::motif3funct_wei(const gsl_matrix* W, gsl_matrix** Q, gsl_matrix** F) {
 	if (safe_mode) check_status(W, SQUARE | WEIGHTED, "motif3funct_wei");
 	
 	// load motif34lib M3 M3n ID3 N3
@@ -18,9 +18,7 @@ gsl_matrix* bct::motif3funct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matrix
 	int n = length(W);
 	
 	// I=zeros(13,n);
-	if (I != NULL) {
-		*I = zeros_double(13, n);
-	}
+	gsl_matrix* I = zeros_double(13, n);
 	
 	// Q=zeros(13,n);
 	if (Q != NULL) {
@@ -28,7 +26,9 @@ gsl_matrix* bct::motif3funct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matrix
 	}
 	
 	// F=zeros(13,n);
-	gsl_matrix* F = zeros_double(13, n);
+	if (F != NULL) {
+		*F = zeros_double(13, n);
+	}
 	
 	// A=1*(W~=0);
 	gsl_matrix* A = compare_elements(W, fp_not_equal, 0.0);
@@ -199,41 +199,41 @@ gsl_matrix* bct::motif3funct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matrix
 							// F(idu,[u v1 v2])=F(idu,[u v1 v2])+[f2 f2 f2];
 							double IQF_cols[] = { (double)u, (double)v1, (double)v2 };
 							gsl_vector_view IQF_cols_vv = gsl_vector_view_array(IQF_cols, 3);
-							gsl_matrix* I_idx;
+							gsl_matrix* I_idx = ordinal_index(I, idu, &IQF_cols_vv.vector);
 							gsl_matrix* Q_idx;
-							if (I != NULL) {
-								I_idx = ordinal_index(*I, idu, &IQF_cols_vv.vector);
-							}
+							gsl_matrix* F_idx;
 							if (Q != NULL) {
 								Q_idx = ordinal_index(*Q, idu, &IQF_cols_vv.vector);
 							}
-							gsl_matrix* F_idx = ordinal_index(F, idu, &IQF_cols_vv.vector);
+							if (F != NULL) {
+								F_idx = ordinal_index(*F, idu, &IQF_cols_vv.vector);
+							}
 							for (int j = 0; j < 3; j++) {
-								if (I != NULL) {
-									gsl_vector_view I_idx_col_j = gsl_matrix_column(I_idx, j);
-									gsl_vector_add(&I_idx_col_j.vector, i2);
-								}
+								gsl_vector_view I_idx_col_j = gsl_matrix_column(I_idx, j);
+								gsl_vector_add(&I_idx_col_j.vector, i2);
 								if (Q != NULL) {
 									gsl_vector_view Q_idx_col_j = gsl_matrix_column(Q_idx, j);
 									gsl_vector_add(&Q_idx_col_j.vector, q2);
 								}
-								gsl_vector_view F_idx_col_j = gsl_matrix_column(F_idx, j);
-								gsl_vector_add(&F_idx_col_j.vector, f2);
+								if (F != NULL) {
+									gsl_vector_view F_idx_col_j = gsl_matrix_column(F_idx, j);
+									gsl_vector_add(&F_idx_col_j.vector, f2);
+								}
 							}
 							gsl_vector_free(i2);
 							gsl_vector_free(q2);
 							gsl_vector_free(f2);
-							if (I != NULL) {
-								ordinal_index_assign(*I, idu, &IQF_cols_vv.vector, I_idx);
-								gsl_matrix_free(I_idx);
-							}
+							ordinal_index_assign(I, idu, &IQF_cols_vv.vector, I_idx);
+							gsl_matrix_free(I_idx);
 							if (Q != NULL) {
 								ordinal_index_assign(*Q, idu, &IQF_cols_vv.vector, Q_idx);
 								gsl_matrix_free(Q_idx);
 							}
-							ordinal_index_assign(F, idu, &IQF_cols_vv.vector, F_idx);
+							if (F != NULL) {
+								ordinal_index_assign(*F, idu, &IQF_cols_vv.vector, F_idx);
+								gsl_matrix_free(F_idx);
+							}
 							gsl_vector_free(idu);
-							gsl_matrix_free(F_idx);
 						}
 						
 						gsl_vector_free(w);
@@ -257,5 +257,5 @@ gsl_matrix* bct::motif3funct_wei(const gsl_matrix* W, gsl_matrix** I, gsl_matrix
 	gsl_matrix_free(M3);
 	gsl_matrix_free(A);
 	gsl_matrix_free(As);
-	return F;
+	return I;
 }
