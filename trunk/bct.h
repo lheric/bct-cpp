@@ -90,6 +90,7 @@ namespace bct {
 	gsl_matrix* motif3struct_wei(const gsl_matrix*, gsl_matrix** = NULL, gsl_matrix** = NULL);
 	gsl_matrix* motif4generate(gsl_vector** = NULL, gsl_vector** = NULL);
 	gsl_matrix* motif4struct_bin(const gsl_matrix*, gsl_vector** = NULL);
+	gsl_matrix* motif4struct_wei(const gsl_matrix*, gsl_matrix** = NULL, gsl_matrix** = NULL);
 
 	// Modularity and community structure
 	double modularity_dir(const gsl_matrix*, gsl_vector** = NULL);
