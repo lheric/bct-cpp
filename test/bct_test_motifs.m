@@ -56,4 +56,13 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("motif4struct_bin %s F", mname{i}), F == F_cpp)
 end
 
+% motif4struct_wei
+for i = 1:size(m)(2)
+	[I Q F] = motif4struct_wei(m{i});
+	[I_cpp Q_cpp F_cpp] = motif4struct_wei_cpp(m{i});
+	bct_test(sprintf("motif4struct_wei %s I", mname{i}), I == I_cpp)
+	bct_test(sprintf("motif4struct_wei %s Q", mname{i}), Q == Q_cpp)
+	bct_test(sprintf("motif4struct_wei %s F", mname{i}), F == F_cpp)
+end
+
 bct_test_teardown
