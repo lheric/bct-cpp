@@ -54,6 +54,7 @@ filenames = \
 	motif3struct_bin_cpp \
 	motif3struct_wei_cpp \
 	motif4generate_cpp \
+	motif4funct_bin_cpp \
 	motif4struct_bin_cpp \
 	motif4struct_wei_cpp \
 	randmio_dir_cpp \
