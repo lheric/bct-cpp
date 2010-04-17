@@ -56,6 +56,7 @@ objects = \
 	motif3struct_bin.o \
 	motif3struct_wei.o \
 	motif4funct_bin.o \
+	motif4funct_wei.o \
 	motif4struct_bin.o \
 	motif4struct_wei.o \
 	normalized_path_length.o \
