@@ -50,4 +50,10 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("modularity_und_louvain %s", mname{i}), result)
 end
 
+% module_degree_zscore
+for i = 1:size(m)(2)
+	Ci = modularity_dir_cpp(m{i});
+	bct_test(sprintf("module_degree_zscore %s", mname{i}), abs(module_degree_zscore(m{i}, Ci) - module_degree_zscore_cpp(m{i}, Ci)') < 1e-6)
+end
+
 bct_test_teardown
