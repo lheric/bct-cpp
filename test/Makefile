@@ -48,6 +48,7 @@ filenames = \
 	modularity_dir_cpp \
 	modularity_und_cpp \
 	modularity_und_louvain_cpp \
+	module_degree_zscore_cpp \
 	motif3funct_bin_cpp \
 	motif3funct_wei_cpp \
 	motif3generate_cpp \

@@ -51,6 +51,7 @@ objects = \
 	matlab/matlab_long_double.o \
 	modularity_louvain.o \
 	modularity_newman.o \
+	module_degree_zscore.o \
 	motif3funct_bin.o \
 	motif3funct_wei.o \
 	motif3struct_bin.o \

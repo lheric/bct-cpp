@@ -98,6 +98,7 @@ namespace bct {
 	double modularity_dir(const gsl_matrix*, gsl_vector** = NULL);
 	double modularity_und(const gsl_matrix*, gsl_vector** = NULL);
 	double modularity_und_louvain(const gsl_matrix*, gsl_vector** = NULL);
+	gsl_vector* module_degree_zscore(const gsl_matrix*, const gsl_vector*);
 	
 	// Synthetic connection networks
 	gsl_matrix* makeevenCIJ(int, int, int);

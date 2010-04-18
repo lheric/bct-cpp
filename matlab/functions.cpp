@@ -291,6 +291,10 @@ VECTOR_TYPE* matlab::max(const MATRIX_TYPE* m, int dim) {
 	}
 }
 
+FP_TYPE matlab::mean(const VECTOR_TYPE* v) {
+	return sum(v) / (double)v->size;
+}
+
 FP_TYPE matlab::min(FP_TYPE x, FP_TYPE y) {
 	if (gsl_isnan((double)x) == 1) {
 		return y;
@@ -629,6 +633,15 @@ MATRIX_TYPE* matlab::sortrows(const MATRIX_TYPE* m, VECTOR_TYPE** ind) {
 		}
 	}
 	return sort_m;
+}
+
+FP_TYPE matlab::std(const VECTOR_TYPE* v) {
+	FP_TYPE mu = mean(v);
+	FP_TYPE err = 0.0;
+	for (int i = 0; i < (int)v->size; i++) {
+		err += std::pow(VECTOR_ID(get)(v, i) - mu, 2);
+	}
+	return std::sqrt(err / (FP_TYPE)(v->size - 1));
 }
 
 FP_TYPE matlab::sum(const VECTOR_TYPE* v) {
