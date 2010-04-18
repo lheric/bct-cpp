@@ -56,4 +56,10 @@ for i = 1:size(m)(2)
 	bct_test(sprintf("module_degree_zscore %s", mname{i}), abs(module_degree_zscore(m{i}, Ci) - module_degree_zscore_cpp(m{i}, Ci)') < 1e-6)
 end
 
+% participation_coef
+for i = 1:size(m)(2)
+	Ci = modularity_dir_cpp(m{i});
+	bct_test(sprintf("participation_coef %s", mname{i}), participation_coef(m{i}, Ci) == participation_coef_cpp(m{i}, Ci)')
+end
+
 bct_test_teardown

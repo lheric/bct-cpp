@@ -1,10 +1,11 @@
 #include "bct.h"
+#include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 
 /*
- * Computes the z-score for a binary graph and its corresponding community
- * structure.  For a directed graph, computes the out-neighbor z-score.
+ * Computes z-score for a binary graph and its corresponding community
+ * structure.  For a directed graph, computes out-neighbor z-score.
  */
 gsl_vector* bct::module_degree_zscore(const gsl_matrix* A, const gsl_vector* Ci) {
 	if (safe_mode) check_status(A, SQUARE | BINARY, "module_degree_zscore");

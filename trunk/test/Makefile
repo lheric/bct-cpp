@@ -59,6 +59,7 @@ filenames = \
 	motif4funct_wei_cpp \
 	motif4struct_bin_cpp \
 	motif4struct_wei_cpp \
+	participation_coef_cpp \
 	randmio_dir_cpp \
 	randmio_dir_connected_cpp \
 	randmio_und_cpp \

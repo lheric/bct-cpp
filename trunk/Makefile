@@ -61,6 +61,7 @@ objects = \
 	motif4struct_bin.o \
 	motif4struct_wei.o \
 	normalized_path_length.o \
+	participation_coef.o \
 	randmio_dir.o \
 	randmio_dir_connected.o \
 	randmio_und.o \
