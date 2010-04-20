@@ -47,7 +47,6 @@ namespace matlab {
 	FP_TYPE max(FP_TYPE, FP_TYPE);
 	FP_TYPE max(const VECTOR_TYPE*);
 	VECTOR_TYPE* max(const MATRIX_TYPE*, int = 1);
-	FP_TYPE mean(const VECTOR_TYPE*);
 	FP_TYPE min(FP_TYPE, FP_TYPE);
 	FP_TYPE min(const VECTOR_TYPE*);
 	VECTOR_TYPE* min(const MATRIX_TYPE*, int = 1);
@@ -69,7 +68,6 @@ namespace matlab {
 	MATRIX_TYPE* sort(const MATRIX_TYPE*, int = 1, const std::string& = "ascend", MATRIX_TYPE** = NULL);
 	VECTOR_TYPE* sortrows(const VECTOR_TYPE*, VECTOR_TYPE** = NULL);
 	MATRIX_TYPE* sortrows(const MATRIX_TYPE*, VECTOR_TYPE** = NULL);
-	FP_TYPE std(const VECTOR_TYPE*);
 	FP_TYPE sum(const VECTOR_TYPE*);
 	VECTOR_TYPE* sum(const MATRIX_TYPE*, int = 1);
 	MATRIX_TYPE* toeplitz(const VECTOR_TYPE*, const VECTOR_TYPE* = NULL);

@@ -176,6 +176,8 @@ namespace bct {
 	int number_of_nodes(const gsl_matrix*);
 	double mean(const gsl_vector*, const std::string& = "a");
 	gsl_vector* mean(const gsl_matrix*, int = 1, const std::string& = "a");
+	double std(const gsl_vector*, int = 0);
+	gsl_vector* std(const gsl_matrix*, int = 0, int = 1);
 	
 	// Debugging
 	void printf(const gsl_vector*, const std::string&);
