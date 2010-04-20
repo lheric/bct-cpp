@@ -110,3 +110,41 @@ gsl_vector* bct::mean(const gsl_matrix* m, int dim, const std::string& opt) {
 		return NULL;
 	}
 }
+
+double bct::std(const gsl_vector* v, int opt) {
+	double mu = mean(v);
+	double err = 0.0;
+	for (int i = 0; i < (int)v->size; i++) {
+		err += std::pow(gsl_vector_get(v, i) - mu, 2);
+	}
+	if (opt == 0) {
+		return std::sqrt(err / (double)(v->size - 1));
+	} else if (opt == 1) {
+		return std::sqrt(err / (double)v->size);
+	} else {
+		// TODO: Error message?
+		return 0.0;
+	}
+}
+
+gsl_vector* bct::std(const gsl_matrix* m, int opt, int dim) {
+	if (dim == 1) {
+		gsl_vector* std_v = gsl_vector_alloc(m->size2);
+		for (int i = 0; i < (int)m->size2; i++) {
+			gsl_vector_const_view m_col_i = gsl_matrix_const_column(m, i);
+			double value = bct::std(&m_col_i.vector, opt);
+			gsl_vector_set(std_v, i, value);
+		}
+		return std_v;
+	} else if (dim == 2) {
+		gsl_vector* std_v = gsl_vector_alloc(m->size1);
+		for (int i = 0; i < (int)m->size1; i++) {
+			gsl_vector_const_view m_row_i = gsl_matrix_const_row(m, i);
+			double value = bct::std(&m_row_i.vector, opt);
+			gsl_vector_set(std_v, i, value);
+		}
+		return std_v;
+	} else {
+		return NULL;
+	}
+}
