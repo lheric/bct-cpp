@@ -24,6 +24,7 @@ filenames = \
 	edge_betweenness_bin_cpp \
 	edge_betweenness_wei_cpp \
 	erange_cpp \
+	find_motif34_cpp \
 	findpaths_cpp \
 	findwalks_cpp \
 	jdegree_cpp \

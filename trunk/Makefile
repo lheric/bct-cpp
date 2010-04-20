@@ -24,6 +24,7 @@ objects = \
 	distance_wei.o \
 	efficiency.o \
 	erange.o \
+	find_motif34.o \
 	findpaths.o \
 	findwalks.o \
 	fve.o \

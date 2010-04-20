@@ -83,6 +83,8 @@ namespace bct {
 	extern motif_mode_enum motif_mode;
 	motif_mode_enum get_motif_mode();
 	void set_motif_mode(motif_mode_enum);
+	std::vector<gsl_matrix*> find_motif34(int, int);
+	int find_motif34(const gsl_matrix*);
 	gsl_vector* motif3funct_bin(const gsl_matrix*, gsl_matrix** = NULL);
 	gsl_matrix* motif3funct_wei(const gsl_matrix*, gsl_matrix** = NULL, gsl_matrix** = NULL);
 	gsl_matrix* motif3generate(gsl_vector** = NULL, gsl_vector** = NULL);
