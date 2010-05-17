@@ -1,49 +1,32 @@
-#define GatherLoopCountData 0
-#define InnerLoopCountMax 30
-
 #include "bct.h"
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include <vector>
 
-bool modularity_und_louvain(const gsl_matrix*, gsl_vector**, double*);
+bool modularity_und_louvain(const gsl_matrix*, double*, gsl_vector**, int);
 
 /*
  * Detects communities in an undirected graph via Louvain modularity.  While the
  * MATLAB version returns intermediate values for community numbering and
- * modularity, the C++ version returns only the final values.
+ * modularity, the C++ version returns only the final values.  This version also
+ * makes use of an additional argument N that specifies the maximum number of
+ * node permutations to attempt when maximizing modularity.
  */
-double bct::modularity_und_louvain(const gsl_matrix* W, gsl_vector** Ci) {
+double bct::modularity_und_louvain(const gsl_matrix* W, gsl_vector** Ci, int N) {
 	if (safe_mode) check_status(W, SQUARE | UNDIRECTED, "modularity_und_louvain");
-
-	double modularity;
 	
+	double Q;
 	while (true) {
-		bool success = modularity_und_louvain(W, Ci, &modularity);
-		if (success)
+		if (modularity_und_louvain(W, &Q, Ci, N)) {
 			break;
-	}
-	
-	return modularity;
-}
-
-bool modularity_und_louvain(const gsl_matrix* W, gsl_vector** Ci, double* modularity) {
-	using namespace bct;
-	
-#if GatherLoopCountData
-	long outer_loop_count = 0;
-	static FILE* file = NULL;
-	if (!file) {
-		file = fopen("louvain_loop_data.txt", "w");
-		if (!file) {
-			fprintf(stderr, "Unable to open louvain loop data file");
-			exit(1);
 		}
 	}
-#endif
+	return Q;
+}
 
-	long inner_loop_count_total = 0;
-
+bool modularity_und_louvain(const gsl_matrix* W, double* Q, gsl_vector** Ci, int N) {
+	using namespace bct;
+	
 	// n=length(W);
 	int n = length(W);
 	
@@ -60,8 +43,8 @@ bool modularity_und_louvain(const gsl_matrix* W, gsl_vector** Ci, double* modula
 	_Ci.push_back(sequence_double(1, n));
 	
 	// Q{h}=-1;
-	std::vector<double> Q;
-	Q.push_back(-1.0);
+	std::vector<double> _Q;
+	_Q.push_back(-1.0);
 	
 	// n0=n;
 	int n0 = n;
@@ -71,10 +54,6 @@ bool modularity_und_louvain(const gsl_matrix* W, gsl_vector** Ci, double* modula
 	// while true
 	while (true) {
 		
-	#if GatherLoopCountData
-		outer_loop_count++;
-	#endif
-	
 		// K=sum(W);
 		gsl_vector* K = sum(_W);
 		
@@ -93,12 +72,13 @@ bool modularity_und_louvain(const gsl_matrix* W, gsl_vector** Ci, double* modula
 		// flag=true;
 		bool flag = true;
 		
+		int count = 0;
+		
 		// while flag
 		while (flag) {
 			
-			inner_loop_count_total++;
-			if (inner_loop_count_total > InnerLoopCountMax) {
-				return false;	// no success
+			if (++count >= N) {
+				return false;
 			}
 
 			// flag=false;
@@ -250,21 +230,16 @@ bool modularity_und_louvain(const gsl_matrix* W, gsl_vector** Ci, double* modula
 		gsl_matrix_free(_W_div_s_pow_2);
 		double sum_sum__W_div_s_pow_2 = sum(sum__W_div_s_pow_2);
 		gsl_vector_free(sum__W_div_s_pow_2);
-		Q.push_back(sum_diag__W / s - sum_sum__W_div_s_pow_2);
+		_Q.push_back(sum_diag__W / s - sum_sum__W_div_s_pow_2);
 		
 		// if Q{h}-Q{h-1}<=eps
-		if (fp_less_or_equal(Q[h] - Q[h - 1], epsilon_double)) {
+		if (fp_less_or_equal(_Q[h] - _Q[h - 1], epsilon_double)) {
 			
 			// break
 			break;
 		}
 	}
 				
-#if GatherLoopCountData
-	fprintf(file, "%ld %ld\n", outer_loop_count, inner_loop_count_total);
-	fflush(file);
-#endif
-
 	gsl_matrix_free(_W);
 	
 	// Ci([1 end])=[];
@@ -280,7 +255,7 @@ bool modularity_und_louvain(const gsl_matrix* W, gsl_vector** Ci, double* modula
 	} 
 	
 	// Q([1 end])=[];
-	*modularity = Q[Q.size() - 2];
+	*Q = _Q[_Q.size() - 2];
 	
-	return true;	// success
+	return true;
 }

@@ -1,7 +1,6 @@
 #include "bct.h"
 #include <cmath>
 #include <gsl/gsl_matrix.h>
-#include <iostream>
 
 /*
  * Given a distance matrix, computes the normalized shortest path length.
@@ -17,9 +16,5 @@ double bct::normalized_path_length(const gsl_matrix* D, double wmax) {
 			sum += d < dmax ? d : dmax;
 		}
 	}
-	double npl = ((sum / (double)(N * (N - 1))) - dmin) / (dmax - dmin);
-	if (npl < 0.0) {
-		std::cerr << "Negative normalized path length (" << npl << ")." << std::endl;
-	}
-	return std::abs(npl);
+	return std::abs(((sum / (double)(N * (N - 1))) - dmin) / (dmax - dmin));
 }
