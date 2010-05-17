@@ -1,6 +1,7 @@
 #include "bct.h"
 #include <cmath>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
 #include <sstream>
@@ -84,8 +85,7 @@ double bct::mean(const gsl_vector* v, const std::string& opt) {
 		}
 		return (double)v->size / sum;
 	} else {
-		// TODO: Error message?
-		return 0.0;
+		return GSL_NAN;
 	}
 }
 
@@ -122,8 +122,7 @@ double bct::std(const gsl_vector* v, int opt) {
 	} else if (opt == 1) {
 		return std::sqrt(err / (double)v->size);
 	} else {
-		// TODO: Error message?
-		return 0.0;
+		return GSL_NAN;
 	}
 }
 

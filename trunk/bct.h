@@ -99,7 +99,7 @@ namespace bct {
 	// Modularity and community structure
 	double modularity_dir(const gsl_matrix*, gsl_vector** = NULL);
 	double modularity_und(const gsl_matrix*, gsl_vector** = NULL);
-	double modularity_und_louvain(const gsl_matrix*, gsl_vector** = NULL);
+	double modularity_und_louvain(const gsl_matrix*, gsl_vector** = NULL, int = 100);
 	gsl_vector* module_degree_zscore(const gsl_matrix*, const gsl_vector*);
 	gsl_vector* participation_coef(const gsl_matrix*, const gsl_vector*);
 	
@@ -176,6 +176,9 @@ namespace bct {
 	int number_of_edges_dir(const gsl_matrix*);
 	int number_of_edges_und(const gsl_matrix*);
 	int number_of_nodes(const gsl_matrix*);
+	gsl_matrix* threshold_absolute(const gsl_matrix*, double);
+	gsl_matrix* threshold_proportional_dir(const gsl_matrix*, double);
+	gsl_matrix* threshold_proportional_und(const gsl_matrix*, double);
 	double mean(const gsl_vector*, const std::string& = "a");
 	gsl_vector* mean(const gsl_matrix*, int = 1, const std::string& = "a");
 	double std(const gsl_vector*, int = 0);

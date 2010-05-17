@@ -71,6 +71,8 @@ objects = \
 	status.o \
 	strengths_dir.o \
 	strengths_und.o \
+	threshold_absolute.o \
+	threshold_proportional.o \
 	utility.o
 
 .PHONY: all clean install swig uninstall
