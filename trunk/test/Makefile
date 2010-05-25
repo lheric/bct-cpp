@@ -67,7 +67,10 @@ filenames = \
 	randmio_und_connected_cpp \
 	reachdist_cpp \
 	strengths_dir_cpp \
-	strengths_und_cpp
+	strengths_und_cpp \
+	threshold_absolute_cpp \
+	threshold_proportional_dir_cpp \
+	threshold_proportional_und_cpp
 
 objects := $(foreach f, $(filenames), $(f).o)
 oct_files := $(foreach f, $(filenames), $(f).oct)

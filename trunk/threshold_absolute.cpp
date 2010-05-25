@@ -6,6 +6,8 @@
  * threshold, as well as those on the main diagonal, are set to zero.
  */
 gsl_matrix* bct::threshold_absolute(const gsl_matrix* W, double thr) {
+	if (safe_mode) check_status(W, SQUARE, "threshold_absolute");
+	
 	gsl_matrix* W_thr = copy(W);
 	
 	// W(1:size(W,1)+1:end)=0;
