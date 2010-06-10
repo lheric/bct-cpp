@@ -22,8 +22,8 @@ std::string matlab::dec2bin(int n) {
 }
 
 std::string matlab::dec2bin(int n, int len) {
-	if (n <= 0) {
-		return "0";
+	if (n < 0) {
+		return "";
 	}
 	int binlen = (int)(std::floor(1.0 + std::log(n) / std::log(2)));
 	std::string bin(len > binlen ? len : binlen, '0');
