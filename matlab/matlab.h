@@ -22,6 +22,10 @@ namespace matlab {
 	// Operators
 	gsl_matrix* div_left(const gsl_matrix*, const gsl_matrix*);
 	gsl_matrix* div_right(const gsl_matrix*, const gsl_matrix*);
+	
+	// Utility
+	gsl_rng* get_gsl_rng();
+	void seed_rng(const gsl_rng*, unsigned long);
 #endif
 	
 	const FP_TYPE FP_ID(epsilon) = std::numeric_limits<FP_TYPE>::epsilon();
@@ -192,7 +196,6 @@ namespace matlab {
 	gsl_permutation* to_permutation(const VECTOR_TYPE*);
 	
 	// Utility
-	gsl_rng* get_gsl_rng();
 	MATRIX_TYPE* permute_columns(const gsl_permutation*, const MATRIX_TYPE*);
 	MATRIX_TYPE* permute_rows(const gsl_permutation*, const MATRIX_TYPE*);
 };
