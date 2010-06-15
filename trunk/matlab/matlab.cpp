@@ -26,7 +26,7 @@ std::string matlab::dec2bin(int n, int len) {
 		return "";
 	}
 	int binlen = (int)(std::floor(1.0 + std::log(n) / std::log(2)));
-	std::string bin(len > binlen ? len : binlen, '0');
+	std::string bin((len > binlen) ? len : binlen, '0');
 	for (int i = bin.size() - 1; i >= 0; i--) {
 		int remainder = n % 2;
 		if (remainder) {

@@ -245,7 +245,7 @@ std::vector<gsl_matrix*> bct::findpaths(const gsl_matrix* CIJ, const gsl_vector*
 	
 	// qstop = q;
 	if (qstop != NULL) {
-		*qstop = q <= qmax ? q : qmax;
+		*qstop = (q <= qmax) ? q : qmax;
 	}
 	
 	// tpath = sum(sum(sum(Pq)));

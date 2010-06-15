@@ -10,7 +10,7 @@ int matlab::fp_compare(FP_TYPE x, FP_TYPE y) {
 		return 0;
 	} else {
 		int exponent;
-		FP_TYPE max = std::abs(x) > std::abs(y) ? x : y;
+		FP_TYPE max = (std::abs(x) > std::abs(y)) ? x : y;
 		std::frexp(max, &exponent);
 		FP_TYPE delta = std::ldexp(FP_ID(epsilon), exponent);
 		FP_TYPE difference = x - y;

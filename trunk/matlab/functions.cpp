@@ -112,7 +112,7 @@ VECTOR_TYPE* matlab::diag(const MATRIX_TYPE* m, int k) {
 	else { i0 = -k; j0 = 0; }
 	int n_rows = m->size1 - i0;
 	int n_cols = m->size2 - j0;
-	int n = n_rows < n_cols ? n_rows : n_cols;
+	int n = (n_rows < n_cols) ? n_rows : n_cols;
 	VECTOR_TYPE* diag_v = VECTOR_ID(alloc)(n);
 	for (int i = 0; i < n; i++) {
 		VECTOR_ID(set)(diag_v, i, MATRIX_ID(get)(m, i0 + i, j0 + i));
@@ -136,7 +136,7 @@ VECTOR_TYPE* matlab::find(const VECTOR_TYPE* v, int n, const std::string& direct
 	if (n_find == 0 || n < 1) {
 		return NULL;
 	}
-	VECTOR_TYPE* find_v = VECTOR_ID(alloc)(n < n_find ? n : n_find);
+	VECTOR_TYPE* find_v = VECTOR_ID(alloc)((n < n_find) ? n : n_find);
 	if (direction == "first") {
 		int position = 0;
 		for (int i = 0; i < (int)v->size && position < (int)find_v->size; i++) {
@@ -234,7 +234,7 @@ int matlab::length(const VECTOR_TYPE* v) {
 }
 
 int matlab::length(const MATRIX_TYPE* m) {
-	return m->size1 > m->size2 ? m->size1 : m->size2;
+	return (m->size1 > m->size2) ? m->size1 : m->size2;
 }
 
 FP_TYPE matlab::max(FP_TYPE x, FP_TYPE y) {
@@ -243,7 +243,7 @@ FP_TYPE matlab::max(FP_TYPE x, FP_TYPE y) {
 	} else if (gsl_isnan((double)y) == 1) {
 		return x;
 	} else {
-		return x > y ? x : y;
+		return (x > y) ? x : y;
 	}
 }
 
@@ -297,7 +297,7 @@ FP_TYPE matlab::min(FP_TYPE x, FP_TYPE y) {
 	} else if (gsl_isnan((double)y) == 1) {
 		return x;
 	} else {
-		return x < y ? x : y;
+		return (x < y) ? x : y;
 	}
 }
 

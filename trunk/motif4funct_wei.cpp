@@ -83,7 +83,7 @@ gsl_matrix* bct::motif4funct_wei(const gsl_matrix* W, gsl_matrix** Q, gsl_matrix
 						int v2 = (int)gsl_vector_get(find_V2, i_find_V2);
 						
 						// vz=max(v1,v2);
-						int vz = v1 > v2 ? v1 : v2;
+						int vz = (v1 > v2) ? v1 : v2;
 						
 						// V3=([false(1,u) As(v2,u+1:n)]);
 						gsl_vector* V3 = gsl_vector_alloc(n);

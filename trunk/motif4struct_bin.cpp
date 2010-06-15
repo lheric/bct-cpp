@@ -73,7 +73,7 @@ gsl_vector* bct::motif4struct_bin(const gsl_matrix* A, gsl_matrix** F) {
 						int v2 = (int)gsl_vector_get(find_V2, i_find_V2);
 						
 						// vz=max(v1,v2);
-						int vz = v1 > v2 ? v1 : v2;
+						int vz = (v1 > v2) ? v1 : v2;
 						
 						// V3=([false(1,u) As(v2,u+1:n)]);
 						gsl_vector* V3 = gsl_vector_alloc(n);
