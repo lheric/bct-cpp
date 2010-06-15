@@ -116,3 +116,10 @@ gsl_rng* matlab::get_gsl_rng() {
 	}
 	return rng;
 }
+
+/*
+ * Seeds the given random number generator.
+ */
+void matlab::seed_rng(const gsl_rng* rng, unsigned long seed) {
+	gsl_rng_set(rng, seed);
+}
