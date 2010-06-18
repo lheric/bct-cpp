@@ -162,12 +162,15 @@ gsl_matrix* bct::makerandCIJdegreesfixed(const gsl_vector* in, const gsl_vector*
  */
 gsl_matrix* bct::makerandCIJdegreesfixed(const gsl_matrix* m) {
 	if (safe_mode) check_status(m, SQUARE | NO_LOOPS, "makerandCIJdegreesfixed");
-	gsl_vector* id;
-	gsl_vector* od;
-	gsl_vector* deg = degrees_dir(m, &id, &od);
-	gsl_vector_free(deg);
-	gsl_matrix* ret = makerandCIJdegreesfixed(id, od);
-	gsl_vector_free(id);
-	gsl_vector_free(od);
+	gsl_matrix* ret;
+	do {
+		gsl_vector* id;
+		gsl_vector* od;
+		gsl_vector* deg = degrees_dir(m, &id, &od);
+		gsl_vector_free(deg);
+		ret = makerandCIJdegreesfixed(id, od);
+		gsl_vector_free(id);
+		gsl_vector_free(od);
+	} while (ret == NULL && has_no_loops(m));
 	return ret;
 }
