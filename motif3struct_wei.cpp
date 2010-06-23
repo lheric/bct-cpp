@@ -171,3 +171,23 @@ gsl_matrix* bct::motif3struct_wei(const gsl_matrix* W, gsl_matrix** Q, gsl_matri
 	gsl_matrix_free(As);
 	return I;
 }
+
+/*
+ * Returns per-motif metrics instead of per-motif, per-node metrics.
+ */
+gsl_vector* bct::motif3struct_wei_v(const gsl_matrix* W, gsl_vector** Q, gsl_vector** F) {
+	gsl_matrix* _Q;
+	gsl_matrix* _F;
+	gsl_matrix* _I = motif3struct_wei(W, &_Q, &_F);
+	if (Q != NULL) {
+		*Q = sum(_Q, 2);
+	}
+	gsl_matrix_free(_Q);
+	if (F != NULL) {
+		*F = sum(_F, 2);
+	}
+	gsl_matrix_free(_F);
+	gsl_vector* I = sum(_I, 2);
+	gsl_matrix_free(_I);
+	return I;
+}
