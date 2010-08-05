@@ -1,4 +1,4 @@
-CXXFLAGS = -Wall -g -arch i386
+CXXFLAGS = -Wall -g -arch i386 -O3
 
 objects = \
 	assortativity.o \
