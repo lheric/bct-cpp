@@ -23,6 +23,6 @@ Use the following strategy to implement a BCT function that returns multiple val
 
 
 = Running the Regression Test Suite =
-  # *Install the BCT C++ library*: Run `make install` to compile and install libbct.a.  The library is placed in /usr/local/lib, while the header file is placed in /usr/local/include.
-  # *Install the regression test suite*: In the test directory, run `make install` to compile oct-files and install them (along with the supporting .m files) in /usr/local/share/bct.  `mkoctfile` (the Octave executable) must be in your shell's path for this to work.
-  # *Run the suite*: Start Octave and execute `bct_test_all`.  The regression test suite (located at /usr/local/share/bct) and the original BCT .m files must be in your Octave path for this to work.  See the Octave documentation for the `path`, `addpath`, and `savepath` commands.
+  # *Install the BCT C++ library*: Run `make` followed by `make install` to compile and install libbct.a.
+  # *Install the regression test suite*: In the test directory, run `make` followed by `make install` to compile oct-files and install them (along with the supporting .m files).  `mkoctfile` (the Octave executable) must be in your shell's path for this to work.
+  # *Run the suite*: Start Octave and execute `bct_test_all`.  The regression test suite (located at /usr/local/share/bct by default) and the original BCT .m files must be in your Octave path for this to work.  See the Octave documentation for the `path`, `addpath`, and `savepath` commands.
