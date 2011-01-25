@@ -23,6 +23,11 @@ gsl_free(sum_triu_m);
 }}}
 
 
+= Three-Dimensional Matrices =
+
+No documentation yet.
+
+
 = Status Checking =
 
 By default, bct-cpp checks the status of any connection matrix passed to a specialized function (i.e., one such as `bct::clustering_coef_bu` which is only intended to work on binary undirected matrices).  If this status check fails, a message is printed to `stderr`, but the function still attempts to complete the calculation.  To disable this behavior and avoid the minor computational overhead, call `bct::set_safe_mode(false)`.
