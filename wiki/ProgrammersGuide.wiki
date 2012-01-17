@@ -6,7 +6,7 @@
   # *Update bct.h*: Add the function prototype for `function_name` to the `bct` namespace.
   # *Update Makefile*: Add `function_name.o` to the list of `objects`.
   # *Create test/function_name_cpp.cpp*: Write an Octave wrapper function in its own .cpp file.  The two macros defined in test/bct_test.h should make this easy.  If the function calculates a scalar quantity, use the `MATRIX_TO_SCALAR_FUNCTION` macro.  If it calculates a vector or matrix (Octave doesn't care which), use the `MATRIX_TO_MATRIX_FUNCTION` macro.  These macros convert an Octave matrix to a GSL matrix, pass it to the C++ function in question, and convert the result back into Octave format.  Some error checking is done to ensure we don't crash Octave if something goes wrong.  Just write `MATRIX_TO_X_FUNCTION(function_name)`, and the macros take care of the rest.
-  # *Update test/bct_test_section.m*: Now that the C++ function is callable from Octave, add a test to compare the outputs of the original BCT function and the C++ version.  In general, this involves looping through the five cortical connectivity data sets and comparing the results of calls to `function_name` (original version) and `function_name_cpp` (C++ version).  Details, however, may vary from function to function.
+  # *Update test/bct_test_section.m*: Now that the C++ function is callable from Octave, add a test to compare the outputs of the original BCT function and the C++ version.  In general, this involves looping through the six cortical connectivity data sets and comparing the results of calls to `function_name` (original version) and `function_name_cpp` (C++ version).  Details, however, may vary from function to function.
   # *Update test/Makefile*: Add `function_name_cpp` to the list of `filenames`.
 
 
