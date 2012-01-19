@@ -19,7 +19,6 @@ Use the following strategy to implement a BCT function that returns multiple val
       * For each pointer parameter:
         * If the pointer is non-`NULL`, return valid data.
         * Otherwise, allocate and free local memory.
-      * Add a single-return convenience function (appending `_sr` to the function name) that only computes the "main" vector/matrix.  Include this function in bct_gsl.i; do not include it in bct.h or bct_py.i.  (This isn't being done.  Start doing it or remove this bullet.)
   * Otherwise, decompose into multiple functions with single returns.
 
 
