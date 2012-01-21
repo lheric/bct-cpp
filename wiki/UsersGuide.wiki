@@ -89,7 +89,7 @@ gsl_free(sum_triu_m);
 === How to Install ===
 
   # Follow the instructions above to install bct-cpp for C++.
-  # Run `make swig`.  Distutils will try to build bct-cpp's Python bindings the same way your Python interpreter was built.  If there are significant differences between the way your Python interpreter was built and the way bct-cpp was built, this step may fail.  There are various way around this, but details vary from system to system.  You'll need to either install a different Python or change the way you're building bct-cpp.
+  # Run `make swig`.  Distutils will try to build bct-cpp's Python bindings the same way your Python interpreter was built.  If there are significant differences between the way your Python interpreter was built and the way bct-cpp was built, this step may fail.  There are various ways around this, but details vary from system to system.  You'll need to either install a different Python or change the way you're building bct-cpp.
   # Run `make swig-install`.
 
 Python bindings for bct-cpp should now be ready to use.  The code in the example subdirectory demonstrates some simple usage.
@@ -97,7 +97,7 @@ Python bindings for bct-cpp should now be ready to use.  The code in the example
 
 === Memory Management ===
 
-bct-cpp's Python bindings come in two flavors: bct_gsl and bct_py.  bct_py acts like a native Python module: you pass Python vectors/matrices (i.e., lists/lists of lists) to functions and receive Python vectors/matrices in return.  All memory management is handled by the module itself.  bct_gsl gives you more flexibility but is more difficult to use.  Memory management is your responsibility: any memory associated with GSL data structures must be explicitly freed with `gsl_free`, and Python matrices must be explicitly converted to/from GSL data structures with functions like `from_gsl`, `to_gslv`, and `to_gslm`.  If you're unsure which flavor to use, you probably want `bct_py`.
+bct-cpp's Python bindings come in two flavors: bct_gsl and bct_py.  bct_py acts like a native Python module: you pass Python vectors/matrices (i.e., lists/lists of lists) to functions and receive Python vectors/matrices in return.  All memory management is handled by the module itself.  bct_gsl gives you more flexibility but is more difficult to use.  Memory management is your responsibility: any memory associated with GSL data structures must be explicitly freed with `gsl_free`, and Python data structures must be explicitly converted to/from GSL data structures with functions like `from_gsl`, `to_gslv`, and `to_gslm`.  If you're unsure which flavor to use, you probably want bct_py.
 
 
 = Status Checking =
