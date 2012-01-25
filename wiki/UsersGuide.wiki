@@ -37,7 +37,7 @@ bct-cpp may be compiled to use `float`, `double`, or `long double` precision for
 === How to Install ===
 
   # Use Subversion to download the bct-cpp source code.  Instructions may be found on the [http://code.google.com/p/bct-cpp/source/checkout Source Checkout] page.
-  # Copy Makefile.vars-template to Makefile.vars.  Edit Makefile.vars as needed.
+  # Copy Makefile.vars.template to Makefile.vars.  Edit Makefile.vars as needed.
     * `CXXFLAGS`: Additional options to be sent to the C++ compiler.  Some options may already be specified in Makefile.
       * To compile with `float` precision, replace `-DGSL_DOUBLE` with `-DGSL_FLOAT`.  To compile with `long double` precision, replace `-DGSL_DOUBLE` with `-DGSL_LONG_DOUBLE`.
       * To build for a particular architecture, add `-arch <arch>` (e.g., `-arch i386`).  For some versions of GCC, multiple `-arch` options may be specified to build a universal library.
