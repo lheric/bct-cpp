@@ -42,7 +42,6 @@ bct-cpp may be compiled to use `float`, `double`, or `long double` precision for
       * To compile with `float` precision, replace `-DGSL_DOUBLE` with `-DGSL_FLOAT`.  To compile with `long double` precision, replace `-DGSL_DOUBLE` with `-DGSL_LONG_DOUBLE`.
       * To build for a particular architecture, add `-arch <arch>` (e.g., `-arch i386`).  For some versions of GCC, multiple `-arch` options may be specified to build a universal library.
       * To enable parallel processing with OpenMP, add `-fopenmp`.
-      * If you are on Linux and will be generating Python bindings, you may need to add `-fPIC`.
     * `install_dir`: The directory under which bct-cpp's header and library files will be installed.
   # Run `make`.
   # Run `make install`.
