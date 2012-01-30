@@ -100,11 +100,13 @@ Python bindings for bct-cpp should now be ready to use.  The code in the example
 Installing with Distutils may fail if you can't build bct-cpp's Python bindings the same way your Python interpreter was built.  If you can't install a different Python or change the way you're building bct-cpp, you may be able to "manually" install Python bindings.
 
   # Follow the instructions above to install bct-cpp for C++.
-  # Edit the additional variables in Makefile.vars.  You may be able to use one of the predefined values (e.g., `python_dir = $(python_dir_apple)`).
-    * `python_dir`: The directory containing Python's C++ header files.
+  # Edit the additional variables in Makefile.vars.  You may be able to use one of the predefined values (e.g., `python_include_dir = $(python_include_dir_apple)`).
+    * `python_include_dir`: The directory containing Python's C++ header files.
+    * `python_package_dir`: Python's site-packages directory.
     * `swig_cxx_flags`: Options used when building SWIG's C++ wrapper files.
     * `swig_lib_flags`: Options used when generating a shared library from SWIG wrappers.
   # Run `make swig-manual`.  You'll have to manually move bct_py.py (or bct_gsl.py) and `_`bct_py.so (or `_`bct_gsl.so) somewhere accessible to the Python interpreter.
+  # Run `make swig-manual-install`.
 
 
 === Memory Management ===
