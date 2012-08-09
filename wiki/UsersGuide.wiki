@@ -3,11 +3,11 @@
 
 = Who Can Use bct-cpp? =
 
-bct-cpp is a C++ port of the [https://sites.google.com/a/brain-connectivity-toolbox.net/bct/Home Brain Connectivity Toolbox] (BCT), a set of MATLAB functions and neuroanatomical data sets useful in the analysis of structural or functional brain networks.
+bct-cpp is a C++ port of the [http://www.brain-connectivity-toolbox.net/ Brain Connectivity Toolbox] (BCT), a set of MATLAB functions and neuroanatomical data sets useful in the analysis of structural or functional brain networks.
 
   * Naturally, if you know C++, you can use bct-cpp.
   * If you know (or prefer) Python, you can use bct-cpp to generate Python bindings.  In general, your code will still run faster than the original MATLAB implementation, since the Python bindings use bct-cpp's compiled C++ code under the hood.
-  * If you know MATLAB (but not C++ or Python), you can't use bct-cpp.  Download the [https://sites.google.com/a/brain-connectivity-toolbox.net/bct/Home/functions MATLAB implementation of BCT] instead.
+  * If you know MATLAB (but not C++ or Python), you can't use bct-cpp.  Download the [http://www.brain-connectivity-toolbox.net/ MATLAB implementation of BCT] instead.
 
 
 = Installation =
